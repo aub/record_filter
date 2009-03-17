@@ -1,6 +1,6 @@
 require File.join(File.dirname(__FILE__), 'spec_helper')
 
-describe RecordFilter do
+describe 'RecordFilter restrictions' do
   it 'should filter for equality' do
     Post.filter do
       with :permalink, 'blog-post'
@@ -46,13 +46,28 @@ describe RecordFilter do
     Post.last_find.should == { :conditions => [%q{posts.created_at BETWEEN ? AND ?}, time1, time2] }
   end
 
-#   it 'should filter by disjunction' do
-#     Post.filter do
-#       any_of do
-#         with.blog_id.equal_to 1
-#         with.permalink.equal_to 'my-post'
-#       end
-#     end
-#     Post.last_find.should == { :conditions => [%q{(posts.blog_id = ?) OR (permalink = ?)}, 1, 'my-post'] }
-#   end
+  it 'should filter by disjunction' do
+    Post.filter do
+      any_of do
+        with(:blog_id).equal_to 1
+        with(:permalink).equal_to 'my-post'
+      end
+    end
+    Post.last_find.should == { :conditions => [%q{(posts.blog_id = ?) OR (posts.permalink = ?)}, 1, 'my-post'] }
+  end
+
+  it 'should filter by disjunction composed of conjunction' do
+    Post.filter do
+      any_of do
+        all_of do
+          with(:blog_id).equal_to 1
+          with(:permalink).equal_to 'my-post'
+        end
+        with(:permalink).equal_to 'another-post'
+      end
+    end
+
+    Post.last_find.should == { :conditions => [%q{((posts.blog_id = ?) AND (posts.permalink = ?)) OR (posts.permalink = ?)},
+                                               1, 'my-post', 'another-post'] }
+  end
 end

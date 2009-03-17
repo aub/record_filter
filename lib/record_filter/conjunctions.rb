@@ -1,13 +1,19 @@
 module RecordFilter
   module Conjunctions
     class Base
+      attr_reader :table_name
+
       def initialize(table_name)
         @table_name = table_name
         @restrictions = []
       end
 
       def add(column_name, restriction_class, value)
-        @restrictions << restriction_class.new("#{@table_name}.#{column_name}", value)
+        self << restriction_class.new("#{@table_name}.#{column_name}", value)
+      end
+      
+      def <<(restriction)
+        @restrictions << restriction
       end
 
       def to_conditions
