@@ -9,7 +9,7 @@ module RecordFilter
         method_name = constant.underscore
         module_eval(<<-RUBY, __FILE__, __LINE__ + 1)
           def #{method_name}(value)
-            @conjunction.add(@column_name, RecordFilter::Restrictions::#{constant}, value)
+            @conjunction.add_restriction(@column_name, RecordFilter::Restrictions::#{constant}, value)
           end
         RUBY
       end

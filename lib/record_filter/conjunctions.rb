@@ -3,13 +3,26 @@ module RecordFilter
     class Base
       attr_reader :table_name
 
-      def initialize(table_name)
-        @table_name = table_name
-        @restrictions = []
+      def initialize(query, model_class)
+        @query, @model_class = query, model_class
+        @table_name = model_class.table_name
+        @restrictions, @joins = [], []
       end
 
-      def add(column_name, restriction_class, value)
-        self << restriction_class.new("#{@table_name}.#{column_name}", value)
+      def add_restriction(column_name, restriction_class, value)
+        restriction = restriction_class.new("#{@table_name}.#{column_name}", value)
+        self << restriction
+        restriction
+      end
+
+      def add_conjunction(conjunction_class)
+        conjunction = conjunction_class.new(@query, @model_class)
+        self << conjunction
+        conjunction
+      end
+
+      def add_join_on_association(association_name)
+        @query.add_join(RecordFilter::Joins::ImplicitJoin.new(@model_class, association_name))
       end
       
       def <<(restriction)

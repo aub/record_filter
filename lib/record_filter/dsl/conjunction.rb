@@ -9,20 +9,21 @@ module RecordFilter
         unless value
           DSL::Restriction.new(column_name.to_sym, @conjunction)
         else
-          @conjunction.add(column_name, Restrictions::EqualTo, value)
+          @conjunction.add_restriction(column_name, Restrictions::EqualTo, value)
         end
       end
 
       def any_of(&block)
-        conjunction = Conjunctions::AnyOf.new(@conjunction.table_name)
-        DSL::Conjunction.new(conjunction).instance_eval(&block)
-        @conjunction << conjunction
+        DSL::Conjunction.new(@conjunction.add_conjunction(Conjunctions::AnyOf)).instance_eval(&block)
       end
 
       def all_of(&block)
-        conjunction = Conjunctions::AllOf.new(@conjunction.table_name)
-        DSL::Conjunction.new(conjunction).instance_eval(&block)
-        @conjunction << conjunction
+        DSL::Conjunction.new(@conjunction.add_conjunction(Conjunctions::AllOf)).instance_eval(&block)
+      end
+
+      def having(association_name)
+        @conjunction.add_join_on_association(association_name)
+        Class.new { def method_missing(*args); end }.new
       end
     end
   end

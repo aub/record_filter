@@ -4,11 +4,18 @@ module RecordFilter
 
     def initialize(model_class)
       @model_class = model_class
-      @base_restriction = RecordFilter::Conjunctions::AllOf.new(model_class.table_name)
+      @joins = []
+      @base_restriction = RecordFilter::Conjunctions::AllOf.new(self, model_class)
+    end
+
+    def add_join(join)
+      @joins << join
     end
 
     def to_find_params
-      { :conditions => @base_restriction.to_conditions }
+      params = { :conditions => @base_restriction.to_conditions }
+      params[:joins] = @joins.map { |join| join.to_sql } * ' AND ' unless @joins.empty?
+      params
     end
   end
 end
