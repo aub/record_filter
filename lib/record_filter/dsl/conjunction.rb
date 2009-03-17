@@ -21,9 +21,11 @@ module RecordFilter
         DSL::Conjunction.new(@conjunction.add_conjunction(Conjunctions::AllOf)).instance_eval(&block)
       end
 
-      def having(association_name)
-        @conjunction.add_join_on_association(association_name)
-        Class.new { def method_missing(*args); end }.new
+      def having(association_name, &block)
+        join = @conjunction.add_join_on_association(association_name)
+        conjunction = DSL::Conjunction.new(@conjunction.add_conjunction(Conjunctions::AllOf, join.right_table))
+        conjunction.instance_eval(&block) if block
+        conjunction
       end
     end
   end

@@ -1,20 +1,16 @@
 module RecordFilter
   class Query
-    attr_reader :base_restriction, :model_class
+    attr_reader :base_restriction, :table
 
-    def initialize(model_class)
-      @model_class = model_class
-      @joins = []
-      @base_restriction = RecordFilter::Conjunctions::AllOf.new(self, model_class)
-    end
-
-    def add_join(join)
-      @joins << join
+    def initialize(table)
+      @table = table
+      @base_restriction = RecordFilter::Conjunctions::AllOf.new(self, table)
     end
 
     def to_find_params
       params = { :conditions => @base_restriction.to_conditions }
-      params[:joins] = @joins.map { |join| join.to_sql } * ' AND ' unless @joins.empty?
+      joins = table.all_joins
+      params[:joins] = joins.map { |join| join.to_sql } * ' AND ' unless joins.empty?
       params
     end
   end
