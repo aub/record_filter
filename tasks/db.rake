@@ -16,6 +16,12 @@ namespace :db do
         create_table :blogs do |t|
           t.string :name
         end
+
+        create_table :photos do |t|
+          t.integer :post_id
+          t.string :path
+          t.string :format
+        end
       end
     end
   end

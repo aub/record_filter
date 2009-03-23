@@ -21,7 +21,7 @@ module RecordFilter
             case association.macro
             when :belongs_to
               { association.primary_key_name.to_sym => :id }
-            when :has_many
+            when :has_many, :has_one
               { :id => association.primary_key_name.to_sym }
             end
           join = Join.new(self, join_table, join_predicate)

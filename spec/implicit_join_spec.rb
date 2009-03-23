@@ -68,4 +68,20 @@ describe 'implicit joins' do
       Blog.last_find[:conditions].should == ['blogs__posts.permalink = ?', 'test-post']
     end
   end
+
+  describe 'on has_one' do
+    before do
+      Post.filter do
+        having(:photo).with :format, 'jpg'
+      end
+    end
+
+    it 'should add correct join' do
+      Post.last_find[:joins].should == 'INNER JOIN photos AS posts__photo ON posts.id = posts__photo.post_id'
+    end
+
+    it 'should query against condition on join table' do
+      Post.last_find[:conditions].should == ['posts__photo.format = ?', 'jpg']
+    end
+  end
 end
