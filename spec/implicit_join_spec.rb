@@ -52,4 +52,20 @@ describe 'implicit joins' do
       it_should_behave_like 'multiple conditions on single join'
     end
   end
+
+  describe 'on has_many' do
+    before do
+      Blog.filter do
+        having(:posts).with :permalink, 'test-post'
+      end
+    end
+
+    it 'should add correct join' do
+      Blog.last_find[:joins].should == 'INNER JOIN posts AS blogs__posts ON blogs.id = blogs__posts.blog_id'
+    end
+
+    it 'should query against condition on join table' do
+      Blog.last_find[:conditions].should == ['blogs__posts.permalink = ?', 'test-post']
+    end
+  end
 end
