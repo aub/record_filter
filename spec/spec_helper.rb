@@ -1,5 +1,6 @@
 require 'rubygems'
 gem 'rspec', '~> 1.1'
+gem 'sqlite3-ruby'
 
 require 'ruby-debug'
 require 'spec'

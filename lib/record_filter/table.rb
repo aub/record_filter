@@ -16,7 +16,7 @@ module RecordFilter
       @joins_cache[association_name] ||=
         begin
           association = @model_class.reflect_on_association(association_name)
-          join_table = Table.new(association, "#{table_alias.to_s}__#{association_name}")
+          join_table = Table.new(association.klass, "#{table_alias.to_s}__#{association_name}")
           join_predicate =
             case association.macro
             when :belongs_to

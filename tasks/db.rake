@@ -16,6 +16,12 @@ namespace :db do
         create_table :blogs do |t|
           t.string :name
         end
+
+        create_table :comments do |t|
+          t.references :blog
+          t.string :contents
+          t.boolean :offensive
+        end
       end
     end
   end

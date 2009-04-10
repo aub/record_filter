@@ -1,5 +1,5 @@
 module RecordFilter
-  module ActiveRecord
+  module ActiveRecordExtension
     module ClassMethods
       def filter(&block)
         query = RecordFilter::Query.new(RecordFilter::Table.new(self))
@@ -10,4 +10,4 @@ module RecordFilter
   end
 end
 
-ActiveRecord::Base.send(:extend, RecordFilter::ActiveRecord::ClassMethods)
+ActiveRecord::Base.send(:extend, RecordFilter::ActiveRecordExtension::ClassMethods)

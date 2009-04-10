@@ -68,4 +68,23 @@ describe 'implicit joins' do
       Blog.last_find[:conditions].should == ['blogs__posts.permalink = ?', 'test-post']
     end
   end
+
+  describe 'with multiple joins' do
+    before do
+      Blog.filter do
+        having(:posts) do
+          with :permalink, 'test-post'
+          having(:comments).with :offensive, true
+        end
+      end
+    end
+
+    it 'should add both joins' do
+      Blog.last_find[:joins].should == 'INNER JOIN posts AS blogs__posts ON blogs.id = blogs__posts.blog_id INNER JOIN comments AS blogs__posts__comments ON blogs__posts.id = blogs__posts__comments.post_id'
+    end
+
+    it 'should query against both conditions' do
+      Blog.last_find[:conditions].should == ['(blogs__posts.permalink = ?) AND (blogs__posts__comments.offensive = ?)', 'test-post', true] 
+    end
+  end
 end

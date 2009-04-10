@@ -10,7 +10,7 @@ module RecordFilter
     def to_find_params
       params = { :conditions => @base_restriction.to_conditions }
       joins = table.all_joins
-      params[:joins] = joins.map { |join| join.to_sql } * ' AND ' unless joins.empty?
+      params[:joins] = joins.map { |join| join.to_sql } * ' ' unless joins.empty?
       params
     end
   end
