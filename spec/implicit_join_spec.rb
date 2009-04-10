@@ -84,4 +84,34 @@ describe 'implicit joins' do
       Post.last_find[:conditions].should == ['posts__photo.format = ?', 'jpg']
     end
   end
+
+  describe 'with nested joins' do
+    before do
+      Blog.filter do
+        having(:posts).having(:photo).with :format, 'png'
+      end
+    end
+
+    it 'should add correct join' do
+      Blog.last_find[:joins].should == 'INNER JOIN posts AS blogs__posts ON blogs.id = blogs__posts.blog_id ' +
+                                       'INNER JOIN photos AS blogs__posts__photo ON blogs__posts.id = blogs__posts__photo.post_id'
+    end
+
+    it 'should query against condition on join table' do
+      Blog.last_find[:conditions].should == ['blogs__posts__photo.format = ?', 'png']
+    end
+  end
+
+  describe 'with has and belongs to many joins' do
+    before do
+      Post.filter do
+        having(:tags).with :name, 'activerecord'
+      end
+    end
+
+    it 'should add correct join' do
+      Post.last_find[:joins].should == 'INNER JOIN posts_tags AS __posts__tags ON posts.id = __posts__tags.post_id ' +
+                                       'INNER JOIN tags AS posts__tags ON __posts__tags.tag_id = posts__tags.id'
+    end
+  end
 end
