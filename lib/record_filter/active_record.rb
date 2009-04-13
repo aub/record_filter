@@ -1,10 +1,26 @@
 module RecordFilter
   module ActiveRecordExtension
     module ClassMethods
+
       def filter(&block)
         query = RecordFilter::Query.new(RecordFilter::Table.new(self))
-        DSL::Conjunction.new(query.base_restriction).instance_eval(&block)
-        all(query.to_find_params)
+        DSL::Conjunction.create(self, query.base_restriction).instance_eval(&block)
+        scoped(query.to_find_params)
+      end
+
+      def named_filter(name, &block)
+        DSL::Conjunction::subclass(self).module_eval do
+          define_method(name, &block)
+        end
+
+        (class << self; self; end).instance_eval do
+          define_method(name.to_s) do |*args|
+            query = RecordFilter::Query.new(RecordFilter::Table.new(self))
+            dsl = DSL::Conjunction.create(self, query.base_restriction)
+            dsl.send(name, *args)
+            scoped(query.to_find_params)
+          end
+        end
       end
     end
   end

@@ -10,7 +10,7 @@ require File.join(File.dirname(__FILE__), '..', 'lib', 'record_filter')
 module TestModel
   attr_reader :last_find
 
-  def all(params = {})
+  def scoped(params = {})
     @last_find = params
   end
 end

@@ -1,6 +1,22 @@
 module RecordFilter
   module DSL
     class Conjunction
+      SUBCLASSES = Hash.new do |h, k|
+        h[k] = Class.new(Conjunction)
+      end
+
+      class <<self
+        # protected :new
+
+        def create(clazz, conjunction)
+          subclass(clazz).new(conjunction)
+        end
+
+        def subclass(clazz)
+          SUBCLASSES[clazz.name.to_sym]
+        end
+      end
+
       def initialize(conjunction)
         @conjunction = conjunction
       end
