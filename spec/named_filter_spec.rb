@@ -63,6 +63,7 @@ describe 'named filters' do
     end
 
     it 'should have parent class filters in the subclass' do
+      pending 'named filter inheritance'
       NiceComment.offensive.with_contents('something')
       NiceComment.last_find[:conditions].should == ['comments.offensive = ? AND comments.contents = ?', true, 'something']
     end
@@ -76,6 +77,7 @@ describe 'named filters' do
     end
 
     it 'should concatenate the filters correctly' do
+      pending 'nested chaining'
       Post.with_offensive_comments
       Post.last_find[:conditions].should == ['posts__comments.offensive = ?', true] 
       Post.last_find[:joins].should == 'INNER JOIN comments AS posts__comments ON comments.post_id = posts__blog.id'
@@ -93,6 +95,7 @@ describe 'named filters' do
     end
 
     it 'should chain the filters into a single query' do
+      pending 'serial chaining'
       Post.for_blog(1).with_offensive_comments
       Post.last_find[:conditions].should == ['posts__comments.offensive = ? AND posts__blogs.id = ?', true, 1] 
       Post.last_find[:joins].should == 'INNER JOIN comments AS posts__comments ON comments.post_id = posts__blog.id INNER JOIN blogs AS posts__blogs ON posts.id = posts__blogs.id'
