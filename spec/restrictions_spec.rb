@@ -1,6 +1,10 @@
 require File.join(File.dirname(__FILE__), 'spec_helper')
 
 describe 'RecordFilter restrictions' do
+  before do
+    TestModel.extended_models.each { |model| model.last_find = {} }
+  end
+
   it 'should filter for equality' do
     Post.filter do
       with :permalink, 'blog-post'

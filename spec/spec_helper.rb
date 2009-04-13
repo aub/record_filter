@@ -8,10 +8,17 @@ require 'spec'
 require File.join(File.dirname(__FILE__), '..', 'lib', 'record_filter')
 
 module TestModel
-  attr_reader :last_find
+  mattr_reader :extended_models
+  @@extended_models = []
+
+  attr_accessor :last_find
 
   def scoped(params = {})
     @last_find = params
+  end
+
+  def self.extended(base)
+    @@extended_models << base
   end
 end
 

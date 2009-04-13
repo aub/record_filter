@@ -15,10 +15,7 @@ module RecordFilter
 
         (class << self; self; end).instance_eval do
           define_method(name.to_s) do |*args|
-            query = RecordFilter::Query.new(RecordFilter::Table.new(self))
-            dsl = DSL::Conjunction.create(self, query.base_restriction)
-            dsl.send(name, *args)
-            scoped(query.to_find_params)
+            Scope.new(self, name, nil, *args)
           end
         end
       end

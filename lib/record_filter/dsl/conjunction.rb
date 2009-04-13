@@ -5,6 +5,8 @@ module RecordFilter
         h[k] = Class.new(Conjunction)
       end
 
+      DEFAULT_VALUE = Object.new
+
       class <<self
         # protected :new
 
@@ -21,12 +23,12 @@ module RecordFilter
         @conjunction = conjunction
       end
 
-      def with(column_name, value = nil)
-        unless value
-          DSL::Restriction.new(column_name.to_sym, @conjunction)
-        else
-          @conjunction.add_restriction(column_name, Restrictions::EqualTo, value)
-        end
+      def with(column_name, value = DEFAULT_VALUE)
+        with_or_without(column_name, value, false)
+      end
+      
+      def without(column_name, value = DEFAULT_VALUE)
+        with_or_without(column_name, value, true)
       end
 
       def any_of(&block)
@@ -42,6 +44,18 @@ module RecordFilter
         conjunction = DSL::Conjunction.new(@conjunction.add_conjunction(Conjunctions::AllOf, join.right_table))
         conjunction.instance_eval(&block) if block
         conjunction
+      end
+
+      protected
+
+      def with_or_without(column_name, value, negated)
+        if value == DEFAULT_VALUE
+          DSL::Restriction.new(column_name.to_sym, @conjunction)
+        elsif value.nil?
+          @conjunction.add_restriction(column_name, Restrictions::IsNull, value, :negated => negated)
+        else
+          @conjunction.add_restriction(column_name, Restrictions::EqualTo, value, :negated => negated)
+        end
       end
     end
   end

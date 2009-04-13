@@ -1,6 +1,10 @@
 require File.join(File.dirname(__FILE__), 'spec_helper')
 
 describe 'implicit joins' do
+  before do
+    TestModel.extended_models.each { |model| model.last_find = {} }
+  end
+
   describe 'on belongs_to' do
     describe 'with single condition inline' do
       before do
@@ -132,6 +136,56 @@ describe 'implicit joins' do
     it 'should add correct join' do
       Post.last_find[:joins].should == 'INNER JOIN posts_tags AS __posts__tags ON posts.id = __posts__tags.post_id ' +
                                        'INNER JOIN tags AS posts__tags ON __posts__tags.tag_id = posts__tags.id'
+    end
+  end
+
+  describe 'with negative conditions' do
+    before do
+      Comment.filter do
+        with :offensive, false
+      end
+    end
+
+    it 'should create the correct condition' do
+      Comment.last_find[:conditions].should == ['comments.offensive = ?', false]
+    end
+  end
+
+  describe 'with nil conditions' do
+    before do
+      Comment.filter do
+        with :content, nil
+        with :offensive, true
+      end
+    end
+
+    it 'should create the correct IS NULL condition' do
+      Comment.last_find[:conditions].should == ['(comments.content IS NULL) AND (comments.offensive = ?)', true]
+    end
+  end
+
+  describe 'with negated conditions' do
+    before do
+      Comment.filter do
+        without :offensive, false
+      end
+    end
+
+    it 'should create the correct condition' do
+      Comment.last_find[:conditions].should == ['comments.offensive != ?', false]
+    end
+  end
+
+  describe 'with negated nil conditions' do
+    before do
+      Comment.filter do
+        without :content, nil
+        with :offensive, true
+      end
+    end
+
+    it 'should create the correct IS NOT NULL condition' do
+      Comment.last_find[:conditions].should == ['(comments.content IS NOT NULL) AND (comments.offensive = ?)', true]
     end
   end
 end

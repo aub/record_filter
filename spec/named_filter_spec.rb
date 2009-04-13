@@ -1,6 +1,10 @@
 require File.join(File.dirname(__FILE__), 'spec_helper')
 
 describe 'named filters' do
+  before do
+    TestModel.extended_models.each { |model| model.last_find = {} }
+  end
+
   describe 'defining a simple filter' do
     before do
       Blog.named_filter(:with_test_name) do
@@ -9,7 +13,7 @@ describe 'named filters' do
     end
 
     it 'should call the filter through the filter method' do
-      Blog.with_test_name
+      Blog.with_test_name.inspect
       Blog.last_find[:conditions].should == ['blogs.name = ?', 'Test Name']
     end
 
@@ -29,7 +33,7 @@ describe 'named filters' do
     end
 
     it 'should call the filter with the passed argument' do
-      Blog.with_name('nice name')
+      Blog.with_name('nice name').inspect
       Blog.last_find[:conditions].should == ['blogs.name = ?', 'nice name']
     end
   end
@@ -45,7 +49,7 @@ describe 'named filters' do
     end
 
     it 'should call the filter passing all of the arguments' do
-      Blog.with_name_and_post_with_permalink('booya', 'ftw')
+      Blog.with_name_and_post_with_permalink('booya', 'ftw').inspect
       Blog.last_find[:conditions].should == ['(blogs.name = ?) AND (blogs__posts.permalink = ?)', 'booya', 'ftw'] 
     end
   end
@@ -92,13 +96,27 @@ describe 'named filters' do
       Post.named_filter(:with_offensive_comments) do
         having(:comments).with :offensive, true
       end
+      Post.named_filter(:with_interesting_comments) do
+        having(:comments).with :offensive, true
+      end
     end
 
     it 'should chain the filters into a single query' do
-      pending 'serial chaining'
-      Post.for_blog(1).with_offensive_comments
-      Post.last_find[:conditions].should == ['posts__comments.offensive = ? AND posts__blogs.id = ?', true, 1] 
-      Post.last_find[:joins].should == 'INNER JOIN comments AS posts__comments ON comments.post_id = posts__blog.id INNER JOIN blogs AS posts__blogs ON posts.id = posts__blogs.id'
+      Post.for_blog(1).with_offensive_comments.inspect
+      Post.last_find[:conditions].should == ["(posts__blog.id = ?) AND (posts__comments.offensive = ?)", 1, true]
+      Post.last_find[:joins].should == "INNER JOIN blogs AS posts__blog ON posts.blog_id = posts__blog.id INNER JOIN comments AS posts__comments ON posts.id = posts__comments.post_id"
+    end
+
+    it 'should remove duplicate joins' do
+      Post.for_blog(1).with_offensive_comments.with_interesting_comments.inspect
+      Post.last_find[:joins].should == "INNER JOIN blogs AS posts__blog ON posts.blog_id = posts__blog.id INNER JOIN comments AS posts__comments ON posts.id = posts__comments.post_id"
+    end
+
+    it 'should allow for filtering a named_filter\'s scope' do
+      pending 'calling filter on a scope'
+      Post.for_blog(1).filter { having(:comments).with :offensive, true }
+      Post.last_find[:conditions].should == ["(posts__blog.id = ?) AND (posts__comments.offensive = ?)", 1, true]
+      Post.last_find[:joins].should == "INNER JOIN blogs AS posts__blog ON posts.blog_id = posts__blog.id INNER JOIN comments AS posts__comments ON posts.id = posts__comments.post_id"
     end
   end
 end

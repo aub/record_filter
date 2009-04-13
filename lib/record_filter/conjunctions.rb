@@ -9,8 +9,8 @@ module RecordFilter
         @restrictions, @joins = [], []
       end
 
-      def add_restriction(column_name, restriction_class, value)
-        restriction = restriction_class.new("#{@table_name}.#{column_name}", value)
+      def add_restriction(column_name, restriction_class, value, options={})
+        restriction = restriction_class.new("#{@table_name}.#{column_name}", value, options)
         self << restriction
         restriction
       end
