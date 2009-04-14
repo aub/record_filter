@@ -3,17 +3,15 @@ module RecordFilter
     class Base
       attr_reader :table_name
 
-      def initialize(table)
+      def initialize(table, restrictions = nil, joins = nil)
         @table = table
         @table_name = table.table_alias
-        @restrictions, @joins = [], []
+        @restrictions = restrictions || []
+        @joins = joins || []
       end
 
       def dup
-        copy = self.class.new(@table)
-        copy.instance_variable_set('@restrictions', @restrictions.map { |r| r.dup })
-        copy.instance_variable_set('@joins', @joins.map { |j| j.dup })
-        copy
+        self.class.new(@table, @restrictions.map { |r| r.dup }, @joins.map { |j| j.dup })
       end
 
       def add_restriction(column_name, restriction_class, value, options={})

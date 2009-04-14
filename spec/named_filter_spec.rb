@@ -124,11 +124,19 @@ describe 'named filters' do
       Post.last_find[:joins].should == "INNER JOIN comments AS posts__comments ON posts.id = posts__comments.post_id INNER JOIN blogs AS posts__blog ON posts.blog_id = posts__blog.id"  
     end
 
-    it 'should not change the inner filter when chaining filters' do
+    it 'should not change the inner filter conditions when chaining filters' do
       base = Post.for_blog(1)
       base.with_offensive_comments
       base.inspect
       Post.last_find[:conditions].should == ["posts__blog.id = ?", 1]
+    end
+
+    it 'should not change the inner filter joins when chaining filters' do
+      pending 'super duplication'
+      base = Post.for_blog(1)
+      base.with_offensive_comments
+      base.inspect
+      Post.last_find[:joins].should == 'INNER JOIN blogs AS posts__blog ON posts.blog_id = posts__blog.id'
     end
 
     it 'should not change an original filter when reusing it' do
