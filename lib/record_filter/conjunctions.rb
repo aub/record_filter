@@ -3,10 +3,17 @@ module RecordFilter
     class Base
       attr_reader :table_name
 
-      def initialize(query, table)
-        @query, @table = query, table
+      def initialize(table)
+        @table = table
         @table_name = table.table_alias
         @restrictions, @joins = [], []
+      end
+
+      def dup
+        copy = self.class.new(@table)
+        copy.instance_variable_set('@restrictions', @restrictions.map { |r| r.dup })
+        copy.instance_variable_set('@joins', @joins.map { |j| j.dup })
+        copy
       end
 
       def add_restriction(column_name, restriction_class, value, options={})
@@ -16,7 +23,7 @@ module RecordFilter
       end
 
       def add_conjunction(conjunction_class, table = @table)
-        conjunction = conjunction_class.new(@query, table)
+        conjunction = conjunction_class.new(table)
         self << conjunction
         conjunction
       end

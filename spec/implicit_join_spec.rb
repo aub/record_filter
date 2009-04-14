@@ -10,7 +10,7 @@ describe 'implicit joins' do
       before do
         Post.filter do
           having(:blog).with :title, 'Test Title'
-        end
+        end.inspect
       end
 
       it 'should add correct join' do
@@ -37,7 +37,7 @@ describe 'implicit joins' do
         Post.filter do
           having(:blog).with :title, 'Test Title'
           having(:blog).with :published, true
-        end
+        end.inspect
       end
 
       it_should_behave_like 'multiple conditions on single join'
@@ -50,7 +50,7 @@ describe 'implicit joins' do
             with :title, 'Test Title'
             with :published, true
           end
-        end
+        end.inspect
       end
 
       it_should_behave_like 'multiple conditions on single join'
@@ -61,7 +61,7 @@ describe 'implicit joins' do
     before do
       Blog.filter do
         having(:posts).with :permalink, 'test-post'
-      end
+      end.inspect
     end
 
     it 'should add correct join' do
@@ -80,7 +80,7 @@ describe 'implicit joins' do
           with :permalink, 'test-post'
           having(:comments).with :offensive, true
         end
-      end
+      end.inspect
     end
 
     it 'should add both joins' do
@@ -97,7 +97,7 @@ describe 'implicit joins' do
     before do
       Post.filter do
         having(:photo).with :format, 'jpg'
-      end
+      end.inspect
     end
 
     it 'should add correct join' do
@@ -113,7 +113,7 @@ describe 'implicit joins' do
     before do
       Blog.filter do
         having(:posts).having(:photo).with :format, 'png'
-      end
+      end.inspect
     end
 
     it 'should add correct join' do
@@ -130,7 +130,7 @@ describe 'implicit joins' do
     before do
       Post.filter do
         having(:tags).with :name, 'activerecord'
-      end
+      end.inspect
     end
 
     it 'should add correct join' do
@@ -143,7 +143,7 @@ describe 'implicit joins' do
     before do
       Comment.filter do
         with :offensive, false
-      end
+      end.inspect
     end
 
     it 'should create the correct condition' do
@@ -156,7 +156,7 @@ describe 'implicit joins' do
       Comment.filter do
         with :content, nil
         with :offensive, true
-      end
+      end.inspect
     end
 
     it 'should create the correct IS NULL condition' do
@@ -168,7 +168,7 @@ describe 'implicit joins' do
     before do
       Comment.filter do
         without :offensive, false
-      end
+      end.inspect
     end
 
     it 'should create the correct condition' do
@@ -181,7 +181,7 @@ describe 'implicit joins' do
       Comment.filter do
         without :content, nil
         with :offensive, true
-      end
+      end.inspect
     end
 
     it 'should create the correct IS NOT NULL condition' do

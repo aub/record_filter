@@ -4,7 +4,13 @@ module RecordFilter
 
     def initialize(table)
       @table = table
-      @base_restriction = RecordFilter::Conjunctions::AllOf.new(self, table)
+      @base_restriction = RecordFilter::Conjunctions::AllOf.new(table)
+    end
+
+    def dup
+      copy = self.class.new(@table)
+      copy.instance_variable_set('@base_restriction', @base_restriction.dup)
+      copy
     end
 
     def to_find_params

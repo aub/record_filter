@@ -3,9 +3,7 @@ module RecordFilter
     module ClassMethods
 
       def filter(&block)
-        query = RecordFilter::Query.new(RecordFilter::Table.new(self))
-        DSL::Conjunction.create(self, query.base_restriction).instance_eval(&block)
-        scoped(query.to_find_params)
+        Filter.new(self, nil, nil, &block)
       end
 
       def named_filter(name, &block)
@@ -15,7 +13,7 @@ module RecordFilter
 
         (class << self; self; end).instance_eval do
           define_method(name.to_s) do |*args|
-            Scope.new(self, name, nil, *args)
+            Filter.new(self, name, nil, *args)
           end
         end
       end
