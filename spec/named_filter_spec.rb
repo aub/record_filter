@@ -67,7 +67,6 @@ describe 'named filters' do
     end
 
     it 'should execute the parent class filters correctly' do
-      pending 'parent class filters'
       NiceComment.with_contents('test contents').inspect
       NiceComment.last_find[:conditions].should == ['comments.contents = ?', 'test contents']
     end
@@ -77,9 +76,8 @@ describe 'named filters' do
     end
 
     it 'should have parent class filters in the subclass' do
-      pending 'parent class filters chained'
-      NiceComment.offensive.with_contents('something')
-      NiceComment.last_find[:conditions].should == ['comments.offensive = ? AND comments.contents = ?', true, 'something']
+      NiceComment.offensive.with_contents('something').inspect
+      NiceComment.last_find[:conditions].should == ['(comments.offensive = ?) AND (comments.contents = ?)', true, 'something']
     end
   end
 
