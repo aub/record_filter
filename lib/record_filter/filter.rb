@@ -3,23 +3,22 @@ module RecordFilter
 
     delegate :inspect, :to => :loaded_data
 
-    def initialize(clazz, named_filter, combine_query, *args, &block)
+    def initialize(clazz, named_filter, combine_conjunction, *args, &block)
       @clazz = clazz
 
-      # combine the query with the one from the parent
-      @query = (combine_query ? combine_query.dup : nil) || RecordFilter::Query.new(RecordFilter::Table.new(@clazz))
-      dsl = DSL::Conjunction.create(@clazz, @query.base_restriction)
-      dsl.instance_eval(&block) if block
-      dsl.send(named_filter, *args) if named_filter && dsl.respond_to?(named_filter)
+      @dsl = DSL::DSL.create(@clazz)
+      @dsl.instance_eval(&block) if block
+      @dsl.send(named_filter, *args) if named_filter && @dsl.respond_to?(named_filter)
+      @dsl.conjunction.steps.unshift(combine_conjunction.steps).flatten! if combine_conjunction
     end
 
     def filter(&block)
-      Filter.new(@clazz, nil, @query, &block)
+      Filter.new(@clazz, nil, @dsl.conjunction, &block)
     end
 
     def method_missing(method, *args, &block)
-      if DSL::Conjunction::SUBCLASSES[@clazz.name.to_sym].instance_methods(false).include?(method.to_s)
-        Filter.new(@clazz, method, @query, *args)
+      if DSL::DSL::SUBCLASSES[@clazz.name.to_sym].instance_methods(false).include?(method.to_s)
+        Filter.new(@clazz, method, @dsl.conjunction, *args)
       else
         loaded_data.send(method, *args, &block)
       end
@@ -28,7 +27,10 @@ module RecordFilter
     protected
 
     def loaded_data
-      @clazz.scoped(@query.to_find_params)
+      @loaded_data ||= begin
+        query = Query.new(@clazz, @dsl.conjunction)
+        @clazz.scoped(query.to_find_params)
+      end
     end
   end
 end

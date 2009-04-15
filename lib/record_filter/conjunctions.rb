@@ -3,6 +3,26 @@ module RecordFilter
     class Base
       attr_reader :table_name
 
+      def self.create_from(dsl_conjunction, table)
+        result = case dsl_conjunction.type
+          when :any_of: AnyOf.new(table)
+          when :all_of: AllOf.new(table)
+        end
+
+        dsl_conjunction.steps.each do |step|
+          case step
+          when DSL::Restriction 
+            result.add_restriction(step.column, step.operator, step.value, :negated => step.negated)
+          when DSL::Conjunction 
+            result.add_conjunction(create_from(step, table)) 
+          when DSL::Join
+            join = result.add_join_on_association(step.association)
+            result.add_conjunction(create_from(step.conjunction, join.right_table))
+          end
+        end
+        result
+      end
+
       def initialize(table, restrictions = nil, joins = nil)
         @table = table
         @table_name = table.table_alias
@@ -10,18 +30,14 @@ module RecordFilter
         @joins = joins || []
       end
 
-      def dup
-        self.class.new(@table, @restrictions.map { |r| r.dup }, @joins.map { |j| j.dup })
-      end
-
-      def add_restriction(column_name, restriction_class, value, options={})
+      def add_restriction(column_name, operator, value, options={})
+        restriction_class = "RecordFilter::Restrictions::#{operator.to_s.camelize}".constantize
         restriction = restriction_class.new("#{@table_name}.#{column_name}", value, options)
         self << restriction
         restriction
       end
 
-      def add_conjunction(conjunction_class, table = @table)
-        conjunction = conjunction_class.new(table)
+      def add_conjunction(conjunction)
         self << conjunction
         conjunction
       end

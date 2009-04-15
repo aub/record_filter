@@ -7,7 +7,7 @@ module RecordFilter
       end
 
       def named_filter(name, &block)
-        DSL::Conjunction::subclass(self).module_eval do
+        DSL::DSL::subclass(self).module_eval do
           define_method(name, &block)
         end
 

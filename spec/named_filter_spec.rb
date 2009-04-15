@@ -142,7 +142,6 @@ describe 'named filters' do
     end
 
     it 'should not change the inner filter joins when chaining filters' do
-      pending 'super duplication'
       base = Post.for_blog(1)
       base.with_offensive_comments
       base.inspect

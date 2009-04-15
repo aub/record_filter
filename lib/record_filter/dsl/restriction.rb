@@ -1,17 +1,19 @@
 module RecordFilter
   module DSL
     class Restriction
-      def initialize(column_name, conjunction)
-        @column_name, @conjunction = column_name, conjunction
+
+      attr_reader :column, :negated, :operator, :value
+
+      def initialize(column, negated)
+        @column, @negated, @operator = column, negated, nil
       end
 
-      RecordFilter::Restrictions.constants.each do |constant|
-        method_name = constant.underscore
-        module_eval(<<-RUBY, __FILE__, __LINE__ + 1)
-          def #{method_name}(value)
-            @conjunction.add_restriction(@column_name, RecordFilter::Restrictions::#{constant}, value)
-          end
-        RUBY
+      [:equal_to, :is_null, :less_than, :greater_than, :in, :between].each do |operator|
+        define_method(operator) do |*args|
+          @value = args[0] 
+          @operator = operator
+          self
+        end
       end
     end
   end

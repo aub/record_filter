@@ -1,61 +1,38 @@
 module RecordFilter
   module DSL
     class Conjunction
-      SUBCLASSES = Hash.new do |h, k|
-        h[k] = Class.new(Conjunction)
-      end
+
+      attr_reader :type, :steps
 
       DEFAULT_VALUE = Object.new
 
-      class <<self
-        # protected :new
-
-        def create(clazz, conjunction)
-          subclass(clazz).new(conjunction)
-        end
-
-        def subclass(clazz)
-          SUBCLASSES[clazz.name.to_sym]
-        end
+      def initialize(type=:all_of)
+        @type, @steps = type, []
       end
 
-      def initialize(conjunction)
-        @conjunction = conjunction
-      end
-
-      def with(column_name, value = DEFAULT_VALUE)
-        with_or_without(column_name, value, false)
-      end
-      
-      def without(column_name, value = DEFAULT_VALUE)
-        with_or_without(column_name, value, true)
-      end
-
-      def any_of(&block)
-        DSL::Conjunction.new(@conjunction.add_conjunction(Conjunctions::AnyOf)).instance_eval(&block)
-      end
-
-      def all_of(&block)
-        DSL::Conjunction.new(@conjunction.add_conjunction(Conjunctions::AllOf)).instance_eval(&block)
-      end
-
-      def having(association_name, &block)
-        join = @conjunction.add_join_on_association(association_name)
-        conjunction = DSL::Conjunction.new(@conjunction.add_conjunction(Conjunctions::AllOf, join.right_table))
-        conjunction.instance_eval(&block) if block
-        conjunction
-      end
-
-      protected
-
-      def with_or_without(column_name, value, negated)
+      def add_restriction(column, value, negated)
+        @steps << (restriction = Restriction.new(column, negated))
         if value == DEFAULT_VALUE
-          DSL::Restriction.new(column_name.to_sym, @conjunction)
+          return restriction
         elsif value.nil?
-          @conjunction.add_restriction(column_name, Restrictions::IsNull, value, :negated => negated)
+          restriction.is_null
         else
-          @conjunction.add_restriction(column_name, Restrictions::EqualTo, value, :negated => negated)
+          restriction.equal_to(value)
         end
+        nil
+      end
+
+      def add_conjunction(type, &block)
+        dsl = DSL.new(Conjunction.new(type))
+        dsl.instance_eval(&block) if block
+        @steps << dsl.conjunction
+      end
+
+      def add_join(column, &block)
+        dsl = DSL.new
+        dsl.instance_eval(&block) if block
+        @steps << (join = Join.new(column, dsl.conjunction))
+        join
       end
     end
   end

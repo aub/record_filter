@@ -1,4 +1,4 @@
-%w(conjunction restriction).each { |file| require File.join(File.dirname(__FILE__), 'dsl', file) }
+%w(conjunction dsl join restriction).each { |file| require File.join(File.dirname(__FILE__), 'dsl', file) }
 
 module RecordFilter
   module DSL
