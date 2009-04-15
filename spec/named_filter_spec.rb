@@ -90,7 +90,7 @@ describe 'named filters' do
 
     it 'should concatenate the filters correctly' do
       pending 'nested chaining'
-      Post.with_offensive_comments
+      Post.with_offensive_comments.inspect
       Post.last_find[:conditions].should == ['posts__comments.offensive = ?', true] 
       Post.last_find[:joins].should == 'INNER JOIN comments AS posts__comments ON comments.post_id = posts__blog.id'
     end

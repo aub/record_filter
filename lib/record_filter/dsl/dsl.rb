@@ -46,8 +46,8 @@ module RecordFilter
 
       # join
       def having(column, &block)
-        junk = @conjunction.add_join(column, &block)
-        DSL.new(junk.conjunction)
+        join = @conjunction.add_join(column, &block)
+        DSL.new(join.conjunction)
       end
     end
   end
