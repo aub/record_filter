@@ -12,10 +12,10 @@ begin
   require 'jeweler'
   Jeweler::Tasks.new do |gemspec|
     gemspec.name = 'record_filter'
-    gemspec.summary =  'Pure-ruby criteria API for building complex queries in ActiveRecord'
+    gemspec.summary = 'Pure-ruby criteria API for building complex queries in ActiveRecord'
     gemspec.email = 'mat@patch.com'
     gemspec.homepage = 'http://github.com/outoftime/record_filter/tree/master'
-    gemspec.description = "TODO"
+    gemspec.description = 'Pure-ruby criteria API for building complex queries in ActiveRecord'
     gemspec.authors = ['Mat Brown', 'Aubrey Holland']
   end
 rescue LoadError
