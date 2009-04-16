@@ -1,7 +1,7 @@
 module RecordFilter
   module Conjunctions
     class Base
-      attr_reader :table_name
+      attr_reader :table_name, :limit, :offset
 
       def self.create_from(dsl_conjunction, table)
         result = case dsl_conjunction.type
@@ -18,6 +18,10 @@ module RecordFilter
           when DSL::Join
             join = result.add_join_on_association(step.association)
             result.add_conjunction(create_from(step.conjunction, join.right_table))
+          when DSL::Limit
+            result.add_limit_and_offset(step.limit, step.offset)
+          when DSL::Order
+            result.add_order(step.column, step.direction)
           end
         end
         result
@@ -46,6 +50,14 @@ module RecordFilter
         @table.join_association(association_name)
       end
       
+      def add_order(column, direction)
+        @table.order_column(column, direction)
+      end
+
+      def add_limit_and_offset(limit, offset)
+        @limit, @offset = limit, offset
+      end
+
       def <<(restriction)
         @restrictions << restriction
       end

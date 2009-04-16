@@ -57,6 +57,8 @@ describe 'named filters' do
   describe 'using filters in subclasses' do
     before do
       class NiceComment < Comment
+        extend TestModel
+
         named_filter(:offensive) do
           with :offensive, true
         end

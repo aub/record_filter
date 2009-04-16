@@ -7,6 +7,7 @@ module RecordFilter
       @table_alias = table_alias || model_class.table_name
       @joins_cache = {}
       @joins = []
+      @orders = []
     end
 
     def table_name
@@ -30,6 +31,17 @@ module RecordFilter
       @joins + @joins.inject([]) do |child_joins, join|
         child_joins.concat(join.right_table.all_joins)
         child_joins
+      end
+    end
+
+    def order_column(column, direction)
+      @orders << Order.new(column, direction, self)
+    end
+
+    def all_orders
+      @orders + @joins.inject([]) do |child_orders, join|
+        child_orders.concat(join.right_table.all_orders)
+        child_orders
       end
     end
 
@@ -67,6 +79,7 @@ module RecordFilter
       @table_name, @table_alias = table_name, table_alias
       @joins_cache = {}
       @joins = []
+      @orders = []
     end
   end
 end

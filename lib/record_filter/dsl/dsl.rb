@@ -1,8 +1,6 @@
 module RecordFilter
   module DSL
-    class DSL
-
-      attr_reader :conjunction
+    class DSL < ConjunctionDSL
 
       SUBCLASSES = Hash.new do |h, k|
         h[k] = Class.new(DSL)
@@ -18,36 +16,26 @@ module RecordFilter
         end
       end
 
-      def initialize(conjunction=Conjunction.new(:all_of))
-        @conjunction = conjunction
-      end
-
-      # restriction
-      def with(column, value=Conjunction::DEFAULT_VALUE)
-        return @conjunction.add_restriction(column, value, false) # using return just to make it explicit
-      end
-
-      # restriction
-      def without(column, value=Conjunction::DEFAULT_VALUE)
-        return @conjunction.add_restriction(column, value, true) # using return just to make it explicit
-      end
-
-      # conjunction
-      def any_of(&block)
-        @conjunction.add_conjunction(:any_of, &block)
+      # This method can take two forms:
+      # limit(offset, limit), or
+      # limit(limit)
+      def limit(offset_or_limit, limit=nil)
+        if limit
+          @conjunction.add_limit(limit, offset_or_limit)
+        else
+          @conjunction.add_limit(offset_or_limit, nil)
+        end
         nil
       end
 
-      # conjunction
-      def all_of(&block)
-        @conjunction.add_conjunction(:all_of, &block)
+      # This method can take two forms, as shown below.
+      # order :permalink
+      # order :permalink, :desc
+      # order :photo => :path, :desc
+      # order :photo => { :comment => :id }, :asc
+      def order(column, direction=:asc)
+        @conjunction.add_order(column, direction)
         nil
-      end
-
-      # join
-      def having(column, &block)
-        join = @conjunction.add_join(column, &block)
-        DSL.new(join.conjunction)
       end
     end
   end

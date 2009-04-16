@@ -23,16 +23,24 @@ module RecordFilter
       end
 
       def add_conjunction(type, &block)
-        dsl = DSL.new(Conjunction.new(type))
+        dsl = ConjunctionDSL.new(Conjunction.new(type))
         dsl.instance_eval(&block) if block
         @steps << dsl.conjunction
       end
 
-      def add_join(column, &block)
-        dsl = DSL.new
+      def add_join(association, &block)
+        dsl = ConjunctionDSL.new
         dsl.instance_eval(&block) if block
-        @steps << (join = Join.new(column, dsl.conjunction))
+        @steps << (join = Join.new(association, dsl.conjunction))
         join
+      end
+
+      def add_limit(limit, offset)
+        @steps << Limit.new(limit, offset)
+      end
+
+      def add_order(column, direction)
+        @steps << Order.new(column, direction)
       end
     end
   end
