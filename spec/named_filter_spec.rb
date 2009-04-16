@@ -14,14 +14,14 @@ describe 'named filters' do
 
     it 'should call the filter through the filter method' do
       Blog.with_test_name.inspect
-      Blog.last_find[:conditions].should == ['blogs.name = ?', 'Test Name']
+      Blog.last_find[:conditions].should == [%q("blogs".name = ?), 'Test Name']
     end
 
     it 'should call the filter within the block' do
       Blog.filter do
         with_test_name
       end.inspect
-      Blog.last_find[:conditions].should == ['blogs.name = ?', 'Test Name']
+      Blog.last_find[:conditions].should == [%q("blogs".name = ?), 'Test Name']
     end
   end
 
@@ -34,7 +34,7 @@ describe 'named filters' do
 
     it 'should call the filter with the passed argument' do
       Blog.with_name('nice name').inspect
-      Blog.last_find[:conditions].should == ['blogs.name = ?', 'nice name']
+      Blog.last_find[:conditions].should == [%q("blogs".name = ?), 'nice name']
     end
   end
 
@@ -50,7 +50,7 @@ describe 'named filters' do
 
     it 'should call the filter passing all of the arguments' do
       Blog.with_name_and_post_with_permalink('booya', 'ftw').inspect
-      Blog.last_find[:conditions].should == ['(blogs.name = ?) AND (blogs__posts.permalink = ?)', 'booya', 'ftw'] 
+      Blog.last_find[:conditions].should == [%q(("blogs".name = ?) AND (blogs__posts.permalink = ?)), 'booya', 'ftw'] 
     end
   end
 
@@ -70,7 +70,7 @@ describe 'named filters' do
 
     it 'should execute the parent class filters correctly' do
       NiceComment.with_contents('test contents').inspect
-      NiceComment.last_find[:conditions].should == ['comments.contents = ?', 'test contents']
+      NiceComment.last_find[:conditions].should == [%q("comments".contents = ?), 'test contents']
     end
 
     it 'should not have the subclass filters in the parent class' do
@@ -79,7 +79,7 @@ describe 'named filters' do
 
     it 'should have parent class filters in the subclass' do
       NiceComment.offensive.with_contents('something').inspect
-      NiceComment.last_find[:conditions].should == ['(comments.offensive = ?) AND (comments.contents = ?)', true, 'something']
+      NiceComment.last_find[:conditions].should == [%q(("comments".offensive = ?) AND ("comments".contents = ?)), true, 'something']
     end
   end
 
@@ -93,8 +93,8 @@ describe 'named filters' do
     it 'should concatenate the filters correctly' do
       pending 'nested chaining'
       Post.with_offensive_comments.inspect
-      Post.last_find[:conditions].should == ['posts__comments.offensive = ?', true] 
-      Post.last_find[:joins].should == 'INNER JOIN comments AS posts__comments ON comments.post_id = posts__blog.id'
+      Post.last_find[:conditions].should == [%q(posts__comments.offensive = ?), true] 
+      Post.last_find[:joins].should == %q(INNER JOIN "comments" AS posts__comments ON "comments".post_id = posts__blog.id)
     end
   end
 
@@ -113,39 +113,39 @@ describe 'named filters' do
 
     it 'should chain the filters into a single query' do
       Post.for_blog(1).with_offensive_comments.inspect
-      Post.last_find[:conditions].should == ["(posts__blog.id = ?) AND (posts__comments.offensive = ?)", 1, true]
-      Post.last_find[:joins].should == "INNER JOIN blogs AS posts__blog ON posts.blog_id = posts__blog.id INNER JOIN comments AS posts__comments ON posts.id = posts__comments.post_id"
+      Post.last_find[:conditions].should == [%q((posts__blog.id = ?) AND (posts__comments.offensive = ?)), 1, true]
+      Post.last_find[:joins].should == %q(INNER JOIN "blogs" AS posts__blog ON "posts".blog_id = posts__blog.id INNER JOIN "comments" AS posts__comments ON "posts".id = posts__comments.post_id)
     end
 
     it 'should remove duplicate joins' do
       Post.for_blog(1).with_offensive_comments.with_interesting_comments.inspect
-      Post.last_find[:joins].should == "INNER JOIN blogs AS posts__blog ON posts.blog_id = posts__blog.id INNER JOIN comments AS posts__comments ON posts.id = posts__comments.post_id"
+      Post.last_find[:joins].should == %q(INNER JOIN "blogs" AS posts__blog ON "posts".blog_id = posts__blog.id INNER JOIN "comments" AS posts__comments ON "posts".id = posts__comments.post_id)
     end
 
     it 'should allow for filtering a named_filter' do
       Post.for_blog(1).filter { having(:comments).with :offensive, true }.inspect
-      Post.last_find[:conditions].should == ["(posts__blog.id = ?) AND (posts__comments.offensive = ?)", 1, true]
-      Post.last_find[:joins].should == "INNER JOIN blogs AS posts__blog ON posts.blog_id = posts__blog.id INNER JOIN comments AS posts__comments ON posts.id = posts__comments.post_id"
+      Post.last_find[:conditions].should == [%q((posts__blog.id = ?) AND (posts__comments.offensive = ?)), 1, true]
+      Post.last_find[:joins].should == %q(INNER JOIN "blogs" AS posts__blog ON "posts".blog_id = posts__blog.id INNER JOIN "comments" AS posts__comments ON "posts".id = posts__comments.post_id)
     end
 
     it 'should allow for applying a named filter to a filter' do
       Post.filter { having(:comments).with :offensive, false }.for_blog(1).inspect
-      Post.last_find[:conditions].should == ["(posts__comments.offensive = ?) AND (posts__blog.id = ?)", false, 1]
-      Post.last_find[:joins].should == "INNER JOIN comments AS posts__comments ON posts.id = posts__comments.post_id INNER JOIN blogs AS posts__blog ON posts.blog_id = posts__blog.id"  
+      Post.last_find[:conditions].should == [%q((posts__comments.offensive = ?) AND (posts__blog.id = ?)), false, 1]
+      Post.last_find[:joins].should == %q(INNER JOIN "comments" AS posts__comments ON "posts".id = posts__comments.post_id INNER JOIN "blogs" AS posts__blog ON "posts".blog_id = posts__blog.id)  
     end
 
     it 'should not change the inner filter conditions when chaining filters' do
       base = Post.for_blog(1)
       base.with_offensive_comments
       base.inspect
-      Post.last_find[:conditions].should == ["posts__blog.id = ?", 1]
+      Post.last_find[:conditions].should == [%q(posts__blog.id = ?), 1]
     end
 
     it 'should not change the inner filter joins when chaining filters' do
       base = Post.for_blog(1)
       base.with_offensive_comments
       base.inspect
-      Post.last_find[:joins].should == 'INNER JOIN blogs AS posts__blog ON posts.blog_id = posts__blog.id'
+      Post.last_find[:joins].should == %q(INNER JOIN "blogs" AS posts__blog ON "posts".blog_id = posts__blog.id)
     end
 
     it 'should not change an original filter when reusing it' do
@@ -153,8 +153,8 @@ describe 'named filters' do
       level1 = base.with_offensive_comments
       level2 = base.with_interesting_comments
       level1.inspect
-      Post.last_find[:conditions].should == ["(posts__blog.id = ?) AND (posts__comments.offensive = ?)", 1, true]
-      Post.last_find[:joins].should == "INNER JOIN blogs AS posts__blog ON posts.blog_id = posts__blog.id INNER JOIN comments AS posts__comments ON posts.id = posts__comments.post_id"
+      Post.last_find[:conditions].should == [%q((posts__blog.id = ?) AND (posts__comments.offensive = ?)), 1, true]
+      Post.last_find[:joins].should == %q(INNER JOIN "blogs" AS posts__blog ON "posts".blog_id = posts__blog.id INNER JOIN "comments" AS posts__comments ON "posts".id = posts__comments.post_id)
     end
   end
 end

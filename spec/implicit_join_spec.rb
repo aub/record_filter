@@ -14,7 +14,7 @@ describe 'implicit joins' do
       end
 
       it 'should add correct join' do
-        Post.last_find[:joins].should == 'INNER JOIN blogs AS posts__blog ON posts.blog_id = posts__blog.id'
+        Post.last_find[:joins].should == %q(INNER JOIN "blogs" AS posts__blog ON "posts".blog_id = posts__blog.id)
       end
 
       it 'should query against condition on join table' do
@@ -24,11 +24,11 @@ describe 'implicit joins' do
 
     shared_examples_for 'multiple conditions on single join' do
       it 'should add join once' do
-        Post.last_find[:joins].should == 'INNER JOIN blogs AS posts__blog ON posts.blog_id = posts__blog.id'
+        Post.last_find[:joins].should == %q(INNER JOIN "blogs" AS posts__blog ON "posts".blog_id = posts__blog.id)
       end
 
       it 'should query against conditions on join table' do
-        Post.last_find[:conditions].should == ['(posts__blog.title = ?) AND (posts__blog.published = ?)', 'Test Title', true]
+        Post.last_find[:conditions].should == [%q((posts__blog.title = ?) AND (posts__blog.published = ?)), 'Test Title', true]
       end
     end
 
@@ -65,11 +65,11 @@ describe 'implicit joins' do
     end
 
     it 'should add correct join' do
-      Blog.last_find[:joins].should == 'INNER JOIN posts AS blogs__posts ON blogs.id = blogs__posts.blog_id'
+      Blog.last_find[:joins].should == %q(INNER JOIN "posts" AS blogs__posts ON "blogs".id = blogs__posts.blog_id)
     end
 
     it 'should query against condition on join table' do
-      Blog.last_find[:conditions].should == ['blogs__posts.permalink = ?', 'test-post']
+      Blog.last_find[:conditions].should == [%q(blogs__posts.permalink = ?), 'test-post']
     end
   end
 
@@ -84,12 +84,12 @@ describe 'implicit joins' do
     end
 
     it 'should add both joins' do
-      Blog.last_find[:joins].should == 'INNER JOIN posts AS blogs__posts ON blogs.id = blogs__posts.blog_id ' +
-                                       'INNER JOIN comments AS blogs__posts__comments ON blogs__posts.id = blogs__posts__comments.post_id'
+      Blog.last_find[:joins].should == %q(INNER JOIN "posts" AS blogs__posts ON "blogs".id = blogs__posts.blog_id ) +
+                                       %q(INNER JOIN "comments" AS blogs__posts__comments ON blogs__posts.id = blogs__posts__comments.post_id)
     end
 
     it 'should query against both conditions' do
-      Blog.last_find[:conditions].should == ['(blogs__posts.permalink = ?) AND (blogs__posts__comments.offensive = ?)', 'test-post', true] 
+      Blog.last_find[:conditions].should == [%q((blogs__posts.permalink = ?) AND (blogs__posts__comments.offensive = ?)), 'test-post', true] 
     end
   end
 
@@ -101,7 +101,7 @@ describe 'implicit joins' do
     end
 
     it 'should add correct join' do
-      Post.last_find[:joins].should == 'INNER JOIN photos AS posts__photo ON posts.id = posts__photo.post_id'
+      Post.last_find[:joins].should == %q(INNER JOIN "photos" AS posts__photo ON "posts".id = posts__photo.post_id)
     end
 
     it 'should query against condition on join table' do
@@ -117,8 +117,8 @@ describe 'implicit joins' do
     end
 
     it 'should add correct join' do
-      Blog.last_find[:joins].should == 'INNER JOIN posts AS blogs__posts ON blogs.id = blogs__posts.blog_id ' +
-                                       'INNER JOIN photos AS blogs__posts__photo ON blogs__posts.id = blogs__posts__photo.post_id'
+      Blog.last_find[:joins].should == %q(INNER JOIN "posts" AS blogs__posts ON "blogs".id = blogs__posts.blog_id ) +
+                                       %q(INNER JOIN "photos" AS blogs__posts__photo ON blogs__posts.id = blogs__posts__photo.post_id)
     end
 
     it 'should query against condition on join table' do
@@ -134,8 +134,8 @@ describe 'implicit joins' do
     end
 
     it 'should add correct join' do
-      Post.last_find[:joins].should == 'INNER JOIN posts_tags AS __posts__tags ON posts.id = __posts__tags.post_id ' +
-                                       'INNER JOIN tags AS posts__tags ON __posts__tags.tag_id = posts__tags.id'
+      Post.last_find[:joins].should == %q(INNER JOIN "posts_tags" AS __posts__tags ON "posts".id = __posts__tags.post_id ) +
+                                       %q(INNER JOIN "tags" AS posts__tags ON __posts__tags.tag_id = posts__tags.id)
     end
   end
 
@@ -147,7 +147,7 @@ describe 'implicit joins' do
     end
 
     it 'should create the correct condition' do
-      Comment.last_find[:conditions].should == ['comments.offensive = ?', false]
+      Comment.last_find[:conditions].should == [%q("comments".offensive = ?), false]
     end
   end
 
@@ -160,7 +160,7 @@ describe 'implicit joins' do
     end
 
     it 'should create the correct IS NULL condition' do
-      Comment.last_find[:conditions].should == ['(comments.content IS NULL) AND (comments.offensive = ?)', true]
+      Comment.last_find[:conditions].should == [%q(("comments".content IS NULL) AND ("comments".offensive = ?)), true]
     end
   end
 
@@ -172,7 +172,7 @@ describe 'implicit joins' do
     end
 
     it 'should create the correct condition' do
-      Comment.last_find[:conditions].should == ['comments.offensive != ?', false]
+      Comment.last_find[:conditions].should == [%q("comments".offensive != ?), false]
     end
   end
 
@@ -185,7 +185,7 @@ describe 'implicit joins' do
     end
 
     it 'should create the correct IS NOT NULL condition' do
-      Comment.last_find[:conditions].should == ['(comments.content IS NOT NULL) AND (comments.offensive = ?)', true]
+      Comment.last_find[:conditions].should == [%q(("comments".content IS NOT NULL) AND ("comments".offensive = ?)), true]
     end
   end
 end

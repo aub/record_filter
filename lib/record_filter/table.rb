@@ -4,14 +4,15 @@ module RecordFilter
 
     def initialize(model_class, table_alias = nil)
       @model_class = model_class
-      @table_alias = table_alias || model_class.table_name
+      @aliased = !table_alias.nil?
+      @table_alias = table_alias || model_class.quoted_table_name
       @joins_cache = {}
       @joins = []
       @orders = []
     end
 
     def table_name
-      @model_class.table_name
+      @model_class.quoted_table_name
     end
 
     def join_association(association_name)
@@ -55,20 +56,27 @@ module RecordFilter
         when :has_many, :has_one
           { :id => association.primary_key_name.to_sym }
         end
-      join_table = Table.new(association.klass, "#{table_alias.to_s}__#{association.name}")
+      join_table = Table.new(association.klass, alias_for_association(association))
       @joins << join = Join.new(self, join_table, join_predicate)
       join
     end
 
     def compound_join(association)
       pivot_join_predicate = { :id => association.primary_key_name.to_sym }
-      pivot_table = PivotTable.new(association.options[:join_table], "__#{table_alias.to_s}__#{association.name}")
+      table_name = @model_class.connection.quote_table_name(association.options[:join_table])
+      pivot_table = PivotTable.new(table_name, "__#{alias_for_association(association)}")
       pivot_join = Join.new(self, pivot_table, pivot_join_predicate)
       join_predicate = { association.association_foreign_key => :id }
-      join_table = Table.new(association.klass, "#{table_alias.to_s}__#{association.name}")
+      join_table = Table.new(association.klass, alias_for_association(association))
       pivot_table.joins << join = Join.new(pivot_table, join_table, join_predicate)
       @joins << pivot_join
       join
+    end
+
+    protected
+
+    def alias_for_association(association)
+      "#{@aliased ? @table_alias.to_s : @model_class.table_name}__#{association.name}"
     end
   end
 

@@ -72,7 +72,7 @@ describe 'filter qualifiers' do
       end
 
       it 'should add the order to the query' do
-        Post.last_find[:order].should == 'posts.permalink ASC'
+        Post.last_find[:order].should == %q("posts".permalink ASC)
       end
     end
 
@@ -85,7 +85,7 @@ describe 'filter qualifiers' do
       end
 
       it 'should add the order and direction to the query' do
-        Post.last_find[:order].should == 'posts.permalink DESC'
+        Post.last_find[:order].should == %q("posts".permalink DESC)
       end
     end
 
@@ -99,7 +99,7 @@ describe 'filter qualifiers' do
       end
 
       it 'should add both orders and directions to the query' do
-        Post.last_find[:order].should == 'posts.permalink DESC, posts.id ASC'
+        Post.last_find[:order].should == %q("posts".permalink DESC, "posts".id ASC)
       end
     end
 
@@ -115,7 +115,7 @@ describe 'filter qualifiers' do
       end
 
       it 'should add the limit to the parameters' do
-        Post.last_find[:order].should == 'photos.path DESC, posts.permalink ASC' 
+        Post.last_find[:order].should == %q("photos".path DESC, "posts".permalink ASC)
       end
     end
 
