@@ -35,6 +35,7 @@ module RecordFilter
       end
 
       def add_restriction(column_name, operator, value, options={})
+        check_column_exists!(column_name)
         restriction_class = "RecordFilter::Restrictions::#{operator.to_s.camelize}".constantize
         restriction = restriction_class.new("#{@table_name}.#{column_name}", value, options)
         self << restriction
@@ -50,8 +51,8 @@ module RecordFilter
         @table.join_association(association_name)
       end
       
-      def add_order(column, direction)
-        @table.order_column(column, direction)
+      def add_order(column_name, direction)
+        @table.order_column(column_name, direction)
       end
 
       def add_limit_and_offset(limit, offset)
@@ -77,6 +78,14 @@ module RecordFilter
             conditions.concat(new_conditions)
             conditions
           end
+        end
+      end
+
+      protected
+
+      def check_column_exists!(column_name)
+        if (!@table.has_column(column_name))
+          raise ColumnNotFoundException.new("The column #{column_name} was not found in #{@table.table_name}.")
         end
       end
     end

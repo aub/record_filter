@@ -18,6 +18,10 @@ module RecordFilter
         column = column.values[0]
       end
 
+      if (!table.has_column(column))
+        raise ColumnNotFoundException.new("The column #{column} was not found in #{table.table_name}.")
+      end
+
       "#{table.table_name}.#{column} #{dir}"
     end
   end

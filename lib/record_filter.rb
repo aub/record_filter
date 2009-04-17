@@ -7,4 +7,6 @@ require 'active_record'
 end
 
 module RecordFilter
+  class AssociationNotFoundException < Exception; end
+  class ColumnNotFoundException < Exception; end
 end

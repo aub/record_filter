@@ -19,6 +19,9 @@ module RecordFilter
       @joins_cache[association_name] ||=
         begin
           association = @model_class.reflect_on_association(association_name)
+          if association.nil?
+            raise AssociationNotFoundException.new("The association #{association_name} was not found on #{@model_class.name}.")
+          end
           case association.macro
           when :belongs_to, :has_many, :has_one
             simple_join(association)
@@ -44,6 +47,10 @@ module RecordFilter
         child_orders.concat(join.right_table.all_orders)
         child_orders
       end
+    end
+
+    def has_column(column_name)
+      @model_class.column_names.include?(column_name.to_s)
     end
 
     private

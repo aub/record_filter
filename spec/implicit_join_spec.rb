@@ -9,7 +9,7 @@ describe 'implicit joins' do
     describe 'with single condition inline' do
       before do
         Post.filter do
-          having(:blog).with :title, 'Test Title'
+          having(:blog).with :name, 'Test Name'
         end.inspect
       end
 
@@ -18,7 +18,7 @@ describe 'implicit joins' do
       end
 
       it 'should query against condition on join table' do
-        Post.last_find[:conditions].should == ['posts__blog.title = ?', 'Test Title']
+        Post.last_find[:conditions].should == ['posts__blog.name = ?', 'Test Name']
       end
     end
 
@@ -28,14 +28,14 @@ describe 'implicit joins' do
       end
 
       it 'should query against conditions on join table' do
-        Post.last_find[:conditions].should == [%q((posts__blog.title = ?) AND (posts__blog.published = ?)), 'Test Title', true]
+        Post.last_find[:conditions].should == [%q((posts__blog.name = ?) AND (posts__blog.published = ?)), 'Test Name', true]
       end
     end
 
     describe 'with multiple conditions on single join inline' do
       before do
         Post.filter do
-          having(:blog).with :title, 'Test Title'
+          having(:blog).with :name, 'Test Name'
           having(:blog).with :published, true
         end.inspect
       end
@@ -47,7 +47,7 @@ describe 'implicit joins' do
       before do
         Post.filter do
           having :blog do
-            with :title, 'Test Title'
+            with :name, 'Test Name'
             with :published, true
           end
         end.inspect
@@ -154,13 +154,13 @@ describe 'implicit joins' do
   describe 'with nil conditions' do
     before do
       Comment.filter do
-        with :content, nil
+        with :contents, nil
         with :offensive, true
       end.inspect
     end
 
     it 'should create the correct IS NULL condition' do
-      Comment.last_find[:conditions].should == [%q(("comments".content IS NULL) AND ("comments".offensive = ?)), true]
+      Comment.last_find[:conditions].should == [%q(("comments".contents IS NULL) AND ("comments".offensive = ?)), true]
     end
   end
 
@@ -179,13 +179,13 @@ describe 'implicit joins' do
   describe 'with negated nil conditions' do
     before do
       Comment.filter do
-        without :content, nil
+        without :contents, nil
         with :offensive, true
       end.inspect
     end
 
     it 'should create the correct IS NOT NULL condition' do
-      Comment.last_find[:conditions].should == [%q(("comments".content IS NOT NULL) AND ("comments".offensive = ?)), true]
+      Comment.last_find[:conditions].should == [%q(("comments".contents IS NOT NULL) AND ("comments".offensive = ?)), true]
     end
   end
 end

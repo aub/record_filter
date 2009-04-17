@@ -1,5 +1,5 @@
 namespace :db do
-  namespace :test do
+  namespace :spec do
     desc 'drop database and recreate from test schema'
     task :prepare do
       require File.join(File.dirname(__FILE__), '..', 'spec', 'spec_helper')
@@ -11,10 +11,12 @@ namespace :db do
           t.integer :blog_id
           t.string :permalink
           t.timestamp :created_at
+          t.boolean :published
         end
 
         create_table :blogs do |t|
           t.string :name
+          t.boolean :published
         end
 
         create_table :comments do |t|
