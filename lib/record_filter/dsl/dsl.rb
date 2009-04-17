@@ -37,6 +37,11 @@ module RecordFilter
         @conjunction.add_order(column, direction)
         nil
       end
+
+      def group_by(column)
+        @conjunction.add_group_by(column)
+        nil
+      end
     end
   end
 end

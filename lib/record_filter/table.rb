@@ -1,6 +1,6 @@
 module RecordFilter
   class Table
-    attr_reader :table_alias
+    attr_reader :table_alias, :orders, :group_bys
 
     def initialize(model_class, table_alias = nil)
       @model_class = model_class
@@ -9,6 +9,7 @@ module RecordFilter
       @joins_cache = {}
       @joins = []
       @orders = []
+      @group_bys = []
     end
 
     def table_name
@@ -42,11 +43,8 @@ module RecordFilter
       @orders << Order.new(column, direction, self)
     end
 
-    def all_orders
-      @orders + @joins.inject([]) do |child_orders, join|
-        child_orders.concat(join.right_table.all_orders)
-        child_orders
-      end
+    def group_by_column(column)
+      @group_bys << GroupBy.new(column, self)
     end
 
     def has_column(column_name)
@@ -95,6 +93,7 @@ module RecordFilter
       @joins_cache = {}
       @joins = []
       @orders = []
+      @group_bys = []
     end
   end
 end

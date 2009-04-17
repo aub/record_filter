@@ -10,8 +10,10 @@ module RecordFilter
       params = { :conditions => @conjunction.to_conditions }
       joins = @table.all_joins
       params[:joins] = joins.map { |join| join.to_sql } * ' ' unless joins.empty?
-      orders = @table.all_orders
+      orders = @table.orders
       params[:order] = orders.map { |order| order.to_sql } * ', ' unless orders.empty?
+      group_bys = @table.group_bys
+      params[:group] = group_bys.map { |group_by| group_by.to_sql } * ', ' unless group_bys.empty?
       params[:limit] = @conjunction.limit if @conjunction.limit
       params[:offset] = @conjunction.offset if @conjunction.offset
       params

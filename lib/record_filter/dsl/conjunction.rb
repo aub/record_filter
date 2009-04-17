@@ -42,6 +42,10 @@ module RecordFilter
       def add_order(column, direction)
         @steps << Order.new(column, direction)
       end
+
+      def add_group_by(column)
+        @steps << GroupBy.new(column)
+      end
     end
   end
 end

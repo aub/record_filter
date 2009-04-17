@@ -5,8 +5,8 @@ module RecordFilter
 
       def self.create_from(dsl_conjunction, table)
         result = case dsl_conjunction.type
-          when :any_of: AnyOf.new(table)
-          when :all_of: AllOf.new(table)
+          when :any_of then AnyOf.new(table)
+          when :all_of then AllOf.new(table)
         end
 
         dsl_conjunction.steps.each do |step|
@@ -22,6 +22,8 @@ module RecordFilter
             result.add_limit_and_offset(step.limit, step.offset)
           when DSL::Order
             result.add_order(step.column, step.direction)
+          when DSL::GroupBy
+            result.add_group_by(step.column)
           end
         end
         result
@@ -53,6 +55,10 @@ module RecordFilter
       
       def add_order(column_name, direction)
         @table.order_column(column_name, direction)
+      end
+
+      def add_group_by(column_name)
+        @table.group_by_column(column_name)
       end
 
       def add_limit_and_offset(limit, offset)

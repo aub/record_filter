@@ -161,4 +161,30 @@ describe 'filter qualifiers' do
       end
     end
   end
+
+  describe 'group_by' do
+    it 'should add the group for a simple column' do
+      Post.filter do
+        group_by(:created_at)
+      end.inspect
+      Post.last_find[:group].should == %q("posts".created_at)
+    end
+
+    it 'should add the group for multiple column' do
+      Post.filter do
+        group_by(:created_at)
+        group_by(:published)
+      end.inspect
+      Post.last_find[:group].should == %q("posts".created_at, "posts".published)
+    end
+
+    it 'should add the group for joined columns' do
+      Post.filter do
+        having(:photo)
+        group_by(:created_at)
+        group_by(:photo => :format)
+      end.inspect
+      Post.last_find[:group].should == %q("posts".created_at, "photos".format)
+    end
+  end
 end
