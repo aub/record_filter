@@ -8,7 +8,7 @@ module RecordFilter
         @column, @negated, @operator = column, negated, nil
       end
 
-      [:equal_to, :is_null, :less_than, :less_than_or_equal_to, :greater_than, :greater_than_or_equal_to, :in, :between].each do |operator|
+      [:equal_to, :is_null, :less_than, :less_than_or_equal_to, :greater_than, :greater_than_or_equal_to, :in, :between, :like].each do |operator|
         define_method(operator) do |*args|
           @value = args[0] 
           @operator = operator

@@ -77,5 +77,15 @@ module RecordFilter
         ["#{@column_name} #{'NOT ' if @negated}BETWEEN ? AND ?", @value.first, @value.last]
       end
     end
+
+    class Like < Base
+      def to_positive_sql
+        "#{@column_name} LIKE ?"
+      end
+
+      def to_negative_sql
+        "#{@column_name} NOT LIKE ?"
+      end
+    end
   end
 end
