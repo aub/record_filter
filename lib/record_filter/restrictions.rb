@@ -3,6 +3,7 @@ module RecordFilter
     class Base
       def initialize(column_name, value, options={})
         @column_name, @value, @negated = column_name, value, !!options.delete(:negated)
+        @value = @value.id if @value.kind_of?(ActiveRecord::Base)
       end
 
       def to_conditions

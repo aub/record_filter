@@ -54,6 +54,17 @@ describe 'named filters' do
     end
   end
 
+  describe 'taking active_record objects as arguments' do
+    it 'should use the id of the object as the actual parameter' do
+      Post.named_filter(:with_ar_arg) do |blog|
+        with(:blog_id, blog)
+      end
+      blog = Blog.create
+      Post.with_ar_arg(blog).inspect
+      Post.last_find[:conditions].should == [%q("posts".blog_id = ?), blog.id]
+    end
+  end
+
   describe 'using filters in subclasses' do
     before do
       class NiceComment < Comment
