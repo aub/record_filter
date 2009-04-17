@@ -20,18 +20,19 @@ describe 'RecordFilter restrictions' do
     Post.last_find.should == { :conditions => [%q{("posts".permalink = ?) AND ("posts".blog_id = ?)}, 'blog-post', 3] }
   end
 
-  it 'should filter for less than' do
-    Post.filter do
-      with(:created_at).less_than Time.parse('2009-01-03 23:02:00')
-    end.inspect
-    Post.last_find.should == { :conditions => [%q{"posts".created_at < ?}, Time.parse('2009-01-03 23:02:00')] }
-  end
+  it 'should filter by comparison operators' do
+    [[:greater_than, :gt, '>'], [:less_than, :lt, '<'], 
+     [:less_than_or_equal_to, :lte, '<='], [:greater_than_or_equal_to, :gte, '>=']].each do |set|
+       Post.filter do
+         with(:created_at).send(set[0], Time.parse('2009-01-03 23:02:00'))
+       end.inspect
+       Post.last_find.should == { :conditions => ["\"posts\".created_at #{set[2]} ?", Time.parse('2009-01-03 23:02:00')] }
 
-  it 'should filter for greater than' do
-    Post.filter do
-      with(:created_at).greater_than Time.parse('2008-01-03 23:23:00')
-    end.inspect
-    Post.last_find.should == { :conditions => [%q{"posts".created_at > ?}, Time.parse('2008-01-03 23:23:00')] }
+       Post.filter do
+         with(:created_at).send(set[1], Time.parse('2009-01-03 23:02:00'))
+       end.inspect
+       Post.last_find.should == { :conditions => ["\"posts\".created_at #{set[2]} ?", Time.parse('2009-01-03 23:02:00')] }
+     end
   end
 
   it 'should filter for in' do

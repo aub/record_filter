@@ -44,9 +44,21 @@ module RecordFilter
       end
     end
 
+    class LessThanOrEqualTo < Base
+      def to_positive_sql
+        "#{@column_name} <= ?"
+      end
+    end
+
     class GreaterThan < Base
       def to_positive_sql
         "#{@column_name} > ?"
+      end
+    end
+
+    class GreaterThanOrEqualTo < Base
+      def to_positive_sql
+        "#{@column_name} >= ?"
       end
     end
 
