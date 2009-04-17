@@ -75,4 +75,13 @@ describe 'RecordFilter restrictions' do
     Post.last_find.should == { :conditions => [%q{(("posts".blog_id = ?) AND ("posts".permalink = ?)) OR ("posts".permalink = ?)},
                                                1, 'my-post', 'another-post'] }
   end
+
+  it 'should filter for nil' do
+    [:is_null, :null, :nil].each do |method|
+      Post.filter do
+        with(:permalink).send(method)
+      end.inspect
+      Post.last_find.should == { :conditions => [%q("posts".permalink IS NULL)] }
+    end
+  end
 end

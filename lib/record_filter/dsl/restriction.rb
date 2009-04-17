@@ -20,6 +20,8 @@ module RecordFilter
       alias_method :gte, :greater_than_or_equal_to
       alias_method :lt, :less_than
       alias_method :lte, :less_than_or_equal_to
+      alias_method :null, :is_null
+      alias_method :nil, :is_null
     end
   end
 end
