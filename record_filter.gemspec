@@ -19,17 +19,20 @@ Gem::Specification.new do |s|
     "lib/record_filter/dsl/conjunction.rb",
     "lib/record_filter/dsl/conjunction_dsl.rb",
     "lib/record_filter/dsl/dsl.rb",
+    "lib/record_filter/dsl/group_by.rb",
     "lib/record_filter/dsl/join.rb",
     "lib/record_filter/dsl/limit.rb",
     "lib/record_filter/dsl/order.rb",
     "lib/record_filter/dsl/restriction.rb",
     "lib/record_filter/filter.rb",
+    "lib/record_filter/group_by.rb",
     "lib/record_filter/join.rb",
     "lib/record_filter/join_table.rb",
     "lib/record_filter/order.rb",
     "lib/record_filter/query.rb",
     "lib/record_filter/restrictions.rb",
     "lib/record_filter/table.rb",
+    "spec/exception_spec.rb",
     "spec/implicit_join_spec.rb",
     "spec/limits_and_ordering_spec.rb",
     "spec/models/blog.rb",
@@ -49,6 +52,7 @@ Gem::Specification.new do |s|
   s.rubygems_version = %q{1.3.2}
   s.summary = %q{Pure-ruby criteria API for building complex queries in ActiveRecord}
   s.test_files = [
+    "spec/exception_spec.rb",
     "spec/implicit_join_spec.rb",
     "spec/limits_and_ordering_spec.rb",
     "spec/models/blog.rb",
