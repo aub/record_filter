@@ -7,6 +7,8 @@ module RecordFilter
       end
 
       def named_filter(name, &block)
+        return if named_filters.include?(name.to_sym)
+        named_filters << name.to_sym 
         DSL::DSL::subclass(self).module_eval do
           define_method(name, &block)
         end
@@ -16,6 +18,10 @@ module RecordFilter
             Filter.new(self, name, nil, *args)
           end
         end
+      end
+
+      def named_filters
+        read_inheritable_attribute(:named_filters) || write_inheritable_attribute(:named_filters, [])
       end
     end
   end

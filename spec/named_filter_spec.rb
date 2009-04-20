@@ -67,15 +67,15 @@ describe 'named filters' do
 
   describe 'using filters in subclasses' do
     before do
+      Comment.named_filter(:with_contents) do |*args|
+        with :contents, args[0]
+      end
       class NiceComment < Comment
         extend TestModel
 
         named_filter(:offensive) do
           with :offensive, true
         end
-      end
-      Comment.named_filter(:with_contents) do |*args|
-        with :contents, args[0]
       end
     end
 
@@ -92,17 +92,19 @@ describe 'named filters' do
       NiceComment.offensive.with_contents('something').inspect
       NiceComment.last_find[:conditions].should == [%q(("comments".offensive = ?) AND ("comments".contents = ?)), true, 'something']
     end
+
+    it 'should provide access to the named filters' do
+      Comment.named_filters.should == [:with_contents]
+      NiceComment.named_filters.sort_by { |i| i.to_s }.should == [:offensive, :with_contents]
+    end
   end
 
   describe 'using compound filters' do
-    before do
+    it 'should concatenate the filters correctly' do
+      pending 'nested chaining'
       Post.named_filter(:with_offensive_comments) do
         having(:comments).offensive(true)
       end
-    end
-
-    it 'should concatenate the filters correctly' do
-      pending 'nested chaining'
       Post.with_offensive_comments.inspect
       Post.last_find[:conditions].should == [%q(posts__comments.offensive = ?), true] 
       Post.last_find[:joins].should == %q(INNER JOIN "comments" AS posts__comments ON "comments".post_id = posts__blog.id)

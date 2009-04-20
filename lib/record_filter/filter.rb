@@ -17,7 +17,7 @@ module RecordFilter
     end
 
     def method_missing(method, *args, &block)
-      if @clazz.respond_to?(method) # UGLY, we need to only pass through things that are named filters.
+      if @clazz.named_filters.include?(method)
         Filter.new(@clazz, method, @dsl.conjunction, *args)
       else
         loaded_data.send(method, *args, &block)
