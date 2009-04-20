@@ -1,0 +1,22 @@
+= New
+
+
+= 0.1.2
+
+* Add LIKE and NOT LIKE restrictions
+
+* Replace active record objects with their ids if passed as the value for a
+resriction.
+
+= 0.1.1
+
+* Add group_by
+
+* Raise informative exceptions when columns or associations are not found for
+a given filter
+
+* Alias is_null restriction to nil and null
+
+* Alias comparison restrictions to gt, lt, lte, gte
+
+* Add greater_than_or_equal_to and less_than_or_equal_to restrictions.
