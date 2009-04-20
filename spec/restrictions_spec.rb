@@ -65,6 +65,26 @@ describe 'RecordFilter restrictions' do
     Post.last_find.should == { :conditions => [%q("posts".id BETWEEN ? AND ?), 2, 6] }
   end
 
+  it 'should filter by none_of' do
+    Post.filter do
+      none_of do
+        with(:blog_id, 1)
+        with(:permalink, 'eek')
+      end
+    end.inspect
+    Post.last_find.should == { :conditions => [%q{!(("posts".blog_id = ?) OR ("posts".permalink = ?))}, 1, 'eek'] }
+  end
+
+  it 'should filter by not_all_of' do
+    Post.filter do
+      not_all_of do
+        with(:blog_id, 1)
+        with(:permalink, 'eek')
+      end
+    end.inspect
+    Post.last_find.should == { :conditions => [%q{!(("posts".blog_id = ?) AND ("posts".permalink = ?))}, 1, 'eek'] }
+  end
+
   it 'should filter by disjunction' do
     Post.filter do
       any_of do

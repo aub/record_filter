@@ -1,4 +1,6 @@
-= New
+= 0.1.3
+
+* Added none_of and not_all_of conjunctions.
 
 * Changed the between restriction to take either a range, a tuple, or two
 values.

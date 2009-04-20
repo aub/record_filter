@@ -30,6 +30,16 @@ module RecordFilter
         nil
       end
 
+      def none_of(&block)
+        @conjunction.add_conjunction(:none_of, &block)
+        nil
+      end
+
+      def not_all_of(&block)
+        @conjunction.add_conjunction(:not_all_of, &block)
+        nil
+      end
+
       # join
       def having(association, &block)
         join = @conjunction.add_join(association, &block)

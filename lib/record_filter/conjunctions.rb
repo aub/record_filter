@@ -7,6 +7,8 @@ module RecordFilter
         result = case dsl_conjunction.type
           when :any_of then AnyOf.new(table)
           when :all_of then AllOf.new(table)
+          when :none_of then NoneOf.new(table)
+          when :not_all_of then NotAllOf.new(table)
         end
 
         dsl_conjunction.steps.each do |step|
@@ -76,21 +78,25 @@ module RecordFilter
       end
 
       def to_conditions
-        if @restrictions.empty?
-          nil
-        elsif @restrictions.length == 1
-          @restrictions.first.to_conditions
-        else
-          @restrictions.map do |restriction|
-            conditions = restriction.to_conditions
-            conditions[0] = "(#{conditions[0]})"
-            conditions
-          end.inject do |conditions, new_conditions|
-            conditions.first << " #{conjunctor} #{new_conditions.shift}"
-            conditions.concat(new_conditions)
-            conditions
+        result = begin
+          if @restrictions.empty?
+            nil
+          elsif @restrictions.length == 1
+            @restrictions.first.to_conditions
+          else
+            @restrictions.map do |restriction|
+              conditions = restriction.to_conditions
+              conditions[0] = "(#{conditions[0]})"
+              conditions
+            end.inject do |conditions, new_conditions|
+              conditions.first << " #{conjunctor} #{new_conditions.shift}"
+              conditions.concat(new_conditions)
+              conditions
+            end
           end
         end
+        result[0] = "!(#{result[0]})" if (negated && !result.nil? && !result[0].nil?)
+        result
       end
 
       protected
@@ -103,15 +109,23 @@ module RecordFilter
     end
 
     class AnyOf < Base
-      def conjunctor
-        'OR'
-      end
+      def conjunctor; 'OR'; end
+      def negated; false; end
     end
 
     class AllOf < Base
-      def conjunctor
-        'AND'
-      end
+      def conjunctor; 'AND'; end
+      def negated; false; end
+    end
+
+    class NoneOf < Base
+      def conjunctor; 'OR'; end
+      def negated; true; end
+    end
+
+    class NotAllOf < Base
+      def conjunctor; 'AND'; end
+      def negated; true; end
     end
   end
 end
