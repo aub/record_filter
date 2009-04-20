@@ -93,6 +93,25 @@ describe 'implicit joins' do
     end
   end
 
+  describe 'with one having statement expressing multiple joins' do
+    before do
+      Blog.filter do
+        having(:posts => :comments) do
+          with :offensive, true
+        end
+      end.inspect
+    end
+
+    it 'should add both joins' do
+      Blog.last_find[:joins].should == %q(INNER JOIN "posts" AS blogs__posts ON "blogs".id = blogs__posts.blog_id ) +
+                                       %q(INNER JOIN "comments" AS blogs__posts__comments ON blogs__posts.id = blogs__posts__comments.post_id)
+    end
+
+    it 'should query against both conditions' do
+      Blog.last_find[:conditions].should == [%q(blogs__posts__comments.offensive = ?), true] 
+    end
+  end
+
   describe 'on has_one' do
     before do
       Post.filter do
