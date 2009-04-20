@@ -50,7 +50,13 @@ module RecordFilter
       end
 
       def add_join_on_association(association_name)
-        @table.join_association(association_name)
+        table = @table
+        while association_name.is_a?(Hash)
+          result = table.join_association(association_name.keys[0])
+          table = result.right_table
+          association_name = association_name.values[0]
+        end
+        table.join_association(association_name)
       end
       
       def add_order(column_name, direction)
