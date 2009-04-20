@@ -1,5 +1,8 @@
 = New
 
+* Changed the between restriction to take either a range, a tuple, or two
+values.
+
 * Support multiple joins in one having statement through having(:posts =>
 :comments)
 

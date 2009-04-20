@@ -51,6 +51,20 @@ describe 'RecordFilter restrictions' do
     Post.last_find.should == { :conditions => [%q{"posts".created_at BETWEEN ? AND ?}, time1, time2] }
   end
 
+  it 'should filter for between with two arguments passed' do
+    Post.filter do
+      with(:id).between(1, 5)
+    end.inspect
+    Post.last_find.should == { :conditions => [%q("posts".id BETWEEN ? AND ?), 1, 5] }
+  end
+
+  it 'should filter for between with an array passed' do
+    Post.filter do
+      with(:id).between([2, 6])
+    end.inspect
+    Post.last_find.should == { :conditions => [%q("posts".id BETWEEN ? AND ?), 2, 6] }
+  end
+
   it 'should filter by disjunction' do
     Post.filter do
       any_of do
