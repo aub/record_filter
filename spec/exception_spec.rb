@@ -46,5 +46,25 @@ describe 'raising exceptions' do
         end.inspect
       }.should raise_error(RecordFilter::AssociationNotFoundException)
     end
+
+    it 'should raise ColumnNotFoundException for explicit joins on bad column names for the right table' do
+      lambda {
+        Review.filter do
+          left_join(:feature, :reviews_features, :reviewable_id => :ftrable_id, :reviewable_type => :ftrable_type) do
+            with(:priority, 5)
+          end
+        end.inspect
+      }.should raise_error(RecordFilter::ColumnNotFoundException)
+    end
+
+    it 'should raise ColumnNotFoundException for explicit joins on bad column names for the left table' do
+      lambda {
+        Review.filter do
+          left_join(:feature, :reviews_features, :rvwable_id => :featurable_id, :rvwable_type => :featurable_type) do
+            with(:priority, 5)
+          end
+        end.inspect
+      }.should raise_error(RecordFilter::ColumnNotFoundException)
+    end
   end
 end

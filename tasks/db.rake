@@ -20,7 +20,7 @@ namespace :db do
         end
 
         create_table :comments do |t|
-          t.references :blog
+          t.references :post
           t.string :contents
           t.boolean :offensive
         end

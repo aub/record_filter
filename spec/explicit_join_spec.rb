@@ -8,7 +8,7 @@ describe 'explicit joins' do
   describe 'specifying a simple join' do
     before do
       Post.filter do
-        left_join(:blogs, :posts_blogs, :blog_id => :id) do
+        left_join(:blog, :posts_blogs, :blog_id => :id) do
           with(:name, 'Test Name')
         end
       end.inspect
@@ -26,7 +26,7 @@ describe 'explicit joins' do
   describe 'specifying a complex join through polymorphic associations' do
     before do
       Review.filter do
-        left_join(:features, :reviews_features, :reviewable_id => :featurable_id, :reviewable_type => :featurable_type) do
+        left_join(:feature, :reviews_features, :reviewable_id => :featurable_id, :reviewable_type => :featurable_type) do
           with(:priority, 5)
         end
       end.inspect
@@ -41,6 +41,20 @@ describe 'explicit joins' do
 
     it 'should query against condition on join table' do
       Review.last_find[:conditions].should == ['reviews_features.priority = ?', 5]
+    end
+  end
+
+  describe 'should use values as join parameters instead of columns if given' do
+    before do
+      Review.filter do
+        left_join(:feature, :reviews_features, :reviewable_type => 'SomeType') do
+          with(:priority, 5)
+        end
+      end.inspect
+    end
+
+    it 'should add correct join' do
+      Review.last_find[:joins].should == %q(INNER JOIN "features" AS reviews_features ON "reviews".reviewable_type = 'SomeType')
     end
   end
 end

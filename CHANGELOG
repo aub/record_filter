@@ -1,5 +1,10 @@
 = New
 
+* Raise exceptions when doing an explicit join using columns that don't exist.
+
+* Allow explicit joins on values: left_join(:class_name, :table_alias, :rcol
+=> 'Post'...)
+
 * Added a filter_class method to the DSL for getting the class that is being
 filtered.
 

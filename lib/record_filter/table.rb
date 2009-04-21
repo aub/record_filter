@@ -75,9 +75,9 @@ module RecordFilter
     def compound_join(association)
       pivot_join_predicate = { :id => association.primary_key_name.to_sym }
       table_name = @model_class.connection.quote_table_name(association.options[:join_table])
-      pivot_table = PivotTable.new(table_name, "__#{alias_for_association(association)}")
+      pivot_table = PivotTable.new(table_name, association, "__#{alias_for_association(association)}")
       pivot_join = Join.new(self, pivot_table, pivot_join_predicate)
-      join_predicate = { association.association_foreign_key => :id }
+      join_predicate = { association.association_foreign_key.to_sym => :id }
       join_table = Table.new(association.klass, alias_for_association(association))
       pivot_table.joins << join = Join.new(pivot_table, join_table, join_predicate)
       @joins << pivot_join
@@ -94,12 +94,18 @@ module RecordFilter
   class PivotTable < Table
     attr_reader :table_name, :joins
 
-    def initialize(table_name, table_alias = table_name)
+    def initialize(table_name, association, table_alias = table_name)
       @table_name, @table_alias = table_name, table_alias
       @joins_cache = {}
       @joins = []
       @orders = []
       @group_bys = []
+      @primary_key = association.primary_key_name.to_sym
+      @foreign_key = association.association_foreign_key.to_sym
+    end
+
+    def has_column(column_name)
+      [@primary_key, @foreign_key].include?(column_name.to_sym)
     end
   end
 end
