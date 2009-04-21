@@ -42,8 +42,11 @@ module RecordFilter
 
       # join
       def having(association, &block)
-        join = @conjunction.add_join(association, &block)
-        ConjunctionDSL.new(join.conjunction)
+        @conjunction.add_join(association, &block)
+      end
+
+      def left_join(table_name, table_alias, columns, &block)
+        @conjunction.add_table_join(table_name, table_alias, columns, &block)
       end
     end
   end

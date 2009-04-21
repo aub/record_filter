@@ -1,5 +1,8 @@
 = New
 
+* Added custom join feature: left_join(:table_name, :table_alias, :rcol =>
+:lcol...)
+
 * Changed custom exceptions to subclass StandardError and not crash the entire
 app when throwing one (thanks RailsEnvy).
 

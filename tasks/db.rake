@@ -39,6 +39,18 @@ namespace :db do
           t.integer :post_id
           t.integer :tag_id
         end
+
+        create_table :features do |t|
+          t.integer :featurable_id
+          t.string :featurable_type
+          t.integer :priority
+        end
+
+        create_table :reviews do |t|
+          t.integer :reviewable_id
+          t.string :reviewable_type
+          t.integer :stars_count
+        end
       end
     end
   end

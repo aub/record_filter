@@ -6,7 +6,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Mat Brown", "Aubrey Holland"]
-  s.date = %q{2009-04-20}
+  s.date = %q{2009-04-21}
   s.description = %q{Pure-ruby criteria API for building complex queries in ActiveRecord}
   s.email = %q{mat@patch.com}
   s.files = [
@@ -24,6 +24,7 @@ Gem::Specification.new do |s|
     "lib/record_filter/dsl/limit.rb",
     "lib/record_filter/dsl/order.rb",
     "lib/record_filter/dsl/restriction.rb",
+    "lib/record_filter/dsl/table_join.rb",
     "lib/record_filter/filter.rb",
     "lib/record_filter/group_by.rb",
     "lib/record_filter/join.rb",
@@ -33,12 +34,15 @@ Gem::Specification.new do |s|
     "lib/record_filter/restrictions.rb",
     "lib/record_filter/table.rb",
     "spec/exception_spec.rb",
+    "spec/explicit_join_spec.rb",
     "spec/implicit_join_spec.rb",
     "spec/limits_and_ordering_spec.rb",
     "spec/models/blog.rb",
     "spec/models/comment.rb",
+    "spec/models/feature.rb",
     "spec/models/photo.rb",
     "spec/models/post.rb",
+    "spec/models/review.rb",
     "spec/models/tag.rb",
     "spec/named_filter_spec.rb",
     "spec/restrictions_spec.rb",
@@ -53,12 +57,15 @@ Gem::Specification.new do |s|
   s.summary = %q{Pure-ruby criteria API for building complex queries in ActiveRecord}
   s.test_files = [
     "spec/exception_spec.rb",
+    "spec/explicit_join_spec.rb",
     "spec/implicit_join_spec.rb",
     "spec/limits_and_ordering_spec.rb",
     "spec/models/blog.rb",
     "spec/models/comment.rb",
+    "spec/models/feature.rb",
     "spec/models/photo.rb",
     "spec/models/post.rb",
+    "spec/models/review.rb",
     "spec/models/tag.rb",
     "spec/named_filter_spec.rb",
     "spec/restrictions_spec.rb",

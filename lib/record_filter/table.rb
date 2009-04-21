@@ -32,6 +32,12 @@ module RecordFilter
         end
     end
 
+    def join_table(table_name, table_alias, columns)
+      join_table = Table.new(table_name.to_s.classify.constantize, table_alias)
+      @joins << join = Join.new(self, join_table, columns)
+      join
+    end
+
     def all_joins
       @joins + @joins.inject([]) do |child_joins, join|
         child_joins.concat(join.right_table.all_joins)
