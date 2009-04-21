@@ -8,7 +8,7 @@ module RecordFilter
 
       class << self
         def create(clazz)
-          subclass(clazz).new(clazz)
+          subclass(clazz).new(clazz, Conjunction.new(clazz, :all_of))
         end
 
         def subclass(clazz)

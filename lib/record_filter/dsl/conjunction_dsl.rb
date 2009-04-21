@@ -4,7 +4,7 @@ module RecordFilter
 
       attr_reader :conjunction
 
-      def initialize(model_class, conjunction=Conjunction.new(:all_of))
+      def initialize(model_class, conjunction)
         @model_class = model_class
         @conjunction = conjunction
       end

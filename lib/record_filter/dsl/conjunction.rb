@@ -29,14 +29,14 @@ module RecordFilter
       end
 
       def add_join(association, &block)
-        dsl = ConjunctionDSL.new(@model_class)
+        dsl = ConjunctionDSL.new(@model_class, Conjunction.new(@model_class, :all_of))
         dsl.instance_eval(&block) if block
         @steps << Join.new(association, dsl.conjunction)
         dsl
       end
 
       def add_class_join(class_name, table_alias, columns, &block)
-        dsl = ConjunctionDSL.new(@model_class)
+        dsl = ConjunctionDSL.new(@model_class, Conjunction.new(@model_class, :all_of))
         dsl.instance_eval(&block) if block
         @steps << ClassJoin.new(class_name, table_alias, columns, dsl.conjunction)
         dsl
