@@ -4,7 +4,8 @@ module RecordFilter
 
       attr_reader :conjunction
 
-      def initialize(conjunction=Conjunction.new(:all_of))
+      def initialize(model_class, conjunction=Conjunction.new(:all_of))
+        @model_class = model_class
         @conjunction = conjunction
       end
 
@@ -47,6 +48,10 @@ module RecordFilter
 
       def left_join(class_name, table_alias, columns, &block)
         @conjunction.add_class_join(class_name, table_alias, columns, &block)
+      end
+
+      def filter_class
+        @model_class
       end
     end
   end

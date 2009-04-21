@@ -33,7 +33,10 @@ describe 'explicit joins' do
     end
 
     it 'should add correct join' do
-      Review.last_find[:joins].should == %q(INNER JOIN "features" AS reviews_features ON "reviews".reviewable_id = reviews_features.featurable_id AND "reviews".reviewable_type = reviews_features.featurable_type)
+      matched_one = Review.last_find[:joins] == %q(INNER JOIN "features" AS reviews_features ON "reviews".reviewable_id = reviews_features.featurable_id AND "reviews".reviewable_type = reviews_features.featurable_type)
+      matched_one ||= Review.last_find[:joins] == %q(INNER JOIN "features" AS reviews_features ON "reviews".reviewable_type = reviews_features.featurable_type AND "reviews".reviewable_id = reviews_features.featurable_id)
+
+      matched_one.should == true
     end
 
     it 'should query against condition on join table' do

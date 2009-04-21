@@ -6,8 +6,8 @@ module RecordFilter
 
       DEFAULT_VALUE = Object.new
 
-      def initialize(type=:all_of)
-        @type, @steps = type, []
+      def initialize(model_class, type=:all_of)
+        @model_class, @type, @steps = model_class, type, []
       end
 
       def add_restriction(column, value, negated)
@@ -23,20 +23,20 @@ module RecordFilter
       end
 
       def add_conjunction(type, &block)
-        dsl = ConjunctionDSL.new(Conjunction.new(type))
+        dsl = ConjunctionDSL.new(@model_class, Conjunction.new(@model_class, type))
         dsl.instance_eval(&block) if block
         @steps << dsl.conjunction
       end
 
       def add_join(association, &block)
-        dsl = ConjunctionDSL.new
+        dsl = ConjunctionDSL.new(@model_class)
         dsl.instance_eval(&block) if block
         @steps << Join.new(association, dsl.conjunction)
         dsl
       end
 
       def add_class_join(class_name, table_alias, columns, &block)
-        dsl = ConjunctionDSL.new
+        dsl = ConjunctionDSL.new(@model_class)
         dsl.instance_eval(&block) if block
         @steps << ClassJoin.new(class_name, table_alias, columns, dsl.conjunction)
         dsl

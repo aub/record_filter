@@ -8,7 +8,7 @@ module RecordFilter
 
       class << self
         def create(clazz)
-          subclass(clazz).new
+          subclass(clazz).new(clazz)
         end
 
         def subclass(clazz)

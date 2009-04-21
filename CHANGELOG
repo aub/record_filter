@@ -1,5 +1,8 @@
 = New
 
+* Added a filter_class method to the DSL for getting the class that is being
+filtered.
+
 * Added custom join feature: left_join(:table_name, :table_alias, :rcol =>
 :lcol...)
 
