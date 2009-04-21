@@ -32,10 +32,13 @@ module RecordFilter
         end
     end
 
-    def join_table(class_name, table_alias, columns)
-      join_table = Table.new(class_name.to_s.classify.constantize, table_alias)
-      @joins << join = Join.new(self, join_table, columns)
-      join
+    def join_class(clazz, join_type, table_alias, predicates)
+      @joins_cache[clazz] ||= 
+        begin
+          join_table = Table.new(clazz, table_alias || alias_for_class(clazz))
+          @joins << (join = Join.new(self, join_table, predicates, join_type))
+          join
+        end
     end
 
     def all_joins
@@ -89,6 +92,8 @@ module RecordFilter
     def alias_for_association(association)
       "#{@aliased ? @table_alias.to_s : @model_class.table_name}__#{association.name}"
     end
+
+    alias_method :alias_for_class, :alias_for_association
   end
 
   class PivotTable < Table

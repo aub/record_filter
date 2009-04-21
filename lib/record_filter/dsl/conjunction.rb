@@ -4,22 +4,13 @@ module RecordFilter
 
       attr_reader :type, :steps
 
-      DEFAULT_VALUE = Object.new
-
       def initialize(model_class, type=:all_of)
         @model_class, @type, @steps = model_class, type, []
       end
 
-      def add_restriction(column, value, negated)
-        @steps << (restriction = Restriction.new(column, negated))
-        if value == DEFAULT_VALUE
-          return restriction
-        elsif value.nil?
-          restriction.is_null
-        else
-          restriction.equal_to(value)
-        end
-        nil
+      def add_restriction(column, value)
+        @steps << (restriction = Restriction.new(column, value))
+        restriction 
       end
 
       def add_conjunction(type, &block)
@@ -35,10 +26,10 @@ module RecordFilter
         dsl
       end
 
-      def add_class_join(class_name, table_alias, columns, &block)
-        dsl = ConjunctionDSL.new(@model_class, Conjunction.new(@model_class, :all_of))
+      def add_class_join(clazz, join_type, table_alias, &block)
+        dsl = JoinDSL.new(@model_class, Conjunction.new(@model_class, :all_of))
         dsl.instance_eval(&block) if block
-        @steps << ClassJoin.new(class_name, table_alias, columns, dsl.conjunction)
+        @steps << ClassJoin.new(clazz, join_type, table_alias, dsl.conjunction, dsl.predicates)
         dsl
       end
 

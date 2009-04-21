@@ -128,14 +128,14 @@ describe 'RecordFilter restrictions' do
 
   it 'should support NOT LIKE' do
     Post.filter do
-      without(:permalink).like('%ostriches%')
+      with(:permalink).not.like('%ostriches%')
     end.inspect
     Post.last_find.should == { :conditions => [%q("posts".permalink NOT LIKE ?), '%ostriches%'] }
   end
 
   it 'should provide access to the filter class in the filter' do
     Post.filter do
-      without(:permalink, filter_class.name)
+      with(:permalink).not.equal_to(filter_class.name)
     end.inspect
     Post.last_find.should == { :conditions => [%q("posts".permalink != ?), 'Post'] }
   end

@@ -21,7 +21,8 @@ module RecordFilter
             join = result.add_join_on_association(step.association)
             result.add_conjunction(create_from(step.conjunction, join.right_table))
           when DSL::ClassJoin
-            join = result.add_join_on_table(step.class_name, step.table_alias, step.columns)
+            join = result.add_join_on_class(
+              step.join_class, step.join_type, step.table_alias, step.predicates)
             result.add_conjunction(create_from(step.conjunction, join.right_table))
           when DSL::Limit
             result.add_limit_and_offset(step.limit, step.offset)
@@ -43,7 +44,7 @@ module RecordFilter
 
       def add_restriction(column_name, operator, value, options={})
         check_column_exists!(column_name)
-        restriction_class = "RecordFilter::Restrictions::#{operator.to_s.camelize}".constantize
+        restriction_class = RecordFilter::Restrictions::Base.class_from_operator(operator)
         restriction = restriction_class.new("#{@table_name}.#{column_name}", value, options)
         self << restriction
         restriction
@@ -64,8 +65,8 @@ module RecordFilter
         table.join_association(association_name)
       end
       
-      def add_join_on_table(table_name, table_alias, columns)
-        @table.join_table(table_name, table_alias, columns)
+      def add_join_on_class(join_class, join_type, table_alias, predicates)
+        @table.join_class(join_class, join_type, table_alias, predicates)
       end
 
       def add_order(column_name, direction)

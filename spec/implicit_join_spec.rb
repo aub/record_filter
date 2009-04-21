@@ -186,7 +186,7 @@ describe 'implicit joins' do
   describe 'with negated conditions' do
     before do
       Comment.filter do
-        without :offensive, false
+        with(:offensive).not(false)
       end.inspect
     end
 
@@ -198,7 +198,20 @@ describe 'implicit joins' do
   describe 'with negated nil conditions' do
     before do
       Comment.filter do
-        without :contents, nil
+        with(:contents).not(nil)
+        with :offensive, true
+      end.inspect
+    end
+
+    it 'should create the correct IS NOT NULL condition' do
+      Comment.last_find[:conditions].should == [%q(("comments".contents IS NOT NULL) AND ("comments".offensive = ?)), true]
+    end
+  end
+
+  describe 'with negated nil conditions using is_null' do
+    before do
+      Comment.filter do
+        with(:contents).not.is_null
         with :offensive, true
       end.inspect
     end

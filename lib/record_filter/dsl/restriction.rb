@@ -4,8 +4,17 @@ module RecordFilter
 
       attr_reader :column, :negated, :operator, :value
 
-      def initialize(column, negated)
-        @column, @negated, @operator = column, negated, nil
+      DEFAULT_VALUE = Object.new
+
+      def initialize(column, value=DEFAULT_VALUE)
+        @column, @negated, @operator = column, false, nil
+        take_value(value)
+      end
+
+      def not(value=DEFAULT_VALUE)
+        @negated = true
+        take_value(value)
+        self
       end
 
       [:equal_to, :is_null, :less_than, :less_than_or_equal_to, :greater_than, :greater_than_or_equal_to, :in, :like].each do |operator|
@@ -32,6 +41,16 @@ module RecordFilter
       alias_method :lte, :less_than_or_equal_to
       alias_method :null, :is_null
       alias_method :nil, :is_null
+
+      protected
+
+      def take_value(value)
+        if value.nil?
+          is_null
+        elsif value != DEFAULT_VALUE
+          equal_to(value)
+        end
+      end
     end
   end
 end

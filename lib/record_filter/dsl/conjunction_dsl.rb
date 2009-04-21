@@ -10,13 +10,8 @@ module RecordFilter
       end
 
       # restriction
-      def with(column, value=Conjunction::DEFAULT_VALUE)
-        return @conjunction.add_restriction(column, value, false) # using return just to make it explicit
-      end
-
-      # restriction
-      def without(column, value=Conjunction::DEFAULT_VALUE)
-        return @conjunction.add_restriction(column, value, true) # using return just to make it explicit
+      def with(column, value=Restriction::DEFAULT_VALUE)
+        return @conjunction.add_restriction(column, value)
       end
 
       # conjunction
@@ -46,8 +41,8 @@ module RecordFilter
         @conjunction.add_join(association, &block)
       end
 
-      def left_join(class_name, table_alias, columns, &block)
-        @conjunction.add_class_join(class_name, table_alias, columns, &block)
+      def join(clazz, join_type, table_alias=nil, &block)
+        @conjunction.add_class_join(clazz, join_type, table_alias, &block)
       end
 
       def filter_class

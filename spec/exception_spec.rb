@@ -23,10 +23,10 @@ describe 'raising exceptions' do
       }.should raise_error(RecordFilter::ColumnNotFoundException)
     end
 
-    it 'should get ColumnNotFoundException for without' do
+    it 'should get ColumnNotFoundException for with.not' do
       lambda {
         Post.filter do
-          without(:this_is_not_there, 2)
+          with(:this_is_not_there).not.equal_to(2)
         end.inspect
       }.should raise_error(RecordFilter::ColumnNotFoundException)
     end
@@ -50,7 +50,9 @@ describe 'raising exceptions' do
     it 'should raise ColumnNotFoundException for explicit joins on bad column names for the right table' do
       lambda {
         Review.filter do
-          left_join(:feature, :reviews_features, :reviewable_id => :ftrable_id, :reviewable_type => :ftrable_type) do
+          join(Feature, :left) do
+            on(:reviewable_id => :ftrable_id)
+            on(:reviewable_type => :ftrable_type)
             with(:priority, 5)
           end
         end.inspect
@@ -60,7 +62,9 @@ describe 'raising exceptions' do
     it 'should raise ColumnNotFoundException for explicit joins on bad column names for the left table' do
       lambda {
         Review.filter do
-          left_join(:feature, :reviews_features, :rvwable_id => :featurable_id, :rvwable_type => :featurable_type) do
+          join(Feature, :inner) do
+            on(:rvwable_id => :featurable_id)
+            on(:rvwable_type => :featurable_type)
             with(:priority, 5)
           end
         end.inspect
