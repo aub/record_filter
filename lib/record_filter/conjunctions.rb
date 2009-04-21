@@ -20,8 +20,8 @@ module RecordFilter
           when DSL::Join
             join = result.add_join_on_association(step.association)
             result.add_conjunction(create_from(step.conjunction, join.right_table))
-          when DSL::TableJoin
-            join = result.add_join_on_table(step.table_name, step.table_alias, step.columns)
+          when DSL::ClassJoin
+            join = result.add_join_on_table(step.class_name, step.table_alias, step.columns)
             result.add_conjunction(create_from(step.conjunction, join.right_table))
           when DSL::Limit
             result.add_limit_and_offset(step.limit, step.offset)

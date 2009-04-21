@@ -45,8 +45,8 @@ module RecordFilter
         @conjunction.add_join(association, &block)
       end
 
-      def left_join(table_name, table_alias, columns, &block)
-        @conjunction.add_table_join(table_name, table_alias, columns, &block)
+      def left_join(class_name, table_alias, columns, &block)
+        @conjunction.add_class_join(class_name, table_alias, columns, &block)
       end
     end
   end

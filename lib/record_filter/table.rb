@@ -32,8 +32,8 @@ module RecordFilter
         end
     end
 
-    def join_table(table_name, table_alias, columns)
-      join_table = Table.new(table_name.to_s.classify.constantize, table_alias)
+    def join_table(class_name, table_alias, columns)
+      join_table = Table.new(class_name.to_s.classify.constantize, table_alias)
       @joins << join = Join.new(self, join_table, columns)
       join
     end

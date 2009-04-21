@@ -35,10 +35,10 @@ module RecordFilter
         dsl
       end
 
-      def add_table_join(table_name, table_alias, columns, &block)
+      def add_class_join(class_name, table_alias, columns, &block)
         dsl = ConjunctionDSL.new
         dsl.instance_eval(&block) if block
-        @steps << TableJoin.new(table_name, table_alias, columns, dsl.conjunction)
+        @steps << ClassJoin.new(class_name, table_alias, columns, dsl.conjunction)
         dsl
       end
 
