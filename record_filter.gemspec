@@ -2,11 +2,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{record_filter}
-  s.version = "0.1.3"
+  s.version = "0.1.4"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Mat Brown", "Aubrey Holland"]
-  s.date = %q{2009-04-21}
+  s.date = %q{2009-04-22}
   s.description = %q{Pure-ruby criteria API for building complex queries in ActiveRecord}
   s.email = %q{mat@patch.com}
   s.files = [
@@ -22,6 +22,8 @@ Gem::Specification.new do |s|
     "lib/record_filter/dsl/dsl.rb",
     "lib/record_filter/dsl/group_by.rb",
     "lib/record_filter/dsl/join.rb",
+    "lib/record_filter/dsl/join_condition.rb",
+    "lib/record_filter/dsl/join_dsl.rb",
     "lib/record_filter/dsl/limit.rb",
     "lib/record_filter/dsl/order.rb",
     "lib/record_filter/dsl/restriction.rb",

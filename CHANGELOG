@@ -1,4 +1,6 @@
-= New
+= 0.1.4
+
+* Restructured the explicit join API
 
 * Raise exceptions when doing an explicit join using columns that don't exist.
 
