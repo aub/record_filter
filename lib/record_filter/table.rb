@@ -1,6 +1,6 @@
 module RecordFilter
   class Table
-    attr_reader :table_alias, :orders, :group_bys
+    attr_reader :table_alias, :orders, :group_bys, :model_class
 
     def initialize(model_class, table_alias = nil)
       @model_class = model_class
@@ -32,11 +32,11 @@ module RecordFilter
         end
     end
 
-    def join_class(clazz, join_type, table_alias, predicates)
+    def join_class(clazz, join_type, table_alias, conditions)
       @joins_cache[clazz] ||= 
         begin
           join_table = Table.new(clazz, table_alias || alias_for_class(clazz))
-          @joins << (join = Join.new(self, join_table, predicates, join_type))
+          @joins << (join = Join.new(self, join_table, conditions, join_type))
           join
         end
     end
@@ -66,9 +66,9 @@ module RecordFilter
       join_predicate =
         case association.macro
         when :belongs_to
-          { association.primary_key_name.to_sym => :id }
+          [{ association.primary_key_name.to_sym => :id }]
         when :has_many, :has_one
-          { :id => association.primary_key_name.to_sym }
+          [{ :id => association.primary_key_name.to_sym }]
         end
       join_table = Table.new(association.klass, alias_for_association(association))
       @joins << join = Join.new(self, join_table, join_predicate)
@@ -76,11 +76,11 @@ module RecordFilter
     end
 
     def compound_join(association)
-      pivot_join_predicate = { :id => association.primary_key_name.to_sym }
+      pivot_join_predicate = [{ :id => association.primary_key_name.to_sym }]
       table_name = @model_class.connection.quote_table_name(association.options[:join_table])
       pivot_table = PivotTable.new(table_name, association, "__#{alias_for_association(association)}")
       pivot_join = Join.new(self, pivot_table, pivot_join_predicate)
-      join_predicate = { association.association_foreign_key.to_sym => :id }
+      join_predicate = [{ association.association_foreign_key.to_sym => :id }]
       join_table = Table.new(association.klass, alias_for_association(association))
       pivot_table.joins << join = Join.new(pivot_table, join_table, join_predicate)
       @joins << pivot_join

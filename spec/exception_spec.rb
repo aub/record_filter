@@ -70,5 +70,33 @@ describe 'raising exceptions' do
         end.inspect
       }.should raise_error(RecordFilter::ColumnNotFoundException)
     end
+
+    it 'should raise ColumnNotFoundException for explicit joins on bad column names in conditions' do
+      lambda {
+        Review.filter do
+          join(Feature, :inner) do
+            on(:reviewable_id).gt(12)
+          end
+        end.inspect
+      }.should raise_error(RecordFilter::ColumnNotFoundException)
+    end
+
+    it 'should raise an ArgumentError if an invalid join type is specified' do
+      lambda {
+        Review.filter do
+          join(Feature, :crazy) do
+            on(:reviewable_type => :featurable_type)
+          end
+        end.inspect
+      }.should raise_error(ArgumentError)
+    end
+
+    it 'should raise an InvalidJoinException if no columns are specified for the join' do
+      lambda {
+        Review.filter do
+          join(Feature, :inner)
+        end.inspect
+      }.should raise_error(RecordFilter::InvalidJoinException)
+    end
   end
 end

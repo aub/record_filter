@@ -22,7 +22,7 @@ module RecordFilter
             result.add_conjunction(create_from(step.conjunction, join.right_table))
           when DSL::ClassJoin
             join = result.add_join_on_class(
-              step.join_class, step.join_type, step.table_alias, step.predicates)
+              step.join_class, step.join_type, step.table_alias, step.conditions)
             result.add_conjunction(create_from(step.conjunction, join.right_table))
           when DSL::Limit
             result.add_limit_and_offset(step.limit, step.offset)
@@ -65,8 +65,8 @@ module RecordFilter
         table.join_association(association_name)
       end
       
-      def add_join_on_class(join_class, join_type, table_alias, predicates)
-        @table.join_class(join_class, join_type, table_alias, predicates)
+      def add_join_on_class(join_class, join_type, table_alias, conditions)
+        @table.join_class(join_class, join_type, table_alias, conditions)
       end
 
       def add_order(column_name, direction)

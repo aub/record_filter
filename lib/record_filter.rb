@@ -9,4 +9,5 @@ end
 module RecordFilter
   class AssociationNotFoundException < StandardError; end
   class ColumnNotFoundException < StandardError; end
+  class InvalidJoinException < StandardError; end
 end

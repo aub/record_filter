@@ -29,7 +29,7 @@ module RecordFilter
       def add_class_join(clazz, join_type, table_alias, &block)
         dsl = JoinDSL.new(@model_class, Conjunction.new(@model_class, :all_of))
         dsl.instance_eval(&block) if block
-        @steps << ClassJoin.new(clazz, join_type, table_alias, dsl.conjunction, dsl.predicates)
+        @steps << ClassJoin.new(clazz, join_type, table_alias, dsl.conjunction, dsl.conditions)
         dsl
       end
 

@@ -2,12 +2,12 @@ module RecordFilter
   module DSL
     class JoinDSL < ConjunctionDSL
 
-      attr_reader :predicates
+      attr_reader :conditions
 
       def on(column, value=Restriction::DEFAULT_VALUE)
-        @predicates ||= []
-        @predicates << (predicate = JoinPredicate.new(column, value))
-        return predicate.restriction
+        @conditions ||= []
+        @conditions << (condition = JoinCondition.new(column, value))
+        return condition.restriction
       end
     end
   end
