@@ -6,7 +6,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Mat Brown", "Aubrey Holland"]
-  s.date = %q{2009-04-22}
+  s.date = %q{2009-04-23}
   s.description = %q{Pure-ruby criteria API for building complex queries in ActiveRecord}
   s.email = %q{mat@patch.com}
   s.files = [
@@ -39,15 +39,10 @@ Gem::Specification.new do |s|
     "spec/explicit_join_spec.rb",
     "spec/implicit_join_spec.rb",
     "spec/limits_and_ordering_spec.rb",
-    "spec/models/blog.rb",
-    "spec/models/comment.rb",
-    "spec/models/feature.rb",
-    "spec/models/photo.rb",
-    "spec/models/post.rb",
-    "spec/models/review.rb",
-    "spec/models/tag.rb",
+    "spec/models.rb",
     "spec/named_filter_spec.rb",
     "spec/restrictions_spec.rb",
+    "spec/select_spec.rb",
     "spec/spec_helper.rb",
     "spec/test.db"
   ]
@@ -62,15 +57,10 @@ Gem::Specification.new do |s|
     "spec/explicit_join_spec.rb",
     "spec/implicit_join_spec.rb",
     "spec/limits_and_ordering_spec.rb",
-    "spec/models/blog.rb",
-    "spec/models/comment.rb",
-    "spec/models/feature.rb",
-    "spec/models/photo.rb",
-    "spec/models/post.rb",
-    "spec/models/review.rb",
-    "spec/models/tag.rb",
+    "spec/models.rb",
     "spec/named_filter_spec.rb",
     "spec/restrictions_spec.rb",
+    "spec/select_spec.rb",
     "spec/spec_helper.rb"
   ]
 
