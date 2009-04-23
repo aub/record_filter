@@ -14,6 +14,17 @@ namespace :db do
           t.boolean :published
         end
 
+        create_table :authors do |t|
+          t.references :post
+          t.string :nickname
+          t.references :user
+        end
+
+        create_table :users do |t|
+          t.string :first_name
+          t.string :last_name
+        end
+
         create_table :blogs do |t|
           t.string :name
           t.boolean :published

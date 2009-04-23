@@ -274,4 +274,40 @@ describe 'implicit joins' do
       Post.last_find[:joins].should == %q(INNER JOIN "reviews" AS posts__reviews ON "posts".id = posts__reviews.reviewable_id AND (posts__reviews.reviewable_type = 'Post'))
     end
   end
+
+  describe 'on has_many_through associations' do
+    before do
+      Blog.filter do
+        having(:comments) do
+          with(:offensive, true)
+        end
+      end.inspect
+    end
+
+    it 'should create the correct condition' do
+      Blog.last_find[:conditions].should == [%q(blogs__posts__comments.offensive = ?), true]
+    end
+
+    it 'should create the correct join' do
+      Blog.last_find[:joins].should == %q(INNER JOIN "posts" AS blogs__posts ON "blogs".id = blogs__posts.blog_id INNER JOIN "comments" AS blogs__posts__comments ON blogs__posts.id = blogs__posts__comments.post_id)
+    end
+  end
+
+  describe 'on has_one_through associations' do
+    before do
+      Post.filter do
+        having(:user) do
+          with(:first_name, 'Joe')
+        end
+      end.inspect
+    end
+
+    it 'should create the correct condition' do
+      Post.last_find[:conditions].should == [%q(posts__author__user.first_name = ?), 'Joe']
+    end
+
+    it 'should create the correct join' do
+      Post.last_find[:joins].should == %q(INNER JOIN "authors" AS posts__author ON "posts".id = posts__author.post_id INNER JOIN "users" AS posts__author__user ON posts__author.user_id = posts__author__user.id)
+    end
+  end
 end

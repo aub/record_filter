@@ -1,3 +1,7 @@
+= New
+
+* Support has_many and has_one :through
+
 = 0.1.4
 
 * Join on both the id and type for polymorphic joins.

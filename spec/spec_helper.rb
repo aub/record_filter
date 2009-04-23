@@ -23,7 +23,7 @@ module TestModel
   end
 end
 
-Dir.glob(File.join(File.dirname(__FILE__), 'models', '*.rb')).each { |file| require file }
+require File.join(File.dirname(__FILE__), 'models')
 
 ActiveRecord::Base.establish_connection(
   :adapter => 'sqlite3',
