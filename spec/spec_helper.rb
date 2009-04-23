@@ -15,6 +15,7 @@ module TestModel
 
   def scoped(params = {})
     @last_find = params
+    super
   end
 
   def self.extended(base)

@@ -19,10 +19,10 @@ module RecordFilter
         @steps << dsl.conjunction
       end
 
-      def add_join(association, &block)
+      def add_join(association, join_type, &block)
         dsl = ConjunctionDSL.new(@model_class, Conjunction.new(@model_class, :all_of))
         dsl.instance_eval(&block) if block
-        @steps << Join.new(association, dsl.conjunction)
+        @steps << Join.new(association, join_type, dsl.conjunction)
         dsl
       end
 

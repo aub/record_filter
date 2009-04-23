@@ -18,7 +18,7 @@ module RecordFilter
           when DSL::Conjunction 
             result.add_conjunction(create_from(step, table)) 
           when DSL::Join
-            join = result.add_join_on_association(step.association)
+            join = result.add_join_on_association(step.association, step.join_type)
             result.add_conjunction(create_from(step.conjunction, join.right_table))
           when DSL::ClassJoin
             join = result.add_join_on_class(
@@ -55,14 +55,14 @@ module RecordFilter
         conjunction
       end
 
-      def add_join_on_association(association_name)
+      def add_join_on_association(association_name, join_type)
         table = @table
         while association_name.is_a?(Hash)
-          result = table.join_association(association_name.keys[0])
+          result = table.join_association(association_name.keys[0], join_type)
           table = result.right_table
           association_name = association_name.values[0]
         end
-        table.join_association(association_name)
+        table.join_association(association_name, join_type)
       end
       
       def add_join_on_class(join_class, join_type, table_alias, conditions)
@@ -94,16 +94,20 @@ module RecordFilter
           else
             @restrictions.map do |restriction|
               conditions = restriction.to_conditions
-              conditions[0] = "(#{conditions[0]})"
-              conditions
-            end.inject do |conditions, new_conditions|
+              if conditions
+                conditions[0] = "(#{conditions[0]})"
+                conditions
+              else
+                nil
+              end
+            end.compact.inject do |conditions, new_conditions|
               conditions.first << " #{conjunctor} #{new_conditions.shift}"
               conditions.concat(new_conditions)
               conditions
             end
           end
         end
-        result[0] = "!(#{result[0]})" if (negated && !result.nil? && !result[0].nil?)
+        result[0] = "NOT (#{result[0]})" if (negated && !result.nil? && !result[0].nil?)
         result
       end
 

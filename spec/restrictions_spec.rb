@@ -72,7 +72,7 @@ describe 'RecordFilter restrictions' do
         with(:permalink, 'eek')
       end
     end.inspect
-    Post.last_find.should == { :conditions => [%q{!(("posts".blog_id = ?) OR ("posts".permalink = ?))}, 1, 'eek'] }
+    Post.last_find.should == { :conditions => [%q{NOT (("posts".blog_id = ?) OR ("posts".permalink = ?))}, 1, 'eek'] }
   end
 
   it 'should filter by not_all_of' do
@@ -82,7 +82,7 @@ describe 'RecordFilter restrictions' do
         with(:permalink, 'eek')
       end
     end.inspect
-    Post.last_find.should == { :conditions => [%q{!(("posts".blog_id = ?) AND ("posts".permalink = ?))}, 1, 'eek'] }
+    Post.last_find.should == { :conditions => [%q{NOT (("posts".blog_id = ?) AND ("posts".permalink = ?))}, 1, 'eek'] }
   end
 
   it 'should filter by disjunction' do
@@ -137,6 +137,6 @@ describe 'RecordFilter restrictions' do
     Post.filter do
       with(:permalink).not.equal_to(filter_class.name)
     end.inspect
-    Post.last_find.should == { :conditions => [%q("posts".permalink != ?), 'Post'] }
+    Post.last_find.should == { :conditions => [%q("posts".permalink <> ?), 'Post'] }
   end
 end

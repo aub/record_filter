@@ -51,6 +51,11 @@ namespace :db do
           t.string :reviewable_type
           t.integer :stars_count
         end
+
+        create_table :ads do |t|
+          t.integer :blog_id
+          t.string :content
+        end
       end
     end
   end

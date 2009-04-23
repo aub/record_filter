@@ -191,7 +191,7 @@ describe 'implicit joins' do
     end
 
     it 'should create the correct condition' do
-      Comment.last_find[:conditions].should == [%q("comments".offensive != ?), false]
+      Comment.last_find[:conditions].should == [%q("comments".offensive <> ?), false]
     end
   end
 
@@ -218,6 +218,60 @@ describe 'implicit joins' do
 
     it 'should create the correct IS NOT NULL condition' do
       Comment.last_find[:conditions].should == [%q(("comments".contents IS NOT NULL) AND ("comments".offensive = ?)), true]
+    end
+  end
+
+  describe 'passing the join type to having' do
+    before do
+      Blog.filter do
+        having(:left_outer, :posts) do
+          with(:permalink, 'ack')
+        end
+      end.inspect
+    end
+
+    it 'should create the correct condition' do
+      Blog.last_find[:conditions].should == [%q(blogs__posts.permalink = ?), 'ack']
+    end
+
+    it 'should create the correct join' do
+      Blog.last_find[:joins].should == %q(LEFT OUTER JOIN "posts" AS blogs__posts ON "blogs".id = blogs__posts.blog_id)
+    end
+  end
+
+  describe 'passing the join type to having with multiple joins' do
+    before do
+      Blog.filter do
+        having(:left_outer, :posts => :comments) do
+          with(:offensive, true)
+        end
+      end.inspect
+    end
+
+    it 'should create the correct condition' do
+      Blog.last_find[:conditions].should == [%q(blogs__posts__comments.offensive = ?), true]
+    end
+
+    it 'should create the correct join' do
+      Blog.last_find[:joins].should == %q(LEFT OUTER JOIN "posts" AS blogs__posts ON "blogs".id = blogs__posts.blog_id LEFT OUTER JOIN "comments" AS blogs__posts__comments ON blogs__posts.id = blogs__posts__comments.post_id)
+    end
+  end
+
+  describe 'on polymorphic associations' do
+    before do
+      Post.filter do
+        having(:reviews) do
+          with(:stars_count, 3)
+        end
+      end.inspect
+    end
+
+    it 'should create the correct condition' do
+      Post.last_find[:conditions].should == [%q(posts__reviews.stars_count = ?), 3]
+    end
+
+    it 'should create the correct join' do
+      Post.last_find[:joins].should == %q(INNER JOIN "reviews" AS posts__reviews ON "posts".id = posts__reviews.reviewable_id AND (posts__reviews.reviewable_type = 'Post'))
     end
   end
 end

@@ -16,7 +16,7 @@ module RecordFilter
       @model_class.quoted_table_name
     end
 
-    def join_association(association_name)
+    def join_association(association_name, join_type=nil)
       @joins_cache[association_name] ||=
         begin
           association = @model_class.reflect_on_association(association_name)
@@ -25,9 +25,9 @@ module RecordFilter
           end
           case association.macro
           when :belongs_to, :has_many, :has_one
-            simple_join(association)
+            simple_join(association, join_type)
           when :has_and_belongs_to_many
-            compound_join(association)
+            compound_join(association, join_type)
           end
         end
     end
@@ -62,7 +62,7 @@ module RecordFilter
 
     private
 
-    def simple_join(association)
+    def simple_join(association, join_type)
       join_predicate =
         case association.macro
         when :belongs_to
@@ -70,19 +70,23 @@ module RecordFilter
         when :has_many, :has_one
           [{ :id => association.primary_key_name.to_sym }]
         end
+
+      if association.options[:as]
+        join_predicate << DSL::Restriction.new(association.options[:as].to_s + '_type').equal_to(@model_class.name)
+      end
       join_table = Table.new(association.klass, alias_for_association(association))
-      @joins << join = Join.new(self, join_table, join_predicate)
+      @joins << join = Join.new(self, join_table, join_predicate, join_type)
       join
     end
 
-    def compound_join(association)
+    def compound_join(association, join_type)
       pivot_join_predicate = [{ :id => association.primary_key_name.to_sym }]
       table_name = @model_class.connection.quote_table_name(association.options[:join_table])
       pivot_table = PivotTable.new(table_name, association, "__#{alias_for_association(association)}")
-      pivot_join = Join.new(self, pivot_table, pivot_join_predicate)
+      pivot_join = Join.new(self, pivot_table, pivot_join_predicate, join_type)
       join_predicate = [{ association.association_foreign_key.to_sym => :id }]
       join_table = Table.new(association.klass, alias_for_association(association))
-      pivot_table.joins << join = Join.new(pivot_table, join_table, join_predicate)
+      pivot_table.joins << join = Join.new(pivot_table, join_table, join_predicate, join_type)
       @joins << pivot_join
       join
     end

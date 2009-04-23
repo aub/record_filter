@@ -2,9 +2,10 @@ module RecordFilter
   class Join
     attr_reader :left_table, :right_table
 
-    def initialize(left_table, right_table, join_conditions, join_type=:inner)
+    def initialize(left_table, right_table, join_conditions, join_type=nil)
       @left_table, @right_table, @join_conditions, @join_type =
         left_table, right_table, join_conditions, join_type
+      @join_type ||= :inner
     end
 
     def to_sql
@@ -18,6 +19,10 @@ module RecordFilter
         condition_to_predicate_part(condition)
       end * ' AND '
       "#{join_type_string} JOIN #{@right_table.table_name} AS #{@right_table.table_alias} ON #{predicate_sql}"
+    end
+
+    def requires_distinct_select?
+      [:left, :outer, :left_outer].include?(@join_type)
     end
 
     protected
@@ -51,6 +56,8 @@ module RecordFilter
       @join_type_string ||= case(@join_type)
         when :inner then 'INNER'
         when :left then 'LEFT'
+        when :left_outer then 'LEFT OUTER'
+        when :outer then 'OUTER'
         else nil
       end
     end

@@ -37,8 +37,13 @@ module RecordFilter
       end
 
       # join
-      def having(association, &block)
-        @conjunction.add_join(association, &block)
+      def having(join_type_or_association, association=nil, &block)
+        if association.nil?
+          association, join_type = join_type_or_association, nil
+        else
+          join_type = join_type_or_association
+        end
+        @conjunction.add_join(association, join_type, &block)
       end
 
       def join(clazz, join_type, table_alias=nil, &block)

@@ -19,6 +19,8 @@ module RecordFilter
     def method_missing(method, *args, &block)
       if @clazz.named_filters.include?(method)
         Filter.new(@clazz, method, @dsl.conjunction, *args)
+      elsif [:size, :count, :length].include?(method)
+        loaded_count_data.send(method, *args, &block)
       else
         loaded_data.send(method, *args, &block)
       end
@@ -30,6 +32,13 @@ module RecordFilter
       @loaded_data ||= begin
         query = Query.new(@clazz, @dsl.conjunction)
         @clazz.scoped(query.to_find_params)
+      end
+    end
+
+    def loaded_count_data
+      @loaded_count_data ||= begin
+        query = Query.new(@clazz, @dsl.conjunction)
+        @clazz.scoped(query.to_find_params(true))
       end
     end
 

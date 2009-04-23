@@ -15,7 +15,7 @@ module RecordFilter
       end
 
       def to_negative_sql
-        "!(#{to_positive_sql})"
+        "NOT (#{to_positive_sql})"
       end
 
       def self.class_from_operator(operator)
@@ -29,7 +29,7 @@ module RecordFilter
       end
 
       def to_negative_sql
-        "#{@column_name} != ?"
+        "#{@column_name} <> ?"
       end
     end
 

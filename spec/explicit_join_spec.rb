@@ -73,7 +73,34 @@ describe 'explicit joins' do
     end
 
     it 'should add the correct join' do
-      Review.last_find[:joins].should == %q(LEFT JOIN "features" AS reviews__Feature ON (reviews__Feature.featurable_type IS NULL) AND (reviews__Feature.featurable_id >= 12) AND (reviews__Feature.priority != 6))
+      Review.last_find[:joins].should == %q(LEFT JOIN "features" AS reviews__Feature ON (reviews__Feature.featurable_type IS NULL) AND (reviews__Feature.featurable_id >= 12) AND (reviews__Feature.priority <> 6))
+    end
+  end
+
+  describe 'using implicit and explicit joins together with conditions' do
+    before do
+      Blog.named_filter :somethings do
+        having(:ads) do
+          with(:content, nil)
+        end
+        join(Post, :left) do
+          on(:id => :blog_id)
+          join(Comment, :inner) do
+            on(:id => :post_id)
+            on(:offensive, true)
+          end
+        end
+        group_by(:id)
+      end
+      Blog.somethings.inspect
+    end
+
+    it 'should produce the correct conditions' do
+      Blog.last_find[:conditions].should == [%q((blogs__ads.content IS NULL))]
+    end
+
+    it 'should produce the correct join' do
+      Blog.last_find[:joins].should == %q(INNER JOIN "ads" AS blogs__ads ON "blogs".id = blogs__ads.blog_id LEFT JOIN "posts" AS blogs__Post ON "blogs".id = blogs__Post.blog_id INNER JOIN "comments" AS blogs__Post__Comment ON blogs__Post.id = blogs__Post__Comment.post_id AND (blogs__Post__Comment.offensive = 't'))
     end
   end
 end

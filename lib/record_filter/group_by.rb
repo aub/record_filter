@@ -17,7 +17,7 @@ module RecordFilter
         raise ColumnNotFoundException.new("The column #{column} was not found in #{table.table_name}.")
       end
 
-      "#{table.table_name}.#{column}"
+      "#{table.table_alias}.#{column}"
     end
   end
 end

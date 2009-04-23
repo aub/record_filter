@@ -115,7 +115,7 @@ describe 'filter qualifiers' do
       end
 
       it 'should add the limit to the parameters' do
-        Post.last_find[:order].should == %q("photos".path DESC, "posts".permalink ASC)
+        Post.last_find[:order].should == %q(posts__photo.path DESC, "posts".permalink ASC)
       end
     end
 
@@ -184,7 +184,7 @@ describe 'filter qualifiers' do
         group_by(:created_at)
         group_by(:photo => :format)
       end.inspect
-      Post.last_find[:group].should == %q("posts".created_at, "photos".format)
+      Post.last_find[:group].should == %q("posts".created_at, posts__photo.format)
     end
   end
 end
