@@ -9,7 +9,7 @@
 * Add proxy_options to mimic the API of named_scope for getting the options
 that result from a given query.
 
-* Support chaining with AR assciations... (i.e. Blog.posts.published)
+* Support chaining with AR associations... (i.e. Blog.posts.published)
 
 * Support has_many and has_one :through
 
