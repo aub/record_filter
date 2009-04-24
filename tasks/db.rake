@@ -32,6 +32,7 @@ namespace :db do
 
         create_table :comments do |t|
           t.references :post
+          t.references :user
           t.string :contents
           t.boolean :offensive
         end

@@ -13,8 +13,13 @@ module TestModel
 
   attr_accessor :last_find
 
-  def scoped(params = {})
-    @last_find = params
+  def find(params={})
+    @last_find = current_scoped_methods[:find]
+    super
+  end
+
+  def count(params={})
+    @last_find = current_scoped_methods[:find]
     super
   end
 

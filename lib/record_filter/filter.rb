@@ -4,6 +4,7 @@ module RecordFilter
     delegate :inspect, :to => :loaded_data
 
     def initialize(clazz, named_filter, combine_conjunction, *args, &block)
+      @current_scoped_methods = clazz.send(:current_scoped_methods)
       @clazz = clazz
 
       @dsl = dsl_for_named_filter(@clazz, named_filter)
@@ -19,27 +20,29 @@ module RecordFilter
     def method_missing(method, *args, &block)
       if @clazz.named_filters.include?(method)
         Filter.new(@clazz, method, @dsl.conjunction, *args)
-      elsif [:size, :count, :length].include?(method)
-        loaded_count_data.send(method, *args, &block)
       else
-        loaded_data.send(method, *args, &block)
+        call_with_scope(method, *args, &block)
+      end
+    end
+
+    def call_with_scope(method, *args, &block)
+      params = find_params([:size, :length, :count].include?(method))
+      @clazz.send(:with_scope, { :find => params, :create => params }, :reverse_merge) do
+        if @current_scoped_methods
+          @clazz.send(:with_scope, @current_scoped_methods) do
+            @clazz.send(method, *args, &block)
+          end
+        else
+          @clazz.send(method, *args, &block)
+        end
       end
     end
 
     protected
 
-    def loaded_data
-      @loaded_data ||= begin
-        query = Query.new(@clazz, @dsl.conjunction)
-        @clazz.scoped(query.to_find_params)
-      end
-    end
-
-    def loaded_count_data
-      @loaded_count_data ||= begin
-        query = Query.new(@clazz, @dsl.conjunction)
-        @clazz.scoped(query.to_find_params(true))
-      end
+    def find_params(for_count) 
+      query = Query.new(@clazz, @dsl.conjunction)
+      query.to_find_params(for_count)
     end
 
     def dsl_for_named_filter(clazz, named_filter)
@@ -50,6 +53,10 @@ module RecordFilter
         clazz = clazz.superclass
       end
       nil
+    end
+
+    def loaded_data
+      call_with_scope(:find, :all)
     end
   end
 end

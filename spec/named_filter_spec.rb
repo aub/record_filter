@@ -170,4 +170,36 @@ describe 'named filters' do
       Post.last_find[:joins].should == %q(INNER JOIN "blogs" AS posts__blog ON "posts".blog_id = posts__blog.id INNER JOIN "comments" AS posts__comments ON "posts".id = posts__comments.post_id)
     end
   end
+
+  describe 'chaining named filters with regular AR associations' do
+    before do
+      Post.named_filter(:published) do
+        with(:published, true)
+      end
+      @blog = Blog.create
+      @blog.posts.published.inspect
+    end
+
+    it 'should combine the conditions from the association with the named filter' do
+      Post.last_find[:conditions].should == "(\"posts\".published = 't') AND (\"posts\".blog_id = #{@blog.id})"
+    end
+  end
+
+  describe 'chaining named filters with AR associations that involve joins' do
+    before do
+      Comment.named_filter(:with_user_named) do |name|
+        having(:user).with(:first_name, name)
+      end
+      @blog = Blog.create
+      @blog.comments.with_user_named('Bob').inspect 
+    end
+
+    it 'should combine the joins from the association with the named filter' do
+      Comment.last_find[:joins].should == [%q(INNER JOIN "users" AS comments__user ON "comments".user_id = comments__user.id), %q(INNER JOIN "posts" ON "comments".post_id = "posts".id)]
+    end
+
+    it 'should combine the conditions from the association with the named filter' do
+      Comment.last_find[:conditions].should == "(comments__user.first_name = 'Bob') AND ((\"posts\".blog_id = #{@blog.id}))"
+    end
+  end
 end

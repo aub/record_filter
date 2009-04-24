@@ -22,6 +22,7 @@ end
 class Comment < ActiveRecord::Base
   extend TestModel
   belongs_to :post
+  belongs_to :user
 end
 
 
@@ -63,4 +64,5 @@ end
 class User < ActiveRecord::Base
   extend TestModel
   has_one :author
+  has_many :comments
 end
