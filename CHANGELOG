@@ -1,5 +1,16 @@
 = New
 
+* Change tests to use proxy_options instead of last_find.
+
+* Fix a bug where the first and last methods would fail.
+
+* Delegate array methods through to the result of the filter.
+
+* Add proxy_options to mimic the API of named_scope for getting the options
+that result from a given query.
+
+* Support chaining with AR assciations... (i.e. Blog.posts.published)
+
 * Support has_many and has_one :through
 
 = 0.1.4
@@ -73,3 +84,4 @@ a given filter
 * Alias comparison restrictions to gt, lt, lte, gte
 
 * Add greater_than_or_equal_to and less_than_or_equal_to restrictions.
+
