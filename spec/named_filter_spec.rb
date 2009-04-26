@@ -197,4 +197,17 @@ describe 'named filters' do
       Comment.last_find[:conditions].should == "(comments__user.first_name = 'Bob') AND ((\"posts\".blog_id = #{@blog.id}))"
     end
   end
+
+  describe 'chaining multiple named filters with an AR association' do
+    before do
+      Comment.named_filter(:offensive) { with(:offensive, true) }
+      Comment.named_filter(:with_fun_in_contents) { with(:contents).like('%fun%') }
+      @post = Post.create
+      @post.comments.offensive.with_fun_in_contents.inspect
+    end
+
+    it 'should combine the conditions correctly' do
+      Comment.last_find[:conditions].should == 'ack'
+    end
+  end
 end
