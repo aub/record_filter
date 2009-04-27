@@ -2,11 +2,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{record_filter}
-  s.version = "0.1.4"
+  s.version = "0.1.5"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Mat Brown", "Aubrey Holland"]
-  s.date = %q{2009-04-23}
+  s.date = %q{2009-04-27}
   s.description = %q{Pure-ruby criteria API for building complex queries in ActiveRecord}
   s.email = %q{mat@patch.com}
   s.files = [
@@ -41,6 +41,7 @@ Gem::Specification.new do |s|
     "spec/limits_and_ordering_spec.rb",
     "spec/models.rb",
     "spec/named_filter_spec.rb",
+    "spec/proxying_spec.rb",
     "spec/restrictions_spec.rb",
     "spec/select_spec.rb",
     "spec/spec_helper.rb",
@@ -59,6 +60,7 @@ Gem::Specification.new do |s|
     "spec/limits_and_ordering_spec.rb",
     "spec/models.rb",
     "spec/named_filter_spec.rb",
+    "spec/proxying_spec.rb",
     "spec/restrictions_spec.rb",
     "spec/select_spec.rb",
     "spec/spec_helper.rb"
