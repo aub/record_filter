@@ -259,7 +259,7 @@ describe 'implicit joins' do
 
   describe 'on polymorphic associations' do
     before do
-      Post.filter do
+      PublicPost.filter do
         having(:reviews) do
           with(:stars_count, 3)
         end
@@ -267,11 +267,11 @@ describe 'implicit joins' do
     end
 
     it 'should create the correct condition' do
-      Post.last_find[:conditions].should == [%q(posts__reviews.stars_count = ?), 3]
+      PublicPost.last_find[:conditions].should == [%q(posts__reviews.stars_count = ?), 3]
     end
 
     it 'should create the correct join' do
-      Post.last_find[:joins].should == %q(INNER JOIN "reviews" AS posts__reviews ON "posts".id = posts__reviews.reviewable_id AND (posts__reviews.reviewable_type = 'Post'))
+      PublicPost.last_find[:joins].should == %q(INNER JOIN "reviews" AS posts__reviews ON "posts".id = posts__reviews.reviewable_id AND (posts__reviews.reviewable_type = 'Post'))
     end
   end
 

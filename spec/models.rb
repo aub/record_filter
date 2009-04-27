@@ -49,6 +49,8 @@ class Post < ActiveRecord::Base
   has_one :user, :through => :author
 end
 
+class PublicPost < Post
+end
 
 class Review < ActiveRecord::Base
   extend TestModel

@@ -79,7 +79,7 @@ module RecordFilter
         end
 
       if association.options[:as]
-        join_predicate << DSL::Restriction.new(association.options[:as].to_s + '_type').equal_to(@model_class.name)
+        join_predicate << DSL::Restriction.new(association.options[:as].to_s + '_type').equal_to(association.active_record.base_class.name)
       end
       join_table = Table.new(association.klass, alias_for_association(association))
       @joins << join = Join.new(self, join_table, join_predicate, join_type)

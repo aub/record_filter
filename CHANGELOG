@@ -1,5 +1,7 @@
 = New
 
+* Fix a bug where we used the wrong type in polymorphic association joins.
+
 * Use with_scope when chaining filters, named_filters, and AR associations in
 order to keep the filter data instead of passing the query parameters directly
 and combining them in order to make this work correctly with AR.

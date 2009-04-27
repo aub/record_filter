@@ -28,4 +28,22 @@ describe 'proxying to the found data' do
       Blog.by_name.first(:conditions => ['name = ?', 'b']).should == @blog2
     end
   end
+
+  describe 'calling reject! on a filter result' do
+    before do
+      Blog.all.each { |blog| blog.destroy }
+      Blog.named_filter(:by_name) do
+        order(:name)
+      end
+      @blog1 = Blog.create
+      @blog2 = Blog.create
+    end
+
+    it 'should remove the rejected items from the list' do
+      items = Blog.by_name
+      items.size.should == 2
+      items.reject! { |i| true } # should reject them all
+      items.size.should == 0
+    end
+  end
 end
