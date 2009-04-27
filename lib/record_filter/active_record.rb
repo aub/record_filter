@@ -3,7 +3,7 @@ module RecordFilter
     module ClassMethods
 
       def filter(&block)
-        Filter.new(self, nil, nil, &block)
+        Filter.new(self, nil, &block)
       end
 
       def named_filter(name, &block)
@@ -15,7 +15,7 @@ module RecordFilter
 
         (class << self; self; end).instance_eval do
           define_method(name.to_s) do |*args|
-            Filter.new(self, name, nil, *args)
+            Filter.new(self, name, *args)
           end
         end
       end

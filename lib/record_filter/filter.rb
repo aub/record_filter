@@ -10,14 +10,13 @@ module RecordFilter
       end
     end
 
-    def initialize(clazz, named_filter, combine_conjunction, *args, &block)
+    def initialize(clazz, named_filter, *args, &block)
       @current_scoped_methods = clazz.send(:current_scoped_methods)
       @clazz = clazz
 
       @dsl = dsl_for_named_filter(@clazz, named_filter)
       @dsl.instance_eval(&block) if block
       @dsl.send(named_filter, *args) if named_filter && @dsl.respond_to?(named_filter)
-      @dsl.conjunction.steps.unshift(combine_conjunction.steps).flatten! if combine_conjunction
       @query = Query.new(@clazz, @dsl.conjunction)
     end
 
@@ -42,13 +41,15 @@ module RecordFilter
     end
 
     def filter(&block)
-      Filter.new(@clazz, nil, @dsl.conjunction, &block)
+      do_with_scope do
+        Filter.new(@clazz, nil, &block)
+      end
     end
 
     def method_missing(method, *args, &block)
       if @clazz.named_filters.include?(method)
         do_with_scope do
-          Filter.new(@clazz, method, @dsl.conjunction, *args)
+          Filter.new(@clazz, method, *args)
         end
       else
         do_with_scope([:size, :length, :count].include?(method)) do

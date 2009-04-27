@@ -7,7 +7,9 @@ module RecordFilter
     end
 
     def to_find_params(count_query=false)
-      params = { :conditions => @conjunction.to_conditions }
+      params = {}
+      conditions = @conjunction.to_conditions
+      params = { :conditions => conditions } if conditions
       joins = @table.all_joins
       params[:joins] = joins.map { |join| join.to_sql } * ' ' unless joins.empty?
       if (joins.any? { |j| j.requires_distinct_select? })

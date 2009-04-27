@@ -13,14 +13,15 @@ describe 'named filters' do
     end
 
     it 'should call the filter through the filter method' do
-      Blog.with_test_name.proxy_options[:conditions].should == [%q("blogs".name = ?), 'Test Name']
+      Blog.with_test_name.inspect
+      Blog.last_find[:conditions].should == [%q("blogs".name = ?), 'Test Name']
     end
 
     it 'should call the filter within the block' do
-      params = Blog.filter do
+      Blog.filter do
         with_test_name
-      end.proxy_options
-      params[:conditions].should == [%q("blogs".name = ?), 'Test Name']
+      end.inspect
+      Blog.last_find[:conditions].should == [%q("blogs".name = ?), 'Test Name']
     end
   end
 
@@ -32,7 +33,8 @@ describe 'named filters' do
     end
 
     it 'should call the filter with the passed argument' do
-      Blog.with_name('nice name').proxy_options[:conditions].should == [%q("blogs".name = ?), 'nice name']
+      Blog.with_name('nice name').inspect
+      Blog.last_find[:conditions].should == [%q("blogs".name = ?), 'nice name']
     end
   end
 
@@ -47,7 +49,8 @@ describe 'named filters' do
     end
 
     it 'should call the filter passing all of the arguments' do
-      Blog.with_name_and_post_with_permalink('booya', 'ftw').proxy_options[:conditions].should == 
+      Blog.with_name_and_post_with_permalink('booya', 'ftw').inspect
+      Blog.last_find[:conditions].should == 
         [%q(("blogs".name = ?) AND (blogs__posts.permalink = ?)), 'booya', 'ftw'] 
     end
   end
@@ -58,7 +61,8 @@ describe 'named filters' do
         with(:blog_id, blog)
       end
       blog = Blog.create
-      Post.with_ar_arg(blog).proxy_options[:conditions].should == [%q("posts".blog_id = ?), blog.id]
+      Post.with_ar_arg(blog).inspect
+      Post.last_find[:conditions].should == [%q("posts".blog_id = ?), blog.id]
     end
   end
 
@@ -77,7 +81,8 @@ describe 'named filters' do
     end
 
     it 'should execute the parent class filters correctly' do
-      NiceComment.with_contents('test contents').proxy_options[:conditions].should == 
+      NiceComment.with_contents('test contents').inspect
+      NiceComment.last_find[:conditions].should == 
         [%q("comments".contents = ?), 'test contents']
     end
 
@@ -86,8 +91,9 @@ describe 'named filters' do
     end
 
     it 'should have parent class filters in the subclass' do
-      NiceComment.offensive.with_contents('something').proxy_options[:conditions].should == 
-        [%q(("comments".offensive = ?) AND ("comments".contents = ?)), true, 'something']
+      NiceComment.offensive.with_contents('something').inspect
+      NiceComment.last_find[:conditions].should == 
+        %q(("comments".contents = 'something') AND ("comments".offensive = 't'))
     end
 
     it 'should provide access to the named filters' do
@@ -102,9 +108,9 @@ describe 'named filters' do
       Post.named_filter(:with_offensive_comments) do
         having(:comments).offensive(true)
       end
-      params = Post.with_offensive_comments.proxy_options
-      params[:conditions].should == [%q(posts__comments.offensive = ?), true] 
-      params[:joins].should == %q(INNER JOIN "comments" AS posts__comments ON "comments".post_id = posts__blog.id)
+      Post.with_offensive_comments.inspect
+      Post.last_find[:conditions].should == [%q(posts__comments.offensive = ?), true] 
+      Post.last_find[:joins].should == %q(INNER JOIN "comments" AS posts__comments ON "comments".post_id = posts__blog.id)
     end
   end
 
@@ -122,47 +128,48 @@ describe 'named filters' do
     end
 
     it 'should chain the filters into a single query' do
-      params = Post.for_blog(1).with_offensive_comments.proxy_options
-      params[:conditions].should == [%q((posts__blog.id = ?) AND (posts__comments.offensive = ?)), 1, true]
-      params[:joins].should == %q(INNER JOIN "blogs" AS posts__blog ON "posts".blog_id = posts__blog.id INNER JOIN "comments" AS posts__comments ON "posts".id = posts__comments.post_id)
+      Post.for_blog(1).with_offensive_comments.inspect
+      Post.last_find[:conditions].should == %q((posts__comments.offensive = 't') AND (posts__blog.id = 1))
+      Post.last_find[:joins].should == [%q(INNER JOIN "comments" AS posts__comments ON "posts".id = posts__comments.post_id), %q(INNER JOIN "blogs" AS posts__blog ON "posts".blog_id = posts__blog.id)]
     end
 
     it 'should remove duplicate joins' do
-      params = Post.for_blog(1).with_offensive_comments.with_interesting_comments.proxy_options
-      params[:joins].should == %q(INNER JOIN "blogs" AS posts__blog ON "posts".blog_id = posts__blog.id INNER JOIN "comments" AS posts__comments ON "posts".id = posts__comments.post_id)
+      Post.for_blog(1).with_offensive_comments.with_interesting_comments.inspect
+      Post.last_find[:joins].should == [%q(INNER JOIN "comments" AS posts__comments ON "posts".id = posts__comments.post_id), %q(INNER JOIN "blogs" AS posts__blog ON "posts".blog_id = posts__blog.id)]
     end
 
     it 'should allow for filtering a named_filter' do
-      params = Post.for_blog(1).filter { having(:comments).with :offensive, true }.proxy_options
-      params[:conditions].should == [%q((posts__blog.id = ?) AND (posts__comments.offensive = ?)), 1, true]
-      params[:joins].should == %q(INNER JOIN "blogs" AS posts__blog ON "posts".blog_id = posts__blog.id INNER JOIN "comments" AS posts__comments ON "posts".id = posts__comments.post_id)
+      Post.for_blog(1).filter { having(:comments).with :offensive, true }.inspect
+      Post.last_find[:conditions].should == %q((posts__comments.offensive = 't') AND (posts__blog.id = 1))
+      Post.last_find[:joins].should == [%q(INNER JOIN "comments" AS posts__comments ON "posts".id = posts__comments.post_id), %q(INNER JOIN "blogs" AS posts__blog ON "posts".blog_id = posts__blog.id)] 
     end
 
     it 'should allow for applying a named filter to a filter' do
-      params = Post.filter { having(:comments).with :offensive, false }.for_blog(1).proxy_options
-      params[:conditions].should == [%q((posts__comments.offensive = ?) AND (posts__blog.id = ?)), false, 1]
-      params[:joins].should == %q(INNER JOIN "comments" AS posts__comments ON "posts".id = posts__comments.post_id INNER JOIN "blogs" AS posts__blog ON "posts".blog_id = posts__blog.id)  
+      Post.filter { having(:comments).with :offensive, false }.for_blog(1).inspect
+      Post.last_find[:conditions].should == %q((posts__blog.id = 1) AND (posts__comments.offensive = 'f'))
+      Post.last_find[:joins].should == [%q(INNER JOIN "blogs" AS posts__blog ON "posts".blog_id = posts__blog.id), %q(INNER JOIN "comments" AS posts__comments ON "posts".id = posts__comments.post_id)]
     end
 
     it 'should not change the inner filter conditions when chaining filters' do
       base = Post.for_blog(1)
       base.with_offensive_comments
-      base.proxy_options[:conditions].should == [%q(posts__blog.id = ?), 1]
+      base.inspect
+      Post.last_find[:conditions].should == [%q(posts__blog.id = ?), 1]
     end
 
     it 'should not change the inner filter joins when chaining filters' do
       base = Post.for_blog(1)
       base.with_offensive_comments
-      base.proxy_options[:joins].should == %q(INNER JOIN "blogs" AS posts__blog ON "posts".blog_id = posts__blog.id)
+      base.inspect
+      Post.last_find[:joins].should == %q(INNER JOIN "blogs" AS posts__blog ON "posts".blog_id = posts__blog.id)
     end
 
     it 'should not change an original filter when reusing it' do
       base = Post.for_blog(1)
-      level1 = base.with_offensive_comments
+      level1 = base.with_offensive_comments.inspect
       level2 = base.with_interesting_comments
-      params = level1.proxy_options
-      params[:conditions].should == [%q((posts__blog.id = ?) AND (posts__comments.offensive = ?)), 1, true]
-      params[:joins].should == %q(INNER JOIN "blogs" AS posts__blog ON "posts".blog_id = posts__blog.id INNER JOIN "comments" AS posts__comments ON "posts".id = posts__comments.post_id)
+      Post.last_find[:conditions].should == %q((posts__comments.offensive = 't') AND (posts__blog.id = 1))
+      Post.last_find[:joins].should == [%q(INNER JOIN "comments" AS posts__comments ON "posts".id = posts__comments.post_id), %q(INNER JOIN "blogs" AS posts__blog ON "posts".blog_id = posts__blog.id)]
     end
   end
 
@@ -207,7 +214,26 @@ describe 'named filters' do
     end
 
     it 'should combine the conditions correctly' do
-      Comment.last_find[:conditions].should == 'ack'
+      Comment.last_find[:conditions].should == "(\"comments\".contents LIKE '%fun%') AND ((\"comments\".offensive = 't') AND (\"comments\".post_id = #{@post.id}))"
+    end
+  end
+
+  describe 'chaining multiple named filters with different joins' do
+    before do
+      Blog.named_filter(:with_offensive_comments) { having(:comments).with(:offensive, true) }
+      Blog.named_filter(:with_ads_with_content) { |content| having(:ads).with(:content, content) }
+    end
+
+    it 'compile the joins correctly' do
+      Blog.with_offensive_comments.with_ads_with_content('ack').inspect
+      Blog.last_find[:joins].should == [%q(INNER JOIN "ads" AS blogs__ads ON "blogs".id = blogs__ads.blog_id), %q(INNER JOIN "posts" AS blogs__posts ON "blogs".id = blogs__posts.blog_id INNER JOIN "comments" AS blogs__posts__comments ON blogs__posts.id = blogs__posts__comments.post_id)]
+    end
+  end
+
+  describe 'with named filters that only include orders' do
+    it 'should have an empty conditions hash' do
+      Blog.named_filter(:ordered_by_id) { order(:id, :desc) }
+      Blog.ordered_by_id.proxy_options.should == { :order => %q("blogs".id DESC) }
     end
   end
 end

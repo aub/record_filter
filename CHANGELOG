@@ -1,6 +1,12 @@
 = New
 
-* Change tests to use proxy_options instead of last_find.
+* Use with_scope when chaining filters, named_filters, and AR associations in
+order to keep the filter data instead of passing the query parameters directly
+and combining them in order to make this work correctly with AR.
+
+* Fix a bug when calling .filter in a chain of associations and named filters.
+
+* Don't include conditions unless there are actually conditions specified.
 
 * Fix a bug where the first and last methods would fail.
 

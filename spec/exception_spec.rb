@@ -1,7 +1,10 @@
 require File.join(File.dirname(__FILE__), 'spec_helper')
 
 describe 'raising exceptions' do
-  
+  before do
+    TestModel.extended_models.each { |model| model.last_find = {} }
+  end 
+
   describe 'on missing associations' do
     it 'should get AssociationNotFoundException' do
       lambda {

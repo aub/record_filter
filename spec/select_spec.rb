@@ -1,7 +1,10 @@
 require File.join(File.dirname(__FILE__), 'spec_helper')
 
 describe 'with custom selects for cases where DISTINCT is required' do
-  
+  before do
+    TestModel.extended_models.each { |model| model.last_find = {} }
+  end 
+
   describe 'on a standard filter' do
     it 'should put nothing in the select' do
       Post.filter do
