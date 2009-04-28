@@ -224,7 +224,7 @@ describe 'implicit joins' do
   describe 'passing the join type to having' do
     before do
       Blog.filter do
-        having(:left_outer, :posts) do
+        having(:left, :posts) do
           with(:permalink, 'ack')
         end
       end.inspect
@@ -242,7 +242,7 @@ describe 'implicit joins' do
   describe 'passing the join type to having with multiple joins' do
     before do
       Blog.filter do
-        having(:left_outer, :posts => :comments) do
+        having(:left, :posts => :comments) do
           with(:offensive, true)
         end
       end.inspect

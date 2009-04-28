@@ -16,10 +16,10 @@ describe 'with custom selects for cases where DISTINCT is required' do
 
   describe 'with join types that require distinct' do
     it 'should put the distinct clause in the select' do
-      [:left, :outer, :left_outer].each do |join_type|
+      [:left, :right].each do |join_type|
         Post.filter do
           having(join_type, :comments).with(:offensive, true)
-        end.inspect
+        end.inspect rescue nil # required because sqlite doesn't support right joins
         Post.last_find[:select].should == %q(DISTINCT "posts".*)
       end
     end
@@ -40,7 +40,7 @@ describe 'with custom selects for cases where DISTINCT is required' do
     it 'should put the distinct clause in the select' do
       Blog.filter do
         having(:posts) do
-          having(:left_outer, :comments).with(:offensive, true)
+          having(:left, :comments).with(:offensive, true)
         end
       end.inspect
       Blog.last_find[:select].should == %q(DISTINCT "blogs".*)
@@ -50,7 +50,7 @@ describe 'with custom selects for cases where DISTINCT is required' do
   describe 'on a filter that requires distinct with a count call' do
     it 'should put the distinct clause in the select' do
       Post.filter do
-        having(:left_outer, :comments).with(:offensive, true)
+        having(:left, :comments).with(:offensive, true)
       end.count
       Post.last_find[:select].should == %q(DISTINCT "posts".id)
     end

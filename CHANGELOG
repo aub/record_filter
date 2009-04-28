@@ -1,5 +1,7 @@
 = New
 
+* Changed the available join types to inner, left and right.
+
 * Fix a bug where we used the wrong type in polymorphic association joins.
 
 * Use with_scope when chaining filters, named_filters, and AR associations in

@@ -22,7 +22,7 @@ module RecordFilter
     end
 
     def requires_distinct_select?
-      [:left, :outer, :left_outer].include?(@join_type)
+      [:right, :left].include?(@join_type)
     end
 
     protected
@@ -55,9 +55,8 @@ module RecordFilter
     def join_type_string
       @join_type_string ||= case(@join_type)
         when :inner then 'INNER'
-        when :left then 'LEFT'
-        when :left_outer then 'LEFT OUTER'
-        when :outer then 'OUTER'
+        when :left then 'LEFT OUTER'
+        when :right then 'RIGHT OUTER'
         else nil
       end
     end
