@@ -1,0 +1,104 @@
+= record_filter
+
+record_filter is a DSL for specifying criteria for ActiveRecord queries in pure Ruby.
+It has support for filters created on the fly and for named filters that are associated with object types.
+record_filter has the following top-level features:
+
+* Pure ruby API eliminates the need for hard-coded SQL in most cases.
+* Works seamlessly with existing ActiveRecord APIs, including named scopes.
+* Supports creation of ad-hoc filters as well as named filters that can be associated with object types.
+* Allows chaining of filters with each other and with named scopes to create complex queries.
+* Takes advantage of the associations in your ActiveRecord objects for a clean implicit join API.
+
+== Installation
+
+gem install outoftime-record_filter --source=http://gems.github.com
+
+== Usage
+
+=== Ad-hoc filters
+
+  Post.filter do
+    with(:permalink, 'blog-post')
+    having(:blog).with(:name, 'Blog')
+  end
+
+This could be expressed in ActiveRecord as:
+
+  Post.find(:all, :joins => :blog, :conditions => ['posts.permalink = ? AND blogs.name = ?', 'blog-post', 'Blog')
+
+and it returns the same result, a list of Post objects that are returned from the query.
+
+=== Named filters
+
+  class Post < ActiveRecord::Base
+    named_filter(:with_title) do |title|
+      with(:title, title)
+    end
+  end
+
+  Post.with_title('posted')
+
+This is the same as the following code using named scopes, and returns the same result:
+
+  class Post < ActiveRecord::Base
+    named_scope :with_title, lambda { |title| { :conditions => ['title = ?', title] }}
+  end
+  
+  Post.with_title('scoped')
+
+=== Restrictions
+
+==== Equality
+
+Restrictions are specified through the API using the 'with' function. The first argument to 'with' should be the
+name of the field that the restriction applies to. If a second argument is supplied, it is assumed that you are 
+expressing an equality condition and that argument is used as the value.
+
+  with(:title, 'abc') # :conditions => ['title = ?', 'abc']
+
+For the more verbose among us, this can also be specified as:
+
+  with(:title).equal_to('abc') # :conditions => ['title = ?', 'abc']
+
+Other types of restrictions are specified by omitting the second argument to 'with' and chaining it with one of the
+restriction methods.
+
+==== Comparison operators
+
+  with(:price).greater_than(10) # :conditions => ['price > ?', 10]
+
+  with(:created_at).less_than(2.days.ago) # :conditions => ['created_at < ?', 2.days.ago]
+
+These methods can also have _or_equal_to tagged onto the end, to obvious affect, and all of the comparison operators are aliased to
+their standard single-character variants:
+
+  gt, gte, lt and lte
+
+==== IS NULL
+
+  with(:price, nil) # :conditions => ['price IS NULL']
+
+This short form can also be made explicit by using the is_null, null, or nil functions on with:
+
+  with(:price).is_null # :conditions => ['price IS NULL']
+
+==== IN
+
+  with(:id).in([1, 2, 3]) # :conditions => ['id IN (?)', [1, 2, 3]]
+
+==== BETWEEN
+
+  with(:id).between(1, 5) # :conditions => ['id BETWEEN ? AND ?', 1, 5]
+
+The argument to between can also be either a tuple or a range with the same results
+
+  with(:created_at).between([Time.now, 3.days.ago]) # :conditions => ['created_at BETWEEN ? AND ?', Time.now, 3.days.ago]
+
+  with(:price).between(1..5) # :conditions => ['price BETWEEN ? AND ?', 1, 5]
+
+==== LIKE
+
+  with(:title).like('%help%') # :conditions => ['title LIKE ?', '%help%']
+
+
