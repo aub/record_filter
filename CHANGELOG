@@ -1,5 +1,8 @@
 = New
 
+* Correctly handle the case where nil or [] is passed as an argument to the IN
+restriction.
+
 * Added is_not_null as a nicer version of is_null.not
 
 = 0.2.0 
