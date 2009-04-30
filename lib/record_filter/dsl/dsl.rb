@@ -12,7 +12,7 @@ module RecordFilter
         end
 
         def subclass(clazz)
-          SUBCLASSES[clazz.name.to_sym]
+          SUBCLASSES[clazz.object_id]
         end
       end
 

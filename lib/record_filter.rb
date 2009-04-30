@@ -7,7 +7,7 @@ require 'active_record'
 end
 
 module RecordFilter
-  class AssociationNotFoundException < StandardError; end
-  class ColumnNotFoundException < StandardError; end
-  class InvalidJoinException < StandardError; end
+  AssociationNotFoundException = Class.new(StandardError)
+  ColumnNotFoundException = Class.new(StandardError)
+  InvalidJoinException = Class.new(StandardError)
 end

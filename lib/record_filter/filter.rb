@@ -93,7 +93,7 @@ module RecordFilter
     def dsl_for_named_filter(clazz, named_filter)
       return DSL::DSL.create(clazz) if named_filter.blank?
       while (clazz)
-        dsl = DSL::DSL::SUBCLASSES.has_key?(clazz.name.to_sym) ? DSL::DSL::SUBCLASSES[clazz.name.to_sym] : nil
+        dsl = DSL::DSL.subclass(clazz)
         return DSL::DSL.create(clazz) if dsl && dsl.instance_methods(false).include?(named_filter.to_s)
         clazz = clazz.superclass
       end

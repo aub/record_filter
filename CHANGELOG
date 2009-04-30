@@ -1,5 +1,13 @@
 = New
 
+* Stop using _inheritable_attribute for accessing the named filters and just recurse for
+them.
+
+* Change the tests for named filters to use anonymous classes so that we're
+sure we're starting from a blank slate.
+
+* Make the API work correctly for anonymous classes.
+
 * Correctly handle the case where nil or [] is passed as an argument to the IN
 restriction.
 
