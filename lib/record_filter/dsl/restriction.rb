@@ -35,6 +35,11 @@ module RecordFilter
         end
       end
 
+      def is_not_null
+        @operator = :is_null
+        @negated = true
+      end
+
       alias_method :gt, :greater_than
       alias_method :gte, :greater_than_or_equal_to
       alias_method :lt, :less_than

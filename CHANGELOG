@@ -1,3 +1,7 @@
+= New
+
+* Added is_not_null as a nicer version of is_null.not
+
 = 0.2.0 
 
 * Changed the available join types to inner, left and right.

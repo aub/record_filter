@@ -119,6 +119,13 @@ describe 'RecordFilter restrictions' do
     end
   end
 
+  it 'should filter for is_not_null' do
+    Post.filter do
+      with(:permalink).is_not_null
+    end.inspect
+    Post.last_find.should == { :conditions => [%q("posts".permalink IS NOT NULL)] }
+  end
+
   it 'should support like' do
     Post.filter do
       with(:permalink).like('%piglets%')

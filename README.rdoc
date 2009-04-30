@@ -50,7 +50,8 @@ This is the same as the following code using named scopes, and returns the same 
 === Restrictions
 
 Restrictions are specified through the API using the 'with' function. The first argument to 'with' should be the
-name of the field that the restriction applies to. 
+name of the field that the restriction applies to. All restriction types can be negated by chaining the 'with'
+method with a call to 'not', as seen in some examples below.
 
 ==== Equality
 
@@ -58,6 +59,10 @@ If a second argument is supplied, it is assumed that you are
 expressing an equality condition and that argument is used as the value.
 
   with(:title, 'abc') # :conditions => ['title = ?', 'abc']
+
+Which can be negated with:
+
+  with(:title, 'abc').not # :conditions => ['title <> ?', 'abc']
 
 For the more verbose among us, this can also be specified as:
 
@@ -84,6 +89,11 @@ their standard single-character variants:
 This short form can also be made explicit by using the is_null, null, or nil functions on with:
 
   with(:price).is_null # :conditions => ['price IS NULL']
+
+It can be negated either by chaining with the 'not' function or by using is_not_null:
+
+  with(:price).is_not_null # :conditions => ['price IS NOT NULL']
+  with(:price).is_null.not # "
 
 ==== IN
 
