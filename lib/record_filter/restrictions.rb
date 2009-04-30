@@ -75,6 +75,11 @@ module RecordFilter
       def to_negative_sql
         "#{@column_name} NOT IN (?)"
       end
+
+      def to_conditions
+        # Need to put in the value even if it's null in this case.
+        [to_sql, @value]
+      end
     end
 
     class Between < Base
