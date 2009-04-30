@@ -42,6 +42,13 @@ describe 'RecordFilter restrictions' do
     Post.last_find.should == { :conditions => [%q{"posts".blog_id IN (?)}, [1, 3, 5]] }
   end
 
+  it 'should do the right thing for IN filters with empty arrays' do
+    Post.filter do
+      with(:blog_id).in([])
+    end.inspect
+    Post.last_find.should == { :conditions => [%q("posts".blog_id IN (?)), []] }
+  end
+
   it 'should filter for between' do
     time1 = Time.parse('2008-01-03 23:23:00')
     time2 = Time.parse('2008-01-03 23:36:00')
