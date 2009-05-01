@@ -35,15 +35,16 @@ describe 'filter qualifiers' do
 
     describe 'limiting named scopes' do
       before do
-        Post.named_filter(:published) do
+        @post = Class.new(Post)
+        @post.named_filter(:published) do
           with :published, true
           limit 6
         end
       end
 
       it 'should limit the query' do
-        Post.published.inspect
-        Post.last_find[:limit].should == 6
+        @post.published.inspect
+        @post.last_find[:limit].should == 6
       end
     end
 

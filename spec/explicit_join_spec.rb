@@ -79,7 +79,8 @@ describe 'explicit joins' do
 
   describe 'using implicit and explicit joins together with conditions' do
     before do
-      Blog.named_filter :somethings do
+      @blog = Class.new(Blog)
+      @blog.named_filter :somethings do
         having(:ads) do
           with(:content, nil)
         end
@@ -92,15 +93,15 @@ describe 'explicit joins' do
         end
         group_by(:id)
       end
-      Blog.somethings.inspect
+      @blog.somethings.inspect
     end
 
     it 'should produce the correct conditions' do
-      Blog.last_find[:conditions].should == [%q((blogs__ads.content IS NULL))]
+      @blog.last_find[:conditions].should == [%q((blogs__ads.content IS NULL))]
     end
 
     it 'should produce the correct join' do
-      Blog.last_find[:joins].should == %q(INNER JOIN "ads" AS blogs__ads ON "blogs".id = blogs__ads.blog_id LEFT OUTER JOIN "posts" AS blogs__Post ON "blogs".id = blogs__Post.blog_id INNER JOIN "comments" AS blogs__Post__Comment ON blogs__Post.id = blogs__Post__Comment.post_id AND (blogs__Post__Comment.offensive = 't'))
+      @blog.last_find[:joins].should == %q(INNER JOIN "ads" AS blogs__ads ON "blogs".id = blogs__ads.blog_id LEFT OUTER JOIN "posts" AS blogs__Post ON "blogs".id = blogs__Post.blog_id INNER JOIN "comments" AS blogs__Post__Comment ON blogs__Post.id = blogs__Post__Comment.post_id AND (blogs__Post__Comment.offensive = 't'))
     end
   end
 end
