@@ -42,6 +42,14 @@ describe 'raising exceptions' do
       }.should raise_error(RecordFilter::ColumnNotFoundException)
     end
 
+    it 'should get ColumnNotFoundException for group_by' do
+      lambda {
+        Post.filter do
+          group_by(:this_is_not_there)
+        end.inspect
+      }.should raise_error(RecordFilter::ColumnNotFoundException)
+    end
+
     it 'should get AssociationNotFoundException for orders on bad associations' do
       lambda {
         Post.filter do
@@ -109,6 +117,16 @@ describe 'raising exceptions' do
         Post.filter do
           having(:photo) do
             limit 2
+          end
+        end
+      }.should raise_error(RecordFilter::InvalidFilterException)
+    end
+
+    it 'should not allow calls to group_by within joins' do
+      lambda {
+        Post.filter do
+          having(:photo) do
+            group_by(:id)
           end
         end
       }.should raise_error(RecordFilter::InvalidFilterException)

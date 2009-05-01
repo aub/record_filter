@@ -32,6 +32,11 @@ describe 'RecordFilter restrictions' do
          with(:created_at).send(set[1], Time.parse('2009-01-03 23:02:00'))
        end.inspect
        Post.last_find.should == { :conditions => ["\"posts\".created_at #{set[2]} ?", Time.parse('2009-01-03 23:02:00')] }
+
+       Post.filter do
+         with(:created_at).not.send(set[0], Time.parse('2009-02-02 02:22:22'))
+       end.inspect
+       Post.last_find.should == { :conditions => ["NOT (\"posts\".created_at #{set[2]} ?)", Time.parse('2009-02-02 02:22:22')] }
      end
   end
 
@@ -40,6 +45,13 @@ describe 'RecordFilter restrictions' do
       with(:blog_id).in [1, 3, 5]
     end.inspect
     Post.last_find.should == { :conditions => [%q{"posts".blog_id IN (?)}, [1, 3, 5]] }
+  end
+
+  it 'should negate IN filters correctly' do
+    Post.filter do
+      with(:blog_id).not.in [1, 3, 5]
+    end.inspect
+    Post.last_find.should == { :conditions => [%q{"posts".blog_id NOT IN (?)}, [1, 3, 5]] }
   end
 
   it 'should do the right thing for IN filters with empty arrays' do

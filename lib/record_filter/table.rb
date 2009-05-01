@@ -16,22 +16,22 @@ module RecordFilter
       @model_class.quoted_table_name
     end
 
-    def join_association(association_name, join_type=nil)
+    def join_association(association_name, join_type=nil, source_type=nil)
       @joins_cache[association_name] ||=
         begin
           association = @model_class.reflect_on_association(association_name)
           if association.nil?
             raise AssociationNotFoundException.new("The association #{association_name} was not found on #{@model_class.name}.")
           end
-
           if (association.options[:through])
             through_association = @model_class.reflect_on_association(association.options[:through])
             through_join = join_association(association.options[:through], join_type)
-            through_join.right_table.join_association(association_name, join_type)
+            through_join.right_table.join_association(
+              association.options[:source] || association_name, join_type, association.options[:source_type])
           else
             case association.macro
             when :belongs_to, :has_many, :has_one
-              simple_join(association, join_type)
+              simple_join(association, join_type, source_type)
             when :has_and_belongs_to_many
               compound_join(association, join_type)
             end
@@ -69,19 +69,22 @@ module RecordFilter
 
     private
 
-    def simple_join(association, join_type)
+    def simple_join(association, join_type, source_type)
       join_predicate =
         case association.macro
         when :belongs_to
-          [{ association.primary_key_name.to_sym => :id }]
+          [{ association.options[:foreign_key] || association.association_foreign_key.to_sym => :id }]
         when :has_many, :has_one
-          [{ :id => association.primary_key_name.to_sym }]
+          [{ association.options[:primary_key] || :id => association.primary_key_name.to_sym }]
         end
 
       if association.options[:as]
         join_predicate << DSL::Restriction.new(association.options[:as].to_s + '_type').equal_to(association.active_record.base_class.name)
       end
-      join_table = Table.new(association.klass, alias_for_association(association))
+
+      clazz = source_type.nil? ? association.klass : source_type.constantize
+
+      join_table = Table.new(clazz, alias_for_association(association))
       @joins << join = Join.new(self, join_table, join_predicate, join_type)
       join
     end

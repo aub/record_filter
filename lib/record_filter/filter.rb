@@ -16,22 +16,14 @@ module RecordFilter
     end
 
     def first(*args)
-      if args.first.kind_of?(Integer)
-        loaded_data.first(*args)
-      else
-        do_with_scope do
-          @clazz.find(:first, *args)
-        end
+      do_with_scope do
+        @clazz.find(:first, *args)
       end
     end
 
     def last(*args)
-      if args.first.kind_of?(Integer)
-        loaded_data.last(*args)
-      else
-        do_with_scope do
-          @clazz.find(:last, *args)
-        end
+      do_with_scope do
+        @clazz.find(:last, *args)
       end
     end
 

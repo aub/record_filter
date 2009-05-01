@@ -28,6 +28,18 @@ describe 'proxying to the found data' do
     it 'should proxy arguments through' do
       @blog.by_name.first(:conditions => ['name = ?', 'b']).should == @blog2
     end
+
+    it 'should evaluate whether the returned scope is empty correctly' do
+      @blog.by_name.empty?.should == false
+      Blog.all.each { |b| b.destroy }
+      @blog.by_name.empty?.should == true
+    end
+
+    it 'should do the right thing for any?' do
+      @blog.by_name.any? { |b| b.name == 'b' }.should == true
+      @blog.by_name.any? { |b| b.name == 'd' }.should == false
+      @blog.by_name.any?.should == true
+    end
   end
 
   describe 'calling reject! on a filter result' do

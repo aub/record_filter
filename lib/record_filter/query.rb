@@ -48,7 +48,6 @@ module RecordFilter
         return DSL::DSL.create(clazz) if dsl && dsl.instance_methods(false).include?(named_filter.to_s)
         clazz = clazz.superclass
       end
-      nil
     end
   end
 end
