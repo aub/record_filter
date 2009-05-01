@@ -43,7 +43,6 @@ describe 'filter qualifiers' do
       end
 
       it 'should limit the query' do
-        prev_last_find = @post.last_find
         @post.published_ones.inspect
         @post.last_find[:limit].should == 2
       end
