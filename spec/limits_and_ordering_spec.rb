@@ -36,15 +36,16 @@ describe 'filter qualifiers' do
     describe 'limiting named scopes' do
       before do
         @post = Class.new(Post)
-        @post.named_filter(:published) do
+        @post.named_filter(:published_ones) do
           limit(2)
           with(:published, false)
         end
       end
 
       it 'should limit the query' do
-        @post.published.inspect
-        @post.last_find.should == []
+        prev_last_find = @post.last_find
+        @post.published_ones.inspect
+        [prev_last_find, @post.last_find].should == []
         @post.last_find[:limit].should == 2
       end
     end
