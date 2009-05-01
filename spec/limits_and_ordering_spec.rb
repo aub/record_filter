@@ -38,13 +38,14 @@ describe 'filter qualifiers' do
         @post = Class.new(Post)
         @post.named_filter(:published) do
           with :published, true
-          limit 6
+          limit 2
         end
       end
 
       it 'should limit the query' do
         @post.published.inspect
-        @post.last_find[:limit].should == 6
+        @post.last_find.should == []
+        @post.last_find[:limit].should == 2
       end
     end
 
