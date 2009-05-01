@@ -44,6 +44,10 @@ module RecordFilter
       def add_group_by(column)
         @steps << GroupBy.new(column)
       end
+
+      def add_named_filter(method, *args)
+        @steps << NamedFilter.new(method, *args)
+      end
     end
   end
 end

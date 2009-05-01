@@ -12,10 +12,7 @@ module RecordFilter
       @current_scoped_methods = clazz.send(:current_scoped_methods)
       @clazz = clazz
 
-      @dsl = dsl_for_named_filter(@clazz, named_filter)
-      @dsl.instance_eval(&block) if block
-      @dsl.send(named_filter, *args) if named_filter && @dsl.respond_to?(named_filter)
-      @query = Query.new(@clazz, @dsl.conjunction)
+      @query = Query.new(@clazz, named_filter, *args, &block)
     end
 
     def first(*args)
@@ -88,16 +85,6 @@ module RecordFilter
           block.call
         end
       end
-    end
-
-    def dsl_for_named_filter(clazz, named_filter)
-      return DSL::DSL.create(clazz) if named_filter.blank?
-      while (clazz)
-        dsl = DSL::DSL.subclass(clazz)
-        return DSL::DSL.create(clazz) if dsl && dsl.instance_methods(false).include?(named_filter.to_s)
-        clazz = clazz.superclass
-      end
-      nil
     end
 
     def loaded_data

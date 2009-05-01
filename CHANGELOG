@@ -1,4 +1,6 @@
-= New
+= 0.6.0
+
+* Support calling named filters from within joins in filters.
 
 * Stop using _inheritable_attribute for accessing the named filters and just recurse for
 them.

@@ -118,48 +118,6 @@ describe 'filter qualifiers' do
         Post.last_find[:order].should == %q(posts__photo.path DESC, "posts".permalink ASC)
       end
     end
-
-    describe 'limiting methods within joins and conjunctions' do
-      it 'should not allow calls to limit within joins' do
-        lambda {
-          Post.filter do
-            having(:photo) do
-              limit 2
-            end
-          end
-        }.should raise_error(NoMethodError)
-      end
-
-      it 'should not allow calls to order within joins' do
-        lambda {
-          Post.filter do
-            having(:photo) do
-              order :id
-            end
-          end
-        }.should raise_error(NoMethodError)
-      end
-
-      it 'should not allow calls to limit within conjunctions' do
-        lambda {
-          Post.filter do
-            all_of do
-              limit 2
-            end
-          end
-        }.should raise_error(NoMethodError)
-      end
-
-      it 'should not allow calls to order within joins' do
-        lambda {
-          Post.filter do
-            all_of do
-              order :id
-            end
-          end
-        }.should raise_error(NoMethodError)
-      end
-    end
   end
 
   describe 'group_by' do

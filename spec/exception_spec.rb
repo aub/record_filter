@@ -102,4 +102,66 @@ describe 'raising exceptions' do
       }.should raise_error(RecordFilter::InvalidJoinException)
     end
   end
+
+  describe 'limiting methods within joins and conjunctions' do
+    it 'should not allow calls to limit within joins' do
+      lambda {
+        Post.filter do
+          having(:photo) do
+            limit 2
+          end
+        end
+      }.should raise_error(RecordFilter::InvalidFilterException)
+    end
+
+    it 'should not allow calls to order within joins' do
+      lambda {
+        Post.filter do
+          having(:photo) do
+            order :id
+          end
+        end
+      }.should raise_error(RecordFilter::InvalidFilterException)
+    end
+
+    it 'should not allow calls to limit within conjunctions' do
+      lambda {
+        Post.filter do
+          all_of do
+            limit 2
+          end
+        end
+      }.should raise_error(RecordFilter::InvalidFilterException)
+    end
+
+    it 'should not allow calls to order within joins' do
+      lambda {
+        Post.filter do
+          all_of do
+            order :id
+          end
+        end
+      }.should raise_error(RecordFilter::InvalidFilterException)
+    end
+  end
+
+  describe 'limiting calls to on' do
+    it 'should not allow calls to on in the outer scope' do
+      lambda  {
+        Post.filter do
+          on(:a => :b)
+        end
+      }.should raise_error(RecordFilter::InvalidFilterException)
+    end
+  end
+
+  describe 'calling named filters within filters' do
+    it 'should raise an excpetion if the named filter does not exist' do
+      lambda {
+        Post.filter do
+          having(:comments).does_not_exist
+        end
+      }.should raise_error(RecordFilter::NamedFilterNotFoundException)
+    end
+  end
 end

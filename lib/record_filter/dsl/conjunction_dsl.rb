@@ -53,6 +53,26 @@ module RecordFilter
       def filter_class
         @model_class
       end
+
+      def limit(offset_or_limit, limit=nil)
+        raise InvalidFilterException.new('Calls to limit can only be made in the outer block of a filter.')
+      end
+
+      def order(column, direction=:asc)
+        raise InvalidFilterException.new('Calls to order can only be made in the outer block of a filter.')
+      end
+
+      def group_by(column)
+        raise InvalidFilterException.new('Calls to group_by can only be made in the outer block of a filter.')
+      end
+
+      def on(column, value=Restriction::DEFAULT_VALUE)
+        raise InvalidFilterException.new('Calls to on can only be made in the block of a call to join.')
+      end
+
+      def method_missing(method, *args)
+        @conjunction.add_named_filter(method, *args)
+      end
     end
   end
 end

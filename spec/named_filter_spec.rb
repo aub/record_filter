@@ -108,18 +108,28 @@ describe 'named filters' do
   end
 
   describe 'using compound filters' do
-    it 'should concatenate the filters correctly' do
-      comment = Class.new(Comment)
-      comment.named_filter(:offensive) do |state|
+    before do
+      Comment.named_filter(:offensive_or_not) do |state|
         with(:offensive, state)
       end
-      post = Class.new(Post)
-      post.named_filter(:with_offensive_comments) do
-        having(:comments).offensive(true)
-      end
-      post.with_offensive_comments.inspect
-      post.last_find[:conditions].should == [%q(posts__comments.offensive = ?), true] 
-      post.last_find[:joins].should == %q(INNER JOIN "comments" AS posts__comments ON "comments".post_id = posts__blog.id)
+    end
+
+    it 'should concatenate the filters correctly' do
+      Post.filter do
+        having(:comments).offensive_or_not(true)
+      end.inspect
+      Post.last_find[:conditions].should == [%q(posts__comments.offensive = ?), true] 
+      Post.last_find[:joins].should == %q(INNER JOIN "comments" AS posts__comments ON "posts".id = posts__comments.post_id)
+    end
+
+    it 'should work correctly with the named filter called within the having block' do
+      Post.filter do
+        having(:comments) do
+          offensive_or_not(false)
+        end
+      end.inspect
+      Post.last_find[:conditions].should == [%q(posts__comments.offensive = ?), false] 
+      Post.last_find[:joins].should == %q(INNER JOIN "comments" AS posts__comments ON "posts".id = posts__comments.post_id)
     end
   end
 

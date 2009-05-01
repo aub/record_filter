@@ -9,5 +9,7 @@ end
 module RecordFilter
   AssociationNotFoundException = Class.new(StandardError)
   ColumnNotFoundException = Class.new(StandardError)
+  InvalidFilterException = Class.new(StandardError)
   InvalidJoinException = Class.new(StandardError)
+  NamedFilterNotFoundException = Class.new(StandardError)
 end

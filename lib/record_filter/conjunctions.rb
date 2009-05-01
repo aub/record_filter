@@ -30,6 +30,8 @@ module RecordFilter
             result.add_order(step.column, step.direction)
           when DSL::GroupBy
             result.add_group_by(step.column)
+          when DSL::NamedFilter
+            result.add_named_filter(step.name, step.args)
           end
         end
         result
@@ -79,6 +81,14 @@ module RecordFilter
 
       def add_limit_and_offset(limit, offset)
         @limit, @offset = limit, offset
+      end
+
+      def add_named_filter(name, args)
+        unless @table.model_class.named_filters.include?(name.to_sym)
+          raise NamedFilterNotFoundException.new("The named filter #{name} was not found in #{@table.model_class}")
+        end
+        query = Query.new(@table.model_class, name, *args)
+        self << self.class.create_from(query.dsl_conjunction, @table)
       end
 
       def <<(restriction)
