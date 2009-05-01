@@ -37,8 +37,8 @@ describe 'filter qualifiers' do
       before do
         @post = Class.new(Post)
         @post.named_filter(:published) do
-          with :published, true
-          limit 2
+          limit(2)
+          with(:published, false)
         end
       end
 
