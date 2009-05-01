@@ -1,5 +1,7 @@
 = 0.6.0
 
+* Added fixes for various options on AR associations.
+
 * Support calling named filters from within joins in filters.
 
 * Stop using _inheritable_attribute for accessing the named filters and just recurse for

@@ -40,6 +40,7 @@ Gem::Specification.new do |s|
     "lib/record_filter/query.rb",
     "lib/record_filter/restrictions.rb",
     "lib/record_filter/table.rb",
+    "spec/active_record_spec.rb",
     "spec/exception_spec.rb",
     "spec/explicit_join_spec.rb",
     "spec/implicit_join_spec.rb",
@@ -59,6 +60,7 @@ Gem::Specification.new do |s|
   s.rubygems_version = %q{1.3.2}
   s.summary = %q{Pure-ruby criteria API for building complex queries in ActiveRecord}
   s.test_files = [
+    "spec/active_record_spec.rb",
     "spec/exception_spec.rb",
     "spec/explicit_join_spec.rb",
     "spec/implicit_join_spec.rb",
