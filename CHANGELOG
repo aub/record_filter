@@ -1,5 +1,7 @@
 = 0.6.0
 
+* 100% test coverage. That's right, 100%.
+
 * Added fixes for various options on AR associations.
 
 * Support calling named filters from within joins in filters.
