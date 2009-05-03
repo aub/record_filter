@@ -37,3 +37,12 @@ Rake::RDocTask.new do |rdoc|
   rdoc.rdoc_files.include('lib/**/*.rb')
 end
 
+require 'ruby-prof/task'
+
+RubyProf::ProfileTask.new do |t|
+  t.test_files = FileList['test/performance_test.rb']
+  t.output_dir = "perf"
+  t.printer = :graph
+  t.min_percent = 5
+end
+
