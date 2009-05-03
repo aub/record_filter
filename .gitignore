@@ -1,4 +1,5 @@
 coverage
 pkg
+rdoc
 *.gem
 *.swp
