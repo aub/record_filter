@@ -1,6 +1,6 @@
 module RecordFilter
   module DSL
-    class NamedFilter
+    class NamedFilter # :nodoc: all
 
       attr_reader :name, :args
 

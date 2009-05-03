@@ -7,9 +7,24 @@ require 'active_record'
 end
 
 module RecordFilter
-  AssociationNotFoundException = Class.new(StandardError)
-  ColumnNotFoundException = Class.new(StandardError)
-  InvalidFilterException = Class.new(StandardError)
-  InvalidJoinException = Class.new(StandardError)
-  NamedFilterNotFoundException = Class.new(StandardError)
+
+  # An exception that is raised when an implicit join is attempted on an association 
+  # that does not exist.
+  class AssociationNotFoundException < StandardError; end
+  
+  # An exception that is raised when attempting to place restrictions or specify an
+  # explicit join on a column that doesn't exist.
+  class ColumnNotFoundException < StandardError; end
+
+  # An exception that is raised when operations such as limit, order, group_by, or
+  # on are called out of context.
+  class InvalidFilterException < StandardError; end
+
+  # An exception that is raised when no columns are privided to specify an explicit join. 
+  class InvalidJoinException < StandardError; end
+
+  # An exception raised in the case where a named filter is called from within a filter
+  # and the named filter does not exist.
+  class NamedFilterNotFoundException < StandardError; end
 end
+

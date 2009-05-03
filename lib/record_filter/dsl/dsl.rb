@@ -2,20 +2,6 @@ module RecordFilter
   module DSL
     class DSL < ConjunctionDSL
 
-      SUBCLASSES = Hash.new do |h, k|
-        h[k] = Class.new(DSL)
-      end
-
-      class << self
-        def create(clazz)
-          subclass(clazz).new(clazz, Conjunction.new(clazz, :all_of))
-        end
-
-        def subclass(clazz)
-          SUBCLASSES[clazz.object_id]
-        end
-      end
-
       # This method can take two forms:
       # limit(offset, limit), or
       # limit(limit)

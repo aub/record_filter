@@ -1,5 +1,5 @@
 module RecordFilter
-  class Join
+  class Join # :nodoc: all
     attr_reader :left_table, :right_table
 
     def initialize(left_table, right_table, join_conditions, join_type=nil)

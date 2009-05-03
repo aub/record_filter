@@ -1,6 +1,6 @@
 module RecordFilter
   module DSL
-    class Limit
+    class Limit # :nodoc: all
 
       attr_reader :limit, :offset
 

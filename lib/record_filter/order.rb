@@ -1,5 +1,5 @@
 module RecordFilter
-  class Order
+  class Order # :nodoc: all
     attr_reader :column, :direction, :table
 
     def initialize(column, direction, table)

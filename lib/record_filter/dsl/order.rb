@@ -1,6 +1,6 @@
 module RecordFilter
   module DSL
-    class Order
+    class Order # :nodoc: all
 
       attr_reader :column, :direction
 

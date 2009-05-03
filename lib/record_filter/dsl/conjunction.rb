@@ -1,6 +1,6 @@
 module RecordFilter
   module DSL
-    class Conjunction
+    class Conjunction # :nodoc: all
 
       attr_reader :type, :steps
 

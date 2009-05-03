@@ -1,6 +1,6 @@
 module RecordFilter
   module DSL
-    class JoinCondition
+    class JoinCondition # :nodoc: all
 
       attr_reader :restriction
 

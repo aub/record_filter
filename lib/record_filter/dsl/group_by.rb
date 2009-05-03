@@ -1,6 +1,6 @@
 module RecordFilter
   module DSL
-    class GroupBy
+    class GroupBy # :nodoc: all
       attr_reader :column
 
       def initialize(column)

@@ -1,5 +1,5 @@
 module RecordFilter
-  class GroupBy
+  class GroupBy # :nodoc: all
     attr_reader :column, :table
 
     def initialize(column, table)

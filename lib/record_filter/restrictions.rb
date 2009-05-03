@@ -1,5 +1,5 @@
 module RecordFilter
-  module Restrictions
+  module Restrictions # :nodoc: all
     class Base
       def initialize(column_name, value, options={})
         @column_name, @value, @negated = column_name, value, !!options.delete(:negated)

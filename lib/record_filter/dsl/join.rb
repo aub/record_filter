@@ -1,6 +1,6 @@
 module RecordFilter
   module DSL
-    class Join
+    class Join # :nodoc: all
 
       attr_reader :association, :join_type, :conjunction
 

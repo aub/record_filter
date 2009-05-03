@@ -1,5 +1,5 @@
 module RecordFilter
-  module Conjunctions
+  module Conjunctions # :nodoc: all
     class Base
       attr_reader :table_name, :limit, :offset
 

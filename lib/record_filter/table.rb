@@ -1,5 +1,5 @@
 module RecordFilter
-  class Table
+  class Table # :nodoc: all
     attr_reader :table_alias, :orders, :group_bys, :model_class
 
     def initialize(model_class, table_alias = nil)
@@ -121,7 +121,7 @@ module RecordFilter
     alias_method :alias_for_class, :alias_for_association
   end
 
-  class PivotTable < Table
+  class PivotTable < Table # :nodoc: all
     attr_reader :table_name, :joins
 
     def initialize(table_name, association, table_alias = table_name)

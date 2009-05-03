@@ -40,6 +40,13 @@ describe 'RecordFilter restrictions' do
      end
   end
 
+  it 'should create an IS NULL restriction when passing nil as the value to equal_to' do
+    Post.filter do
+      with(:blog_id).equal_to(nil)
+    end.inspect
+    Post.last_find.should == { :conditions => [%q("posts".blog_id IS NULL)] }
+  end
+
   it 'should filter for in' do
     Post.filter do
       with(:blog_id).in [1, 3, 5]
@@ -61,11 +68,32 @@ describe 'RecordFilter restrictions' do
     Post.last_find.should == { :conditions => [%q("posts".blog_id IN (?)), []] }
   end
 
+  it 'should do the right thing for IN filters with single values' do
+    Post.filter do
+      with(:blog_id).in(1)
+    end.inspect
+    Post.last_find.should == { :conditions => [%q("posts".blog_id IN (?)), 1] }
+  end
+
   it 'should do the right thing for IN filters with nil' do
     Post.filter do
       with(:blog_id).in(nil)
     end.inspect
     Post.last_find.should == { :conditions => [%q("posts".blog_id IN (?)), nil] }
+  end
+
+  it 'should negate is_not_null conditions correctly' do
+    Post.filter do
+      with(:blog_id).is_not_null.not
+    end.inspect
+    Post.last_find.should == { :conditions => [%q("posts".blog_id IS NULL)] }
+  end 
+  
+  it 'should double-negate correctly' do
+    Post.filter do
+      with(:blog_id, 3).not.not
+    end.inspect
+    Post.last_find.should == { :conditions => [%q("posts".blog_id = ?), 3] }
   end
 
   it 'should filter for between' do

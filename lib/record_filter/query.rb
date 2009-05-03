@@ -1,5 +1,5 @@
 module RecordFilter
-  class Query
+  class Query # :nodoc: all
 
     attr_reader :dsl_conjunction
     attr_reader :conjunction
@@ -42,10 +42,10 @@ module RecordFilter
     protected
 
     def dsl_for_named_filter(clazz, named_filter)
-      return DSL::DSL.create(clazz) if named_filter.blank?
+      return DSL::DSLFactory.create(clazz) if named_filter.blank?
       while (clazz)
-        dsl = DSL::DSL.subclass(clazz)
-        return DSL::DSL.create(clazz) if dsl && dsl.instance_methods(false).include?(named_filter.to_s)
+        dsl = DSL::DSLFactory.subclass(clazz)
+        return DSL::DSLFactory.create(clazz) if dsl && dsl.instance_methods(false).include?(named_filter.to_s)
         clazz = clazz.superclass
       end
     end
