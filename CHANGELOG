@@ -1,3 +1,9 @@
+= New
+
+* Get source_type option working for has_many.
+
+* Correct hard-coded primary key columns.
+
 = 0.6.0
 
 * 100% test coverage. That's right, 100%.

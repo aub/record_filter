@@ -78,34 +78,15 @@ describe 'active record options' do
       end
 
       it 'should create the correct condition' do
-        pending 'using source type'
-        Blog.last_find[:conditions].should == [%q(blogs__posts__bad_comments.contents = ?), 'blammo']
+        Blog.last_find[:conditions].should == [%q(blogs__features__featurable.permalink = ?), 'slam dunk']
       end
 
       it 'should create the correct join' do
-        pending 'using source type'
-        Blog.last_find[:joins].should == %q(INNER JOIN "posts" AS blogs__posts ON "blogs".id = blogs__posts.blog_id INNER JOIN "comments" AS blogs__posts__bad_comments ON blogs__posts.id = blogs__posts__bad_comments.post_id)
+        Blog.last_find[:joins].should == %q(INNER JOIN "features" AS blogs__features ON "blogs".id = blogs__features.blog_id AND (blogs__features.featurable_type = 'Post') INNER JOIN "posts" AS blogs__features__featurable ON blogs__features.featurable_id = blogs__features__featurable.id)
       end
     end
 
-    describe 'using include' do
-      before do
-        Blog.filter do
-          having(:posts_with_comments).with(:permalink, 'home run')
-        end.inspect
-      end
-
-      it 'should create the correct condition' do
-        pending 'using include'
-        Blog.last_find[:conditions].should == 'ack'
-      end
-
-      it 'should create the correct join' do
-        pending 'using include'
-        Blog.last_find[:joins].should == 'ack'
-      end
-    end
-
+    # :include
     # :finder_sql
     # :counter_sql
     # :group
@@ -153,11 +134,11 @@ describe 'active record options' do
       end
     end
 
-    #include
-    #conditions
-    #select
-    #foreign_key
-    #polymorphic
-    #readonly
+    # :include
+    # :conditions
+    # :select
+    # :foreign_key
+    # :polymorphic
+    # :readonly
   end
 end
