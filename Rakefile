@@ -41,8 +41,8 @@ require 'ruby-prof/task'
 
 RubyProf::ProfileTask.new do |t|
   t.test_files = FileList['test/performance_test.rb']
-  t.output_dir = "perf"
-  t.printer = :graph
+  t.output_dir = 'perf'
+  t.printer = :graph_html
   t.min_percent = 5
 end
 

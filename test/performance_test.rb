@@ -1,6 +1,19 @@
-require File.join(File.dirname(__FILE__), 'spec_helper')
+require 'rubygems'
+gem 'sqlite3-ruby'
 
 require 'ruby-debug'
+
+require File.join(File.dirname(__FILE__), '..', 'lib', 'record_filter')
+
+module TestModel
+end
+
+require File.join(File.dirname(__FILE__), '..', 'spec', 'models')
+
+ActiveRecord::Base.establish_connection(
+  :adapter => 'sqlite3',
+  :database => File.join(File.dirname(__FILE__), '..', 'spec', 'test.db')
+)
 
 @blog = Class.new(Blog)
 @blog.named_filter :somethings do
