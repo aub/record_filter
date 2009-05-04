@@ -1,5 +1,14 @@
 = New
 
+* Raise an exception when attempting to add a named filter to a class if there
+is already an existing filter with the same name.
+
+* Documentation. 
+
+* Refactored the custom DSL subclass creation code into a DSLFactory class.
+
+* Added a (fairly simple) performance test.
+
 * Get source_type option working for has_many.
 
 * Correct hard-coded primary key columns.

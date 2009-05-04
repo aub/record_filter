@@ -108,7 +108,7 @@ describe 'named filters' do
   end
 
   describe 'using compound filters' do
-    before do
+    before(:all) do
       Comment.named_filter(:offensive_or_not) do |state|
         with(:offensive, state)
       end
@@ -208,10 +208,13 @@ describe 'named filters' do
   end
 
   describe 'chaining named filters with AR associations that involve joins' do
-    before do
+    before(:all) do
       Comment.named_filter(:with_user_named) do |name|
         having(:user).with(:first_name, name)
       end
+    end
+
+    before(:each) do
       @blog = Blog.create
       @blog.comments.with_user_named('Bob').inspect
     end

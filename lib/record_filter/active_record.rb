@@ -47,9 +47,18 @@ module RecordFilter
       #   Post.created_after(3.hours.ago)                    # :conditions => ['created_at > ?', 3.hours.ago]
       #   Post.without_permalink.created_after(3.hours.ago)  # :conditions => ['permalink IS NULL AND created_at > ?', 3.hours.ago]
       #
+      # ==== Raises
+      # InvalidFilterNameException::
+      #   There is already a named filter with the given name on this class or one of its superclasses.
+      #
+      # ==== Returns
+      # nil
+      #
       # @public
       def named_filter(name, &block)
-        return if named_filters.include?(name.to_sym)
+        if named_filters.include?(name.to_sym)
+          raise InvalidFilterNameException.new("A named filter with the name #{name} already exists on the class #{self.name}.")
+        end
         local_named_filters << name.to_sym 
         DSL::DSLFactory::subclass(self).module_eval do
           define_method(name, &block)
@@ -60,6 +69,7 @@ module RecordFilter
             Filter.new(self, name, *args)
           end
         end
+        nil
       end
 
       # Retreive a list of named filters that apply to a specific class, including ones

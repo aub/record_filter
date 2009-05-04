@@ -182,4 +182,17 @@ describe 'raising exceptions' do
       }.should raise_error(RecordFilter::NamedFilterNotFoundException)
     end
   end
+
+  describe 'creating named filters with the same name as an existing one' do
+    it 'should raise an InvalidFilterNameException' do
+      Post.named_filter(:original) do
+        with(:permalink, 'abc')
+      end
+      lambda {
+        Post.named_filter(:original) do
+          with(:permalink, 'def')
+        end
+      }.should raise_error(RecordFilter::InvalidFilterNameException)
+    end
+  end
 end

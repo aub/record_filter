@@ -37,12 +37,16 @@ Rake::RDocTask.new do |rdoc|
   rdoc.rdoc_files.include('lib/**/*.rb')
 end
 
-require 'ruby-prof/task'
+begin
+  require 'ruby-prof/task'
 
-RubyProf::ProfileTask.new do |t|
-  t.test_files = FileList['test/performance_test.rb']
-  t.output_dir = 'perf'
-  t.printer = :graph_html
-  t.min_percent = 5
+  RubyProf::ProfileTask.new do |t|
+    t.test_files = FileList['test/performance_test.rb']
+    t.output_dir = 'perf'
+    t.printer = :graph_html
+    t.min_percent = 5
+  end
+rescue LoadError
+  puts 'Ruby-prof not available. Profiling tests are disabled.'
 end
 
