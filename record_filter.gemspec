@@ -2,11 +2,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{record_filter}
-  s.version = "0.6.0"
+  s.version = "0.8.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Mat Brown", "Aubrey Holland"]
-  s.date = %q{2009-05-01}
+  s.date = %q{2009-05-04}
   s.description = %q{Pure-ruby criteria API for building complex queries in ActiveRecord}
   s.email = %q{mat@patch.com}
   s.extra_rdoc_files = [
@@ -24,6 +24,7 @@ Gem::Specification.new do |s|
     "lib/record_filter/dsl/conjunction.rb",
     "lib/record_filter/dsl/conjunction_dsl.rb",
     "lib/record_filter/dsl/dsl.rb",
+    "lib/record_filter/dsl/dsl_factory.rb",
     "lib/record_filter/dsl/group_by.rb",
     "lib/record_filter/dsl/join.rb",
     "lib/record_filter/dsl/join_condition.rb",
@@ -35,7 +36,6 @@ Gem::Specification.new do |s|
     "lib/record_filter/filter.rb",
     "lib/record_filter/group_by.rb",
     "lib/record_filter/join.rb",
-    "lib/record_filter/join_table.rb",
     "lib/record_filter/order.rb",
     "lib/record_filter/query.rb",
     "lib/record_filter/restrictions.rb",
@@ -51,7 +51,9 @@ Gem::Specification.new do |s|
     "spec/restrictions_spec.rb",
     "spec/select_spec.rb",
     "spec/spec_helper.rb",
-    "spec/test.db"
+    "spec/test.db",
+    "test/performance_test.rb",
+    "test/test.db"
   ]
   s.has_rdoc = true
   s.homepage = %q{http://github.com/outoftime/record_filter/tree/master}
@@ -70,7 +72,8 @@ Gem::Specification.new do |s|
     "spec/proxying_spec.rb",
     "spec/restrictions_spec.rb",
     "spec/select_spec.rb",
-    "spec/spec_helper.rb"
+    "spec/spec_helper.rb",
+    "test/performance_test.rb"
   ]
 
   if s.respond_to? :specification_version then

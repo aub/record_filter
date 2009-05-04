@@ -1,4 +1,4 @@
-= New
+= 0.8.0
 
 * Raise an exception when calling order with something that isn't :asc or
 :desc
