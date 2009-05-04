@@ -173,6 +173,16 @@ describe 'raising exceptions' do
     end
   end
 
+  describe 'calling order with an invalid direction' do
+    it 'should raise an InvalidFilterException' do
+      lambda {
+        Post.filter do
+          order(:id, :oops)
+        end
+      }.should raise_error(RecordFilter::InvalidFilterException)
+    end
+  end
+
   describe 'calling named filters within filters' do
     it 'should raise an excpetion if the named filter does not exist' do
       lambda {

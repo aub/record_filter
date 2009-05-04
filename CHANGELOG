@@ -1,5 +1,10 @@
 = New
 
+* Raise an exception when calling order with something that isn't :asc or
+:desc
+
+* Use hanna for spiffy rdocs.
+
 * Raise an exception when attempting to add a named filter to a class if there
 is already an existing filter with the same name.
 

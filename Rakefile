@@ -22,7 +22,13 @@ rescue LoadError
   puts "Jeweler not available. Install it with: sudo gem install technicalpickles-jeweler -s http://gems.github.com"
 end
 
-require 'rake/rdoctask'
+# Try to use hanna to create spiffier docs.
+begin
+  require 'hanna/rdoctask'
+rescue LoadError
+  require 'rake/rdoctask'
+end
+
 Rake::RDocTask.new do |rdoc|
   if File.exist?('VERSION.yml')
     config = YAML.load(File.read('VERSION.yml'))

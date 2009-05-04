@@ -12,7 +12,7 @@ record_filter has the following top-level features:
 
 == Installation
 
-gem install outoftime-record_filter --source=http://gems.github.com
+  gem install outoftime-record_filter --source=http://gems.github.com
 
 == Usage
 

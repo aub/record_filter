@@ -6,6 +6,8 @@ require 'active_record'
   require File.join(File.dirname(__FILE__), 'record_filter', file)
 end
 
+# The base-level namespace for the record_filter code. See RecordFilter::ActiveRecordExtension::ClassMethods
+# for a description of the public API.
 module RecordFilter
 
   # An exception that is raised when an implicit join is attempted on an association 

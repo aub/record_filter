@@ -7,11 +7,14 @@ module RecordFilter
   module ActiveRecordExtension
     module ClassMethods
 
-      # Execute an ad-hoc filter. See the documentation for RecordFilter::DSL
+      # Create a filter on the fly to find a set of results that matches the given criteria.
+      # This method, which can be called on any ActiveRecord::Base subclass, accepts a block
+      # that defines the contents of the filter and returns a Filter object that contains a list
+      # of the objects resulting from the query. See the documentation for RecordFilter::DSL
       # for more information on how to specify the filter.
       #
       # ==== Parameters
-      # block::
+      # block<Proc>::
       #   A block that specifies the contents of the filter.
       #
       # ==== Returns

@@ -1,7 +1,7 @@
 module RecordFilter
   module DSL
     # The Restriction class is used to specify conditions in your filters. It is accessed through
-    # the use of the 'with' method in the DSL, which can be chained with further methods below
+    # the use of ConjunctionDSL.with, which can be chained with further methods below
     # in order to create many types of conditions. 
     #
     #   Blog.filter do
@@ -11,9 +11,18 @@ module RecordFilter
     #     ...
     #   end
     #
+    # The following restriction types are supported:
+    # * Between
+    # * Equality
+    # * Comparisons (>, >=, <, <=)
+    # * In
+    # * Is Null and Is Not Null
+    # * Like
+    # * Negation of any restriction through not
+    #
     class Restriction
 
-      attr_reader :column, :negated, :operator, :value
+      attr_reader :column, :negated, :operator, :value # :nodoc:
 
       DEFAULT_VALUE = Object.new
 
@@ -36,7 +45,7 @@ module RecordFilter
       # order to fully specify its type and value.
       #
       # @public
-      def initialize(column, value=DEFAULT_VALUE)
+      def initialize(column, value=DEFAULT_VALUE) # :nodoc:
         @column, @negated, @operator = column, false, nil
         take_value(value)
       end
