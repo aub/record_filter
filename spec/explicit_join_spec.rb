@@ -16,7 +16,7 @@ describe 'explicit joins' do
     end
 
     it 'should add correct join' do
-      Post.last_find[:joins].should == %q(LEFT OUTER JOIN "blogs" AS posts_blogs ON "posts".blog_id = posts_blogs.id)
+      Post.last_find[:joins].should == [%q(LEFT OUTER JOIN "blogs" AS posts_blogs ON "posts".blog_id = posts_blogs.id)]
     end
 
     it 'should query against condition on join table' do
@@ -36,7 +36,7 @@ describe 'explicit joins' do
     end
 
     it 'should add correct join' do
-      Review.last_find[:joins].should == %q(LEFT OUTER JOIN "features" AS reviews_features ON "reviews".reviewable_id = reviews_features.featurable_id AND "reviews".reviewable_type = reviews_features.featurable_type)
+      Review.last_find[:joins].should == [%q(LEFT OUTER JOIN "features" AS reviews_features ON "reviews".reviewable_id = reviews_features.featurable_id AND "reviews".reviewable_type = reviews_features.featurable_type)]
     end
 
     it 'should query against condition on join table' do
@@ -57,7 +57,7 @@ describe 'explicit joins' do
     end
 
     it 'should add correct join' do
-      Review.last_find[:joins].should == %q(LEFT OUTER JOIN "features" AS reviews__Feature ON "reviews".reviewable_id = reviews__Feature.featurable_id AND "reviews".reviewable_type = reviews__Feature.featurable_type AND (reviews__Feature.featurable_type = 'SomeType'))
+      Review.last_find[:joins].should == [%q(LEFT OUTER JOIN "features" AS reviews__Feature ON "reviews".reviewable_id = reviews__Feature.featurable_id AND "reviews".reviewable_type = reviews__Feature.featurable_type AND (reviews__Feature.featurable_type = 'SomeType'))]
     end
   end
 
@@ -73,7 +73,7 @@ describe 'explicit joins' do
     end
 
     it 'should add the correct join' do
-      Review.last_find[:joins].should == %q(LEFT OUTER JOIN "features" AS reviews__Feature ON (reviews__Feature.featurable_type IS NULL) AND (reviews__Feature.featurable_id >= 12) AND (reviews__Feature.priority <> 6))
+      Review.last_find[:joins].should == [%q(LEFT OUTER JOIN "features" AS reviews__Feature ON (reviews__Feature.featurable_type IS NULL) AND (reviews__Feature.featurable_id >= 12) AND (reviews__Feature.priority <> 6))]
     end
   end
 
@@ -101,7 +101,7 @@ describe 'explicit joins' do
     end
 
     it 'should produce the correct join' do
-      @blog.last_find[:joins].should == %q(INNER JOIN "ads" AS blogs__ads ON "blogs".id = blogs__ads.blog_id LEFT OUTER JOIN "posts" AS blogs__Post ON "blogs".id = blogs__Post.blog_id INNER JOIN "comments" AS blogs__Post__Comment ON blogs__Post.id = blogs__Post__Comment.post_id AND (blogs__Post__Comment.offensive = 't'))
+      @blog.last_find[:joins].should == [%q(INNER JOIN "ads" AS blogs__ads ON "blogs".id = blogs__ads.blog_id), %q(LEFT OUTER JOIN "posts" AS blogs__Post ON "blogs".id = blogs__Post.blog_id), %q(INNER JOIN "comments" AS blogs__Post__Comment ON blogs__Post.id = blogs__Post__Comment.post_id AND (blogs__Post__Comment.offensive = 't'))]
     end
   end
 end

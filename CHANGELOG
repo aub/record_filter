@@ -1,3 +1,8 @@
+= New
+
+* Fix a bug when combining joins across multiple named filters that introduce
+the same join.
+
 = 0.8.0
 
 * Raise an exception when calling order with something that isn't :asc or

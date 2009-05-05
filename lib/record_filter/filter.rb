@@ -2,7 +2,7 @@ module RecordFilter
   # This class is the value that is returned from the execution of a filter.
   class Filter
 
-    NON_DELEGATE_METHODS = %w(nil? send object_id class extend find size count sum average maximum minimum paginate first last empty? any? respond_to?)
+    NON_DELEGATE_METHODS = %w(debugger nil? send object_id class extend find size count sum average maximum minimum paginate first last empty? any? respond_to?)
 
     [].methods.each do |m|
       unless m =~ /^__/ || NON_DELEGATE_METHODS.include?(m.to_s)

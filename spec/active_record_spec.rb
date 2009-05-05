@@ -18,7 +18,7 @@ describe 'active record options' do
       end
 
       it 'should create the correct join' do
-        Blog.last_find[:joins].should == %q(INNER JOIN "news_stories" AS blogs__stories ON "blogs".id = blogs__stories.blog_id)
+        Blog.last_find[:joins].should == [%q(INNER JOIN "news_stories" AS blogs__stories ON "blogs".id = blogs__stories.blog_id)]
       end
     end
 
@@ -34,7 +34,7 @@ describe 'active record options' do
       end
 
       it 'should create the correct join' do
-        Blog.last_find[:joins].should == %q(INNER JOIN "posts" AS blogs__special_posts ON "blogs".id = blogs__special_posts.special_blog_id)
+        Blog.last_find[:joins].should == [%q(INNER JOIN "posts" AS blogs__special_posts ON "blogs".id = blogs__special_posts.special_blog_id)]
       end
     end
 
@@ -50,7 +50,7 @@ describe 'active record options' do
       end
 
       it 'should create the correct join' do
-        Blog.last_find[:joins].should == %q(INNER JOIN "posts" AS blogs__special_public_posts ON "blogs".special_id = blogs__special_public_posts.blog_id)
+        Blog.last_find[:joins].should == [%q(INNER JOIN "posts" AS blogs__special_public_posts ON "blogs".special_id = blogs__special_public_posts.blog_id)]
       end
     end
 
@@ -66,7 +66,7 @@ describe 'active record options' do
       end
 
       it 'should create the correct join' do
-        Blog.last_find[:joins].should == %q(INNER JOIN "posts" AS blogs__posts ON "blogs".id = blogs__posts.blog_id INNER JOIN "comments" AS blogs__posts__bad_comments ON blogs__posts.id = blogs__posts__bad_comments.post_id)
+        Blog.last_find[:joins].should == [%q(INNER JOIN "posts" AS blogs__posts ON "blogs".id = blogs__posts.blog_id), %q(INNER JOIN "comments" AS blogs__posts__bad_comments ON blogs__posts.id = blogs__posts__bad_comments.post_id)]
       end
     end
 
@@ -82,22 +82,9 @@ describe 'active record options' do
       end
 
       it 'should create the correct join' do
-        Blog.last_find[:joins].should == %q(INNER JOIN "features" AS blogs__features ON "blogs".id = blogs__features.blog_id AND (blogs__features.featurable_type = 'Post') INNER JOIN "posts" AS blogs__features__featurable ON blogs__features.featurable_id = blogs__features__featurable.id)
+        Blog.last_find[:joins].should == [%q(INNER JOIN "features" AS blogs__features ON "blogs".id = blogs__features.blog_id AND (blogs__features.featurable_type = 'Post')), %q(INNER JOIN "posts" AS blogs__features__featurable ON blogs__features.featurable_id = blogs__features__featurable.id)]
       end
     end
-
-    # :include
-    # :finder_sql
-    # :counter_sql
-    # :group
-    # :having
-    # :limit
-    # :offset
-    # :select
-    # :uniq
-    # :readonly
-    # :order
-    # :conditions
   end
 
   describe 'for belongs_to' do
@@ -114,7 +101,7 @@ describe 'active record options' do
       end
 
       it 'should create the correct join' do
-        Post.last_find[:joins].should == %q(INNER JOIN "blogs" AS posts__publication ON "posts".blog_id = posts__publication.id)
+        Post.last_find[:joins].should == [%q(INNER JOIN "blogs" AS posts__publication ON "posts".blog_id = posts__publication.id)]
       end
     end
 
@@ -130,15 +117,44 @@ describe 'active record options' do
       end
 
       it 'should create the correct join' do
-        Post.last_find[:joins].should == %q(INNER JOIN "blogs" AS posts__special_blog ON "posts".special_blog_id = posts__special_blog.id)
+        Post.last_find[:joins].should == [%q(INNER JOIN "blogs" AS posts__special_blog ON "posts".special_blog_id = posts__special_blog.id)]
       end
     end
+  end
 
-    # :include
-    # :conditions
-    # :select
-    # :foreign_key
-    # :polymorphic
-    # :readonly
+  describe 'working with named scopes' do
+    before do
+      @blog = Class.new(Blog)
+      @blog.named_scope :with_high_id, { :conditions => ['id > 100'] }
+      @blog.named_filter(:published) { with(:published, true) }
+    end
+    
+    it 'should concatenate the filter with the scope correctly' do
+      @blog.with_high_id.published.inspect
+      @blog.last_find[:conditions].should == %q(("blogs".published = 't') AND (id > 100))
+    end
+
+    it 'should concatenate correctly when called in the other order' do
+      @blog.published.with_high_id.inspect
+      @blog.last_find[:conditions].should == %q((id > 100) AND ("blogs".published = 't'))
+    end
+  end
+
+  describe 'working with named scopes when there are a number of joins' do
+    before do
+      @blog = Class.new(Blog)
+      @blog.named_scope :ads_with_sale, { :joins => :ads, :conditions => ["'ads'.content LIKE ?", '%sale%'] }
+      @blog.named_filter(:with_permalinked_posts) { having(:posts).with(:permalink).is_not_null }
+      @blog.named_filter(:with_offensive_comments) { having(:comments).with(:offensive, true) }
+      @blog.with_permalinked_posts.ads_with_sale.with_offensive_comments.inspect
+    end
+
+    it 'should concatenate the conditions correctly' do
+      @blog.last_find[:conditions].should == %q((blogs__posts__comments.offensive = 't') AND (('ads'.content LIKE '%sale%') AND (blogs__posts.permalink IS NOT NULL)))
+    end
+
+    it 'should concatenate the joins correctly and not throw away my joins like AR usually does' do
+      @blog.last_find[:joins].should == [%q(INNER JOIN "posts" AS blogs__posts ON "blogs".id = blogs__posts.blog_id), %q(INNER JOIN "comments" AS blogs__posts__comments ON blogs__posts.id = blogs__posts__comments.post_id), %q(INNER JOIN "ads" ON ads.blog_id = blogs.id)]
+    end
   end
 end

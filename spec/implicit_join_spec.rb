@@ -14,7 +14,7 @@ describe 'implicit joins' do
       end
 
       it 'should add correct join' do
-        Post.last_find[:joins].should == %q(INNER JOIN "blogs" AS posts__blog ON "posts".blog_id = posts__blog.id)
+        Post.last_find[:joins].should == [%q(INNER JOIN "blogs" AS posts__blog ON "posts".blog_id = posts__blog.id)]
       end
 
       it 'should query against condition on join table' do
@@ -24,7 +24,7 @@ describe 'implicit joins' do
 
     shared_examples_for 'multiple conditions on single join' do
       it 'should add join once' do
-        Post.last_find[:joins].should == %q(INNER JOIN "blogs" AS posts__blog ON "posts".blog_id = posts__blog.id)
+        Post.last_find[:joins].should == [%q(INNER JOIN "blogs" AS posts__blog ON "posts".blog_id = posts__blog.id)]
       end
 
       it 'should query against conditions on join table' do
@@ -65,7 +65,7 @@ describe 'implicit joins' do
     end
 
     it 'should add correct join' do
-      Blog.last_find[:joins].should == %q(INNER JOIN "posts" AS blogs__posts ON "blogs".id = blogs__posts.blog_id)
+      Blog.last_find[:joins].should == [%q(INNER JOIN "posts" AS blogs__posts ON "blogs".id = blogs__posts.blog_id)]
     end
 
     it 'should query against condition on join table' do
@@ -84,8 +84,8 @@ describe 'implicit joins' do
     end
 
     it 'should add both joins' do
-      Blog.last_find[:joins].should == %q(INNER JOIN "posts" AS blogs__posts ON "blogs".id = blogs__posts.blog_id ) +
-                                       %q(INNER JOIN "comments" AS blogs__posts__comments ON blogs__posts.id = blogs__posts__comments.post_id)
+      Blog.last_find[:joins].should == [%q(INNER JOIN "posts" AS blogs__posts ON "blogs".id = blogs__posts.blog_id),
+                                        %q(INNER JOIN "comments" AS blogs__posts__comments ON blogs__posts.id = blogs__posts__comments.post_id)]
     end
 
     it 'should query against both conditions' do
@@ -103,8 +103,8 @@ describe 'implicit joins' do
     end
 
     it 'should add both joins' do
-      Blog.last_find[:joins].should == %q(INNER JOIN "posts" AS blogs__posts ON "blogs".id = blogs__posts.blog_id ) +
-                                       %q(INNER JOIN "comments" AS blogs__posts__comments ON blogs__posts.id = blogs__posts__comments.post_id)
+      Blog.last_find[:joins].should == [%q(INNER JOIN "posts" AS blogs__posts ON "blogs".id = blogs__posts.blog_id),
+                                        %q(INNER JOIN "comments" AS blogs__posts__comments ON blogs__posts.id = blogs__posts__comments.post_id)]
     end
 
     it 'should query against both conditions' do
@@ -120,7 +120,7 @@ describe 'implicit joins' do
     end
 
     it 'should add correct join' do
-      Post.last_find[:joins].should == %q(INNER JOIN "photos" AS posts__photo ON "posts".id = posts__photo.post_id)
+      Post.last_find[:joins].should == [%q(INNER JOIN "photos" AS posts__photo ON "posts".id = posts__photo.post_id)]
     end
 
     it 'should query against condition on join table' do
@@ -136,8 +136,8 @@ describe 'implicit joins' do
     end
 
     it 'should add correct join' do
-      Blog.last_find[:joins].should == %q(INNER JOIN "posts" AS blogs__posts ON "blogs".id = blogs__posts.blog_id ) +
-                                       %q(INNER JOIN "photos" AS blogs__posts__photo ON blogs__posts.id = blogs__posts__photo.post_id)
+      Blog.last_find[:joins].should == [%q(INNER JOIN "posts" AS blogs__posts ON "blogs".id = blogs__posts.blog_id),
+                                        %q(INNER JOIN "photos" AS blogs__posts__photo ON blogs__posts.id = blogs__posts__photo.post_id)]
     end
 
     it 'should query against condition on join table' do
@@ -153,8 +153,8 @@ describe 'implicit joins' do
     end
 
     it 'should add correct join' do
-      Post.last_find[:joins].should == %q(INNER JOIN "posts_tags" AS __posts__tags ON "posts".id = __posts__tags.post_id ) +
-                                       %q(INNER JOIN "tags" AS posts__tags ON __posts__tags.tag_id = posts__tags.id)
+      Post.last_find[:joins].should == [%q(INNER JOIN "posts_tags" AS __posts__tags ON "posts".id = __posts__tags.post_id),
+                                        %q(INNER JOIN "tags" AS posts__tags ON __posts__tags.tag_id = posts__tags.id)]
     end
   end
 
@@ -235,7 +235,7 @@ describe 'implicit joins' do
     end
 
     it 'should create the correct join' do
-      Blog.last_find[:joins].should == %q(LEFT OUTER JOIN "posts" AS blogs__posts ON "blogs".id = blogs__posts.blog_id)
+      Blog.last_find[:joins].should == [%q(LEFT OUTER JOIN "posts" AS blogs__posts ON "blogs".id = blogs__posts.blog_id)]
     end
   end
 
@@ -253,7 +253,7 @@ describe 'implicit joins' do
     end
 
     it 'should create the correct join' do
-      Blog.last_find[:joins].should == %q(LEFT OUTER JOIN "posts" AS blogs__posts ON "blogs".id = blogs__posts.blog_id LEFT OUTER JOIN "comments" AS blogs__posts__comments ON blogs__posts.id = blogs__posts__comments.post_id)
+      Blog.last_find[:joins].should == [%q(LEFT OUTER JOIN "posts" AS blogs__posts ON "blogs".id = blogs__posts.blog_id), %q(LEFT OUTER JOIN "comments" AS blogs__posts__comments ON blogs__posts.id = blogs__posts__comments.post_id)]
     end
   end
 
@@ -271,7 +271,7 @@ describe 'implicit joins' do
     end
 
     it 'should create the correct join' do
-      PublicPost.last_find[:joins].should == %q(INNER JOIN "reviews" AS posts__reviews ON "posts".id = posts__reviews.reviewable_id AND (posts__reviews.reviewable_type = 'Post'))
+      PublicPost.last_find[:joins].should == [%q(INNER JOIN "reviews" AS posts__reviews ON "posts".id = posts__reviews.reviewable_id AND (posts__reviews.reviewable_type = 'Post'))]
     end
   end
 
@@ -289,7 +289,7 @@ describe 'implicit joins' do
     end
 
     it 'should create the correct join' do
-      Blog.last_find[:joins].should == %q(INNER JOIN "posts" AS blogs__posts ON "blogs".id = blogs__posts.blog_id INNER JOIN "comments" AS blogs__posts__comments ON blogs__posts.id = blogs__posts__comments.post_id)
+      Blog.last_find[:joins].should == [%q(INNER JOIN "posts" AS blogs__posts ON "blogs".id = blogs__posts.blog_id), %q(INNER JOIN "comments" AS blogs__posts__comments ON blogs__posts.id = blogs__posts__comments.post_id)]
     end
   end
 
@@ -307,7 +307,7 @@ describe 'implicit joins' do
     end
 
     it 'should create the correct join' do
-      Post.last_find[:joins].should == %q(INNER JOIN "authors" AS posts__author ON "posts".id = posts__author.post_id INNER JOIN "users" AS posts__author__user ON posts__author.user_id = posts__author__user.id)
+      Post.last_find[:joins].should == [%q(INNER JOIN "authors" AS posts__author ON "posts".id = posts__author.post_id), %q(INNER JOIN "users" AS posts__author__user ON posts__author.user_id = posts__author__user.id)]
     end
   end
 end

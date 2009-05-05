@@ -119,7 +119,7 @@ describe 'named filters' do
         having(:comments).offensive_or_not(true)
       end.inspect
       Post.last_find[:conditions].should == [%q(posts__comments.offensive = ?), true] 
-      Post.last_find[:joins].should == %q(INNER JOIN "comments" AS posts__comments ON "posts".id = posts__comments.post_id)
+      Post.last_find[:joins].should == [%q(INNER JOIN "comments" AS posts__comments ON "posts".id = posts__comments.post_id)]
     end
 
     it 'should work correctly with the named filter called within the having block' do
@@ -129,7 +129,7 @@ describe 'named filters' do
         end
       end.inspect
       Post.last_find[:conditions].should == [%q(posts__comments.offensive = ?), false] 
-      Post.last_find[:joins].should == %q(INNER JOIN "comments" AS posts__comments ON "posts".id = posts__comments.post_id)
+      Post.last_find[:joins].should == [%q(INNER JOIN "comments" AS posts__comments ON "posts".id = posts__comments.post_id)]
     end
   end
 
@@ -181,7 +181,7 @@ describe 'named filters' do
       base = @post.for_blog(1)
       base.with_offensive_comments
       base.inspect
-      @post.last_find[:joins].should == %q(INNER JOIN "blogs" AS posts__blog ON "posts".blog_id = posts__blog.id)
+      @post.last_find[:joins].should == [%q(INNER JOIN "blogs" AS posts__blog ON "posts".blog_id = posts__blog.id)]
     end
 
     it 'should not change an original filter when reusing it' do
@@ -250,7 +250,7 @@ describe 'named filters' do
 
     it 'compile the joins correctly' do
       @blog.with_offensive_comments.with_ads_with_content('ack').inspect
-      @blog.last_find[:joins].should == [%q(INNER JOIN "ads" AS blogs__ads ON "blogs".id = blogs__ads.blog_id), %q(INNER JOIN "posts" AS blogs__posts ON "blogs".id = blogs__posts.blog_id INNER JOIN "comments" AS blogs__posts__comments ON blogs__posts.id = blogs__posts__comments.post_id)]
+      @blog.last_find[:joins].should == [%q(INNER JOIN "ads" AS blogs__ads ON "blogs".id = blogs__ads.blog_id), %q(INNER JOIN "posts" AS blogs__posts ON "blogs".id = blogs__posts.blog_id), %q(INNER JOIN "comments" AS blogs__posts__comments ON blogs__posts.id = blogs__posts__comments.post_id)]
     end
   end
 
