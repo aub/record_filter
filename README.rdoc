@@ -10,6 +10,11 @@ record_filter has the following top-level features:
 * Allows chaining of filters with each other and with named scopes to create complex queries.
 * Takes advantage of the associations in your ActiveRecord objects for a clean implicit join API.
 
+== Documentation
+
+The complete RDoc documentation is available at http://aub.github.com/record_filter/rdoc/. This page is
+intended to be a getting started guide that should cover the most common uses.
+
 == Installation
 
   gem install outoftime-record_filter --source=http://gems.github.com
