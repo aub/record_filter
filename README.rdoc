@@ -17,7 +17,7 @@ intended to be a getting started guide that should cover the most common uses.
 
 == Installation
 
-  gem install outoftime-record_filter --source=http://gems.github.com
+  gem install aub-record_filter --source=http://gems.github.com
 
 == Using Filters
 
