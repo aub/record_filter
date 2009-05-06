@@ -6,11 +6,11 @@
 	version: 2.2.0
 	*/
 	body {
-    font: 15px Helvetica, Arial, sans-serif;
+    font: 16px Helvetica, Arial, sans-serif;
   }
   table {font-size:inherit;font:100%;}
   select, input, textarea {font:99% arial,helvetica,clean,sans-serif;}
-  pre, code {font: 14px monospace;}
+  pre, code {font: 12px monospace;}
   body * {line-height:1.22em;}
 	body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,textarea,p,blockquote,th,td{margin:0;padding:0;}
   table{border-collapse:collapse;border-spacing:0;}
@@ -29,8 +29,8 @@
 	strong									{font-weight:bold;}
 	em											{font-style:italics;}
 	h1,h2,h3,h4,h5,h6				{font-weight:bold; letter-spacing: -3px;}
-	h1											{font-size:280%; margin:30px 0; color:#0074ae;}
-	h2											{font-size:174%; margin:20px 0; color:#0074ae;}
+	h1											{font-size:30px; margin:30px 0; color:#0074ae;}
+	h2											{font-size:25px; margin:20px 0; color:#0074ae;}
 	h3											{font-size:152%; margin:10px 0;}
 	h4											{font-size:129%; margin:10px 0;}
 	pre 										{background:#eee; margin:0 0 20px; padding:20px; border:1px solid #ccc; overflow:auto;}
