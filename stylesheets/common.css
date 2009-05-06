@@ -10,7 +10,7 @@
   }
   table {font-size:inherit;font:100%;}
   select, input, textarea {font:99% arial,helvetica,clean,sans-serif;}
-  pre, code {font: 14px monospace;}
+  pre, code {font: 13px monospace;}
   body * {line-height:1.22em;}
 	body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,textarea,p,blockquote,th,td{margin:0;padding:0;}
   table{border-collapse:collapse;border-spacing:0;}
@@ -33,20 +33,20 @@
 	h2											{font-size:30px; margin:20px 0; color:#0074ae;}
 	h3											{font-size:152%; margin:10px 0;}
 	h4											{font-size:129%; margin:10px 0;}
-	pre 										{background:#eee; margin:0 0 20px; padding:5px; border:1px solid #111111; overflow:auto;}
+	pre 										{background:#eee; margin:0 0 20px; padding:10px; border:1px solid #ccc; overflow:auto;}
 	code										{margin:0; padding:0;}
 	ul, ol									{margin:10px 0 10px 25px;}
 	ol li										{margin:0 0 10px;}
 
 	div#wrapper 							{background:#fff; width:700px; margin:0 auto; padding:20px; border:7px solid #0074ae; border-width:0 7px 7px 7px;}
-	div#header								{position:relative; border-bottom:1px solid #111111; margin:0 0 10px; padding:0 0 10px;}
-	div#header p							{margin:0; padding:0; font-size: 12px;}
+	div#header								{position:relative; border-bottom:1px solid #ccc; margin:0 0 10px; padding:0 0 10px;}
+	div#header p							{margin:0; padding:0; font-size: 12px; margin-top: -8px; margin-left: 3px;}
 	div#header h1							{margin:0; padding:0;}
   div#header ul             {font-size: 80%;}
 	ul#nav										{position:absolute; top:0; right:0; list-style:none; margin:0; padding:0;}
 	ul#nav li									{display:inline; padding:0 0 0 5px;}
 	ul#nav li a								{}
 	div#content								{}
-	div#footer								{margin: 20px 0 0; border-top: 1px solid #111111; padding:10px 0 0; font-size: 80%;}
+	div#footer								{margin: 20px 0 0; border-top: 1px solid #ccc; padding:10px 0 0; font-size: 80%;}
 }
 

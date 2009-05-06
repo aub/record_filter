@@ -8,8 +8,7 @@ You're a Ruby programmer. Sure, you get SQL, but
 If you use ActiveRecord, you've probably had a few moments of feeling dirty. 
 </p>
 
-<pre><code>
-Blog.filter do
+<pre><code>Blog.filter do
   with(:created_at).greater_than(1.day.ago)
   having(:posts).with(:permalink, nil)
 end
@@ -17,8 +16,7 @@ end
 
 <p>to this:</p>
 
-<pre><code>
-Blog.find(
+<pre><code>Blog.find(
   :all,
   :joins => :posts,
   :conditions => ['posts.permalink IS NULL AND blogs.created_at > ?', 'blog-post', 1.day.ago)
