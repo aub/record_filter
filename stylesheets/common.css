@@ -5,7 +5,9 @@
 	http://developer.yahoo.net/yui/license.txt
 	version: 2.2.0
 	*/
-	body {font:15px; helvetica,arial,clean,sans-serif;*font-size:small;*font:x-small;}
+	body {
+    font: 15px Helvetica, Arial, sans-serif;
+  }
   table {font-size:inherit;font:100%;}
   select, input, textarea {font:99% arial,helvetica,clean,sans-serif;}
   pre, code {font:115% monospace;*font-size:100%;}
@@ -14,7 +16,6 @@
   table{border-collapse:collapse;border-spacing:0;}
   fieldset,img{border:0;}
   address,caption,cite,code,dfn,em,strong,th,var{font-style:normal;font-weight:normal;}
-  /*ol,ul {list-style:none;}*/
   caption,th {text-align:left;}
   h1,h2,h3,h4,h5,h6{font-size:100%;font-weight:normal;}
   q:before,q:after{content:'';}
