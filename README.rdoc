@@ -1,6 +1,6 @@
 = record_filter
 
-record_filter is a DSL for specifying criteria for ActiveRecord queries in pure Ruby.
+record_filter is a DSL for specifying ActiveRecord queries in pure Ruby.
 It has support for filters created on the fly and for named filters that are associated with object types.
 record_filter has the following top-level features:
 
@@ -31,7 +31,7 @@ This could be expressed in ActiveRecord as:
     :joins => :posts, 
     :conditions => ['posts.permalink IS NULL AND blogs.created_at > ?', 'blog-post', 1.day.ago)
 
-and it returns the same result, a list of Blog objects that are returned from the query. This
+and it returns the same result, a list of Blog objects that are the result of the query. This
 type of filter is designed to be created on the fly, but if you have a filter that you would like
 to use in more than one place, it can be added to a class as a named filter. The following example
 creates the same filter as above and executes it:
@@ -51,7 +51,7 @@ complex query:
 
   class Post < ActiveRecord::Base
     named_filter(:title_is_monkeys) { with(:title, 'monkeys') }
-    named_filter(:permalink_is_donkeys) { with(:title, 'donkeys') }
+    named_filter(:permalink_is_donkeys) { with(:permalink, 'donkeys') }
   end
 
   Post.title_is_monkeys.permalink_is_donkeys
@@ -89,7 +89,7 @@ model even if called from a join.
 
 == Specifying Filters
 
-record_filter supports all of SQL query abstractions provided by ActiveRecord, specifically:
+record_filter supports all of the SQL query abstractions provided by ActiveRecord, specifically:
 
 * Conditions
 * Boolean operations
@@ -141,7 +141,7 @@ The following condition types are supported through the Restriction API:
 
 Conditions can be combined with boolean operators using the methods all_of, any_of, none_of
 and not_all_of. These methods take a block where any conditions they contain will be combined
-using AND, OR and NOT to create the correct condition. The block can also contain any number of
+using AND, OR and NOT to create the correct clause. The block can also contain any number of
 joins or other boolean operations. The default operator is all_of.
 
   Post.filter do
@@ -198,6 +198,7 @@ added. Explicit joins also allow conditions to be set on columns of the table be
   join(Comment, :inner) do
     on(:id => :commentable_id)
     on(:commentable_type).equal_to('Post')
+    with(:created_at).less_than(1.year.ago)
   end
 
 With implicit joins, it is also possible to use a hash as the association name, in which case
@@ -249,7 +250,7 @@ order in which they were given.
 
 (The MIT License)
 
-Copyright (c) 2008 Mat Brown, Aubrey Holland
+Copyright (c) 2008 Aubrey Holland, Mat Brown
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the

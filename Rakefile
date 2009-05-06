@@ -13,10 +13,10 @@ begin
   Jeweler::Tasks.new do |gemspec|
     gemspec.name = 'record_filter'
     gemspec.summary = 'Pure-ruby criteria API for building complex queries in ActiveRecord'
-    gemspec.email = 'mat@patch.com'
-    gemspec.homepage = 'http://github.com/outoftime/record_filter/tree/master'
+    gemspec.email = 'aubreyholland@gmail.com'
+    gemspec.homepage = 'http://github.com/aub/record_filter/tree/master'
     gemspec.description = 'Pure-ruby criteria API for building complex queries in ActiveRecord'
-    gemspec.authors = ['Mat Brown', 'Aubrey Holland']
+    gemspec.authors = ['Aubrey Holland', 'Mat Brown']
   end
 rescue LoadError
   puts "Jeweler not available. Install it with: sudo gem install technicalpickles-jeweler -s http://gems.github.com"

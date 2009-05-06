@@ -5,10 +5,10 @@ Gem::Specification.new do |s|
   s.version = "0.9.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
-  s.authors = ["Mat Brown", "Aubrey Holland"]
+  s.authors = ["Aubrey Holland", "Mat Brown"]
   s.date = %q{2009-05-06}
   s.description = %q{Pure-ruby criteria API for building complex queries in ActiveRecord}
-  s.email = %q{mat@patch.com}
+  s.email = %q{aubreyholland@gmail.com}
   s.extra_rdoc_files = [
     "README.rdoc"
   ]
@@ -56,7 +56,7 @@ Gem::Specification.new do |s|
     "test/test.db"
   ]
   s.has_rdoc = true
-  s.homepage = %q{http://github.com/outoftime/record_filter/tree/master}
+  s.homepage = %q{http://github.com/aub/record_filter/tree/master}
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
   s.rubygems_version = %q{1.3.2}
