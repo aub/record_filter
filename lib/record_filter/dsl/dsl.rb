@@ -94,13 +94,15 @@ module RecordFilter
       # column<Symbol, Hash>::
       #   If a symbol is specified, it is taken to represent the name of a column on the
       #   class being filtered. If a hash is given, it should represent a path through the
-      #   joins to a column in one of the joined tables.
+      #   joins to a column in one of the joined tables. If a string is given, it is used
+      #   without modification as the grouping parameter.
       #
       # ==== Returns
       # nil
       #
       # ==== Alternatives
-      # As described above, it is possible to pass either a symbol or a hash as the argument.
+      # As described above, it is possible to pass either a symbol, a hash, or a string 
+      # as the argument.
       #
       # @public
       def group_by(column)

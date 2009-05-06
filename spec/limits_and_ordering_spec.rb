@@ -145,5 +145,12 @@ describe 'filter qualifiers' do
       end.inspect
       Post.last_find[:group].should == %q("posts".created_at, posts__photo.format)
     end
+
+    it 'should accept random strings as the column name' do
+      Post.filter do
+        group_by("abcdef")
+      end.find(:all, :select => 'posts.id as abcdef').inspect
+      Post.last_find[:group].should == 'abcdef'
+    end
   end
 end

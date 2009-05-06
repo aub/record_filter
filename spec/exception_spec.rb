@@ -42,12 +42,12 @@ describe 'raising exceptions' do
       }.should raise_error(RecordFilter::ColumnNotFoundException)
     end
 
-    it 'should get ColumnNotFoundException for group_by' do
+    it 'should not get ColumnNotFoundException for group_by' do
       lambda {
         Post.filter do
           group_by(:this_is_not_there)
         end.inspect
-      }.should raise_error(RecordFilter::ColumnNotFoundException)
+      }.should_not raise_error(RecordFilter::ColumnNotFoundException)
     end
 
     it 'should get AssociationNotFoundException for orders on bad associations' do

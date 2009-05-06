@@ -13,11 +13,11 @@ module RecordFilter
         column = column.values[0]
       end
 
-      if (!table.has_column(column))
-        raise ColumnNotFoundException.new("The column #{column} was not found in #{table.table_name}.")
+      if (table.has_column(column))
+        "#{table.table_alias}.#{column}"
+      else
+        column
       end
-
-      "#{table.table_alias}.#{column}"
     end
   end
 end
