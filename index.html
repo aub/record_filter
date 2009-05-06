@@ -7,11 +7,23 @@ If you use ActiveRecord, you've probably had a few moments of feeling dirty. Sti
 always felt dirty about putting it in your handsome Ruby code. You may even have a sneaking
 suspicion that you shouldn't have to. Now you don't. If you prefer this:</p>
 
-<pre><code>a</code></pre>
+<pre><code>
+Blog.filter do
+  with(:created_at).greater_than(1.day.ago)
+  having(:posts).with(:permalink, nil)
+end
+</code></pre>
 
 <p>to this:</p>
 
-<pre><code>b</code></pre>
+<pre><code>
+Blog.find(
+  :all,
+  :joins => :posts,
+  :conditions => ['posts.permalink IS NULL AND blogs.created_at > ?', 'blog-post', 1.day.ago)
+</code></pre>
+
+
 
 <h2>Install</h2>
 
@@ -19,5 +31,5 @@ suspicion that you shouldn't have to. Now you don't. If you prefer this:</p>
 
 <h2>Usage</h2>
 
-<p>See the <a href="http://github.com/technicalpickles/jeweler/blob/master/README.markdown">Project page</a> for the latest scoop.</p>
+<p>See the <a href="http://github.com/aub/record_filter">project page</a> for the latest scoop.</p>
 
