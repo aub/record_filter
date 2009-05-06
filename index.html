@@ -3,26 +3,29 @@ layout: default
 ---
 
 <p>
-You're a Ruby programmer. Sure, you get SQL, but
-, you're probably proud of your beautiful code. 
-If you use ActiveRecord, you've probably had a few moments of feeling dirty. 
+You're a Ruby programmer. Sure, you get SQL, but you've found yourself feeling dirty 
+when it starts touching your beautiful code. We're here to help.
+</p>
+
+<p>
+Record Filter gives you the full power of ActiveRecord's query building tools with a
+heaping helping of DSL thrown in to save your Ruby-loving fingers from that nasty SQL.
+Which one of these looks better to you?
 </p>
 
 <pre><code>Blog.filter do
   with(:created_at).greater_than(1.day.ago)
   having(:posts).with(:permalink, nil)
 end
-</code></pre>
 
-<p>to this:</p>
-
-<pre><code>Blog.find(
+Blog.find(
   :all,
   :joins => :posts,
   :conditions => ['posts.permalink IS NULL AND blogs.created_at > ?', 'blog-post', 1.day.ago)
 </code></pre>
 
-
+<p>In my browser, only one of them requires the use of a scrollbar to view the entire thing, and that's
+all I need to know.</p>
 
 <h2>Install</h2>
 

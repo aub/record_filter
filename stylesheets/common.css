@@ -6,7 +6,7 @@
 	version: 2.2.0
 	*/
 	body {
-    font: 16px Helvetica, Arial, sans-serif;
+    font: 14px Helvetica, Arial, sans-serif;
   }
   table {font-size:inherit;font:100%;}
   select, input, textarea {font:99% arial,helvetica,clean,sans-serif;}
@@ -23,7 +23,7 @@
 	/* end of yahoo reset and fonts */
 	
 	body 										{color:#333; background:#111111; line-height:1.3; }
-	p												{margin:0 0 20px;}
+	p												{margin:0;}
 	a												{color:#636363;}
 	a:hover									{text-decoration:none;}
 	strong									{font-weight:bold;}
@@ -47,6 +47,6 @@
 	ul#nav li									{display:inline; padding:0 0 0 5px;}
 	ul#nav li a								{}
 	div#content								{}
-	div#footer								{border-top: 1px solid #ccc;}
+	div#footer								{border-top: 1px solid #ccc; font-size: 12px; padding: 20px 0px;}
 }
 
