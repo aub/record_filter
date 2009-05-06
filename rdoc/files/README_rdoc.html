@@ -1,0 +1,279 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang='en'>
+  <head>
+    <title>File: README.rdoc [record_filter 0.9.0]</title>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
+    <link href='../rdoc-style.css' media='screen' rel='stylesheet' type='text/css'>
+    <script type='text/javascript'>
+      //<![CDATA[
+        function popupCode(url) {
+          window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+        }
+        
+        function toggleCode(id) {
+          var code = document.getElementById(id)
+        
+          code.style.display = code.style.display != 'block' ? 'block' : 'none'
+          return true
+        }
+        
+        // Make codeblocks hidden by default
+        document.writeln('<' + 'style type="text/css">.method .source pre { display: none }<\/style>')
+      //]]>
+    </script>
+  </head>
+  <body class='page'>
+    <div class='file' id='wrapper'>
+      <div class='header'>
+        <div class='name'>README.rdoc</div>
+        <div class='paths'>
+          README.rdoc
+        </div>
+        <div class='last-update'>
+          Last Update:
+          <span class='datetime'>Wed May 06 13:31:00 -0400 2009</span>
+        </div>
+      </div>
+      <div id='content'>
+        <div id='text'>
+          <div id='description'>
+            <h1>record_filter</h1>
+            <p>
+            record_filter is a DSL for specifying ActiveRecord queries in pure Ruby. It
+            has support for filters created on the fly and for named filters that are
+            associated with object types. record_filter has the following top-level
+            features:
+            </p>
+            <ul>
+            <li>Pure ruby API eliminates the need for hard-coded SQL in most cases.
+            
+            </li>
+            <li>Works seamlessly with existing ActiveRecord APIs, including named scopes.
+            
+            </li>
+            <li>Supports creation of ad-hoc filters as well as named filters that can be
+            associated with object types.
+            
+            </li>
+            <li>Allows chaining of filters with each other and with named scopes to create
+            complex queries.
+            
+            </li>
+            <li>Takes advantage of the associations in your ActiveRecord objects for a
+            clean implicit join API.
+            
+            </li>
+            </ul>
+            <h2>Installation</h2>
+            <pre>gem install outoftime-record_filter --source=http://gems.github.com</pre>
+            <h2>Using Filters</h2>
+            <p>
+            Given a Blog model having a has_many relationship with a Post model, a
+            simple filter with conditions and joins might look like this.
+            </p>
+            <pre>Blog.filter do&#x000A;  with(:created_at).greater_than(1.day.ago)&#x000A;  having(:posts).with(:permalink, nil)&#x000A;end</pre>
+            <p>
+            This could be expressed in ActiveRecord as:
+            </p>
+            <pre>Blog.find(&#x000A;  :all,&#x000A;  :joins =&gt; :posts,&#x000A;  :conditions =&gt; ['posts.permalink IS NULL AND blogs.created_at &gt; ?', 'blog-post', 1.day.ago)</pre>
+            <p>
+            and it returns the same result, a list of Blog objects that are the result
+            of the query. This type of filter is designed to be created on the fly, but
+            if you have a filter that you would like to use in more than one place, it
+            can be added to a class as a named filter. The following example creates
+            the same filter as above and executes it:
+            </p>
+            <pre>class Post &lt; ActiveRecord::Base&#x000A;  named_filter(:new_with_nil_permalink) do&#x000A;    with(:created_at).greater_than(1.day.ago)&#x000A;    having(:posts).with(:permalink, nil)&#x000A;  end&#x000A;end&#x000A;&#x000A;Post.new_with_nil_permalink</pre>
+            <p>
+            This returns the same result as the example above but with the advantages
+            that it is easily reusable and that it can be combined with other named
+            filters to produce a more complex query:
+            </p>
+            <pre>class Post &lt; ActiveRecord::Base&#x000A;  named_filter(:title_is_monkeys) { with(:title, 'monkeys') }&#x000A;  named_filter(:permalink_is_donkeys) { with(:permalink, 'donkeys') }&#x000A;end&#x000A;&#x000A;Post.title_is_monkeys.permalink_is_donkeys</pre>
+            <p>
+            This example will return all of the posts that meet both animal-related
+            conditions. There is no limit to the number of filters that can be
+            combined, and because record_filter works seamlessly with named scopes,
+            they can also be combined in this way as well.
+            </p>
+            <p>
+            Named filters can also be customized by taking any number of arguments. The
+            example above can be replicated with the following filter:
+            </p>
+            <pre>class Post &lt; ActiveRecord::Base&#x000A;  named_filter(:with_title_and_permalink) do |title, permalink|&#x000A;    with(:title, title)&#x000A;    with(:permalink, permalink)&#x000A;  end&#x000A;end&#x000A;&#x000A;Post.with_title_and_permalink('monkeys', 'donkeys')</pre>
+            <p>
+            Named filters can also be called from other named filters and will be
+            invoked on the correct model even if called from a join.
+            </p>
+            <pre>class Comment &lt; ActiveRecord::Base&#x000A;  named_filter(:offensive) { with(:offensive, true) }&#x000A;end&#x000A;&#x000A;class Post &lt; ActiveRecord::Base&#x000A;  named_filter(:recursive_test) do&#x000A;    having(:comments) do&#x000A;      offensive&#x000A;    end&#x000A;  end&#x000A;end</pre>
+            <h2>Specifying Filters</h2>
+            <p>
+            record_filter supports all of the SQL query abstractions provided by
+            ActiveRecord, specifically:
+            </p>
+            <ul>
+            <li>Conditions
+            
+            </li>
+            <li>Boolean operations
+            
+            </li>
+            <li>Joins
+            
+            </li>
+            <li>Limits
+            
+            </li>
+            <li>Offsets
+            
+            </li>
+            <li>Ordering
+            
+            </li>
+            <li>Grouping
+            
+            </li>
+            </ul>
+            <p>
+            The following example shows the use of each of these techniques:
+            </p>
+            <pre>Post.filter do&#x000A;  any_of do&#x000A;    with(:permalink).is_null&#x000A;    having(:comments) do&#x000A;      with(:offensive, true)&#x000A;    end&#x000A;  end&#x000A;  limit(10, 100)&#x000A;  order(:created_at, :desc)&#x000A;  group_by(:comments =&gt; :offensive)&#x000A;end</pre>
+            <h3>Conditions</h3>
+            <p>
+            Conditions are specified using the &#8216;with&#8217; function, which takes
+            as its first argument the name of the column to restrict. If a second
+            argument is given, it will automatically be used as the value in an
+            equality condition. The &#8216;with&#8217; function will return a
+            Restriction object that has methods to specify a number of different
+            conditions and to negate them:
+            </p>
+            <pre>with(:permalink, 'aardvarks')            # :conditions =&gt; ['permalink = ?', 'aardvarks']&#x000A;with(:permalink).equal_to('sheep')       # :conditions =&gt; ['permalink = ?', 'sheep']&#x000A;with(:permalink).not.equal_to('cats')    # :conditions =&gt; ['permailnk &lt;&gt; ?', 'cats']&#x000A;&#x000A;with(:permalink, nil)                    # :conditions =&gt; ['permalink IS NULL']&#x000A;with(:permalink).is_null                 # :conditions =&gt; ['permalink IS NULL']&#x000A;with(:permalink, nil).not                # :conditions =&gt; ['permalink IS NOT NULL']</pre>
+            <p>
+            The following condition types are supported through the Restriction API:
+            </p>
+            <ul>
+            <li>Equality
+            
+            </li>
+            <li>Comparisons (> >= < <=)
+            
+            </li>
+            <li>Between
+            
+            </li>
+            <li>In
+            
+            </li>
+            <li>Is null
+            
+            </li>
+            <li>Like
+            
+            </li>
+            </ul>
+            <h3>Boolean Operations</h3>
+            <p>
+            Conditions can be combined with boolean operators using the methods all_of,
+            any_of, none_of and not_all_of. These methods take a block where any
+            conditions they contain will be combined using AND, OR and NOT to create
+            the correct clause. The block can also contain any number of joins or other
+            boolean operations. The default operator is all_of.
+            </p>
+            <pre>Post.filter do&#x000A;  with(:id, 4)&#x000A;  with(:permalink, 'ack')&#x000A;end&#x000A;&#x000A;:conditions =&gt; ['id = ? AND permalink = ?', 4, 'ack']&#x000A;&#x000A;Post.filter do&#x000A;  any_of&#x000A;    with(:id, 3)&#x000A;    with(:permalink, 'booya')&#x000A;  end&#x000A;end&#x000A;&#x000A;:conditions =&gt; ['id = ? OR permalink = ?', 3, 'booya']&#x000A;&#x000A;Post.filter do&#x000A;  none_of&#x000A;    with(:id, 2)&#x000A;    with(:permalink, 'ouch')&#x000A;  end&#x000A;end&#x000A;&#x000A;:conditions =&gt; ['NOT (id = ? OR permalink = ?', 2, 'ouch']</pre>
+            <h3>Joins</h3>
+            <p>
+            Joins in record_filter come in two varieties. Using the information in
+            ActiveRecord associations, it is possible to perform most joins easily
+            using the &#8216;having&#8217; method, which requires no specification of
+            the columns to use for the join. In cases where an association does not
+            apply, it is also possible to create an explicit join that can include both
+            the columns to combine as well as restrictions on the columns in the join
+            table.
+            </p>
+            <p>
+            In a filter for a Post model that has_many comments, the following two
+            examples are equivalent:
+            </p>
+            <pre>having(:comments)&#x000A;&#x000A;join(Comment, :inner) do&#x000A;  on(:id =&gt; :post_id)&#x000A;end</pre>
+            <p>
+            With an explicit join, any number of columns can be matched in this way,
+            and both join types accept a block in which any number of conditions,
+            boolean operations, or other joins can be added. Explicit joins also allow
+            conditions to be set on columns of the table being joined:
+            </p>
+            <pre>having(:comments).with(:offensive, true)&#x000A;&#x000A;having(:comments) do&#x000A;  with(:created_at).greater_than(2.days.ago)&#x000A;end&#x000A;&#x000A;join(Comment, :inner) do&#x000A;  on(:id =&gt; :commentable_id)&#x000A;  on(:commentable_type).equal_to('Post')&#x000A;  with(:created_at).less_than(1.year.ago)&#x000A;end</pre>
+            <p>
+            With implicit joins, it is also possible to use a hash as the association
+            name, in which case multiple joins can be created with one statement. If
+            the comment model has_one Author, this example will join both tables and
+            add a condition on the author.
+            </p>
+            <pre>having(:comments =&gt; :author).with(:name, 'Bob')</pre>
+            <h3>Limits and Offsets</h3>
+            <p>
+            These are specified using the &#8216;limit&#8217; method, which takes two
+            arguments, the offset and the limit. If only one argument is given, it is
+            assumed to be the limit.
+            </p>
+            <pre>limit(10, 100)   # :offset =&gt; 10, :limit =&gt; 100&#x000A;limit(100)       # :offset =&gt; 0, :limit =&gt; 100</pre>
+            <h3>Ordering</h3>
+            <p>
+            Ordering is done through the &#8216;order&#8217; method, which accepts
+            arguments for the column and direction. The column can either be passed as
+            the name of a column in the class that is being filtered or as a hash that
+            represents a path through the joined associations to the correct column.
+            The direction argument should be either :asc or :desc and defaults to :asc
+            if not given. Multiple calls to &#8216;order&#8217; are allowed and will be
+            applied in the order in which they were given.
+            </p>
+            <pre>Post.filter do&#x000A;  having(:comments).with(:offensive, true)&#x000A;  order(:created_at, :desc)&#x000A;  order(:comments =&gt; :id)&#x000A;end&#x000A;&#x000A;# :order =&gt; &quot;'posts'.created_at DESC posts__comments.id ASC&quot;</pre>
+            <h3>Grouping</h3>
+            <p>
+            Grouping is specified with the &#8216;group_by&#8217; method, which accepts
+            either the name of a column in the class that is being filtered or a hash
+            that represents a path through the joined associations. If there are
+            multiple calls to &#8216;group_by&#8217; they will be combined in the final
+            result, maintaining the order in which they were given.
+            </p>
+            <pre>Post.filter do&#x000A;  having(:comments).with(:created_at).greater_than(1.hour.ago)&#x000A;  group_by(:permalink)&#x000A;  group_by(:comments =&gt; :offensive)&#x000A;end&#x000A;&#x000A;# :group =&gt; &quot;'posts'.permalink, posts__comments.offensive'</pre>
+            <h2>LICENSE:</h2>
+            <p>
+            (The MIT License)
+            </p>
+            <p>
+            Copyright &#169; 2008 Aubrey Holland, Mat Brown
+            </p>
+            <p>
+            Permission is hereby granted, free of charge, to any person obtaining a
+            copy of this software and associated documentation files (the
+            &#8216;Software&#8217;), to deal in the Software without restriction,
+            including without limitation the rights to use, copy, modify, merge,
+            publish, distribute, sublicense, and/or sell copies of the Software, and to
+            permit persons to whom the Software is furnished to do so, subject to the
+            following conditions:
+            </p>
+            <p>
+            The above copyright notice and this permission notice shall be included in
+            all copies or substantial portions of the Software.
+            </p>
+            <p>
+            THE SOFTWARE IS PROVIDED &#8216;AS IS&#8217;, WITHOUT WARRANTY OF ANY KIND,
+            EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+            MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+            NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+            DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+            OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+            USE OR OTHER DEALINGS IN THE SOFTWARE.
+            </p>
+          </div>
+          <div id='section'>
+          </div>
+        </div>
+      </div>
+      <div id='footer-push'></div>
+    </div>
+    <div id='footer'>
+      <a href="http://github.com/mislav/hanna/tree/master"><strong>Hanna</strong> RDoc template</a>
+    </div>
+  </body>
+</html>
