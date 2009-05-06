@@ -40,13 +40,13 @@
 
 	div#wrapper 							{background:#fff; width:700px; margin:0 auto; padding:20px; border:7px solid #0074ae; border-width:0 7px 7px 7px;}
 	div#header								{position:relative; border-bottom:1px solid #ccc; margin:0 0 10px; padding:0 0 10px;}
-	div#header p							{margin:0; padding:0; font-size: 12px; margin-top: -8px; margin-left: 3px;}
+	div#header p							{margin:0; padding:0; font-size: 12px; margin-top: -10px; margin-left: 3px;}
 	div#header h1							{margin:0; padding:0;}
   div#header ul             {font-size: 80%;}
 	ul#nav										{position:absolute; top:0; right:0; list-style:none; margin:0; padding:0;}
 	ul#nav li									{display:inline; padding:0 0 0 5px;}
 	ul#nav li a								{}
 	div#content								{}
-	div#footer								{margin: 20px 0 0; border-top: 1px solid #ccc; padding:10px 0 0; font-size: 80%;}
+	div#footer								{border-top: 1px solid #ccc;}
 }
 
