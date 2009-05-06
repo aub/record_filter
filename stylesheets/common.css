@@ -23,7 +23,7 @@
 	/* end of yahoo reset and fonts */
 	
 	body 										{color:#333; background:#111111; line-height:1.3; }
-	p												{margin: 10px 0;}
+	p												{margin: 15px 0;}
 	a												{color:#636363;}
 	a:hover									{text-decoration:none;}
 	strong									{font-weight:bold;}

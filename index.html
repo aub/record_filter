@@ -3,23 +3,19 @@ layout: default
 ---
 
 <p>
-You're a Ruby programmer. Sure, you get SQL, but you've found yourself feeling dirty 
-when it starts touching your beautiful code. We're here to help.
-</p>
-
-<p>
 Record Filter gives you the full power of ActiveRecord's query building tools with a
 heaping helping of DSL thrown in to save your Ruby-loving fingers from that nasty SQL.
 Which one of these looks better to you?
 </p>
 
-<pre><code>#### Record Filter ####
+<pre><code>## Record Filter ##
+
 Blog.filter do
   with(:created_at).greater_than(1.day.ago)
   having(:posts).with(:permalink, nil)
 end
 
-#### ActiveRecord #####
+## ActiveRecord ##
 
 Blog.find(
   :all,
@@ -30,11 +26,21 @@ Blog.find(
 <p>In my browser, only one of them requires the use of a scrollbar to view the entire thing, and that's
 all I need to know.</p>
 
-<h2>Install</h2>
+<p>Record Filter supports all of the following SQL-stomping features:</p>
+
+<ul>
+  <li>Pure ruby API eliminates the need for hard-coded SQL in most cases.</li>
+  <li>Works seamlessly with existing ActiveRecord APIs, including named scopes.</li>
+  <li>Supports creation of ad-hoc filters as well as named filters that can be associated with object types.</li>
+  <li>Allows chaining of filters with each other and with named scopes to create complex queries.</li>
+  <li>Takes advantage of the associations in your ActiveRecord objects for a clean implicit join API.</li>
+</ul>
+
+<h2>Get It</h2>
 
 <pre><code>$ sudo gem install aub-record_filter --source=http://gems.github.com</code></pre>
 
-<h2>Usage</h2>
+<h2>Use It</h2>
 
 <p>See the <a href="http://github.com/aub/record_filter">project page</a> for the latest scoop.</p>
 
