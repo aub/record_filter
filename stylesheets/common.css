@@ -6,7 +6,7 @@
 	version: 2.2.0
 	*/
 	body {
-    font: 17px Helvetica, Arial, sans-serif;
+    font: 15px Helvetica, Arial, sans-serif;
   }
   table {font-size:inherit;font:100%;}
   select, input, textarea {font:99% arial,helvetica,clean,sans-serif;}
@@ -29,12 +29,12 @@
 	strong									{font-weight:bold;}
 	em											{font-style:italics;}
 	h1,h2,h3,h4,h5,h6				{font-weight:bold; letter-spacing: -3px;}
-	h1											{font-size:250%; margin:30px 0; color:#0074ae;}
+	h1											{font-size:280%; margin:30px 0; color:#0074ae;}
 	h2											{font-size:174%; margin:20px 0; color:#0074ae;}
 	h3											{font-size:152%; margin:10px 0;}
 	h4											{font-size:129%; margin:10px 0;}
-	pre 										{background:#eee; margin:0 0 20px; padding:20px; border:1px solid #ccc; font-size:100%; overflow:auto;}
-	code										{font-size:100%; margin:0; padding:0;}
+	pre 										{background:#eee; margin:0 0 20px; padding:20px; border:1px solid #ccc; overflow:auto;}
+	code										{margin:0; padding:0;}
 	ul, ol									{margin:10px 0 10px 25px;}
 	ol li										{margin:0 0 10px;}
 
@@ -42,10 +42,11 @@
 	div#header								{position:relative; border-bottom:1px dotted; margin:0 0 10px; padding:0 0 10px;}
 	div#header p							{margin:0; padding:0; font-size: 70%;}
 	div#header h1							{margin:0; padding:0;}
+  div#header ul             {font-size: 80%;}
 	ul#nav										{position:absolute; top:0; right:0; list-style:none; margin:0; padding:0;}
 	ul#nav li									{display:inline; padding:0 0 0 5px;}
 	ul#nav li a								{}
 	div#content								{}
-	div#footer								{margin:40px 0 0; border-top:1px dotted; padding:10px 0 0;}
+	div#footer								{margin: 20px 0 0; border-top:1px; padding:10px 0 0; font-size: 80%;}
 }
 
