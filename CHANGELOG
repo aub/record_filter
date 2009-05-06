@@ -1,5 +1,7 @@
 = 0.9.0 
 
+* Added a github pages page with a quick intro.
+
 * Add tests for working with default scopes.
 
 * de-hackify the default aliases for explicit joins.
