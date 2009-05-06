@@ -13,10 +13,13 @@ heaping helping of DSL thrown in to save your Ruby-loving fingers from that nast
 Which one of these looks better to you?
 </p>
 
-<pre><code>Blog.filter do
+<pre><code>#### Record Filter ####
+Blog.filter do
   with(:created_at).greater_than(1.day.ago)
   having(:posts).with(:permalink, nil)
 end
+
+#### ActiveRecord #####
 
 Blog.find(
   :all,
