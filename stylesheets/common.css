@@ -10,7 +10,7 @@
   }
   table {font-size:inherit;font:100%;}
   select, input, textarea {font:99% arial,helvetica,clean,sans-serif;}
-  pre, code {font: 14px monospace;*font-size:100%;}
+  pre, code {font: 14px monospace;}
   body * {line-height:1.22em;}
 	body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,textarea,p,blockquote,th,td{margin:0;padding:0;}
   table{border-collapse:collapse;border-spacing:0;}
