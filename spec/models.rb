@@ -4,6 +4,12 @@ class Ad < ActiveRecord::Base
 end
 
 
+class Article < ActiveRecord::Base
+  extend TestModel
+  default_scope :order => 'created_at DESC', :conditions => { :created_at => nil }
+end
+
+
 class Author < ActiveRecord::Base
   extend TestModel
   belongs_to :user
@@ -24,6 +30,7 @@ class Blog < ActiveRecord::Base
   has_many :features
   has_many :featured_posts, :through => :features, :source => :featurable, :source_type => 'Post'
   has_many :posts_with_comments, :class_name => 'Post', :include => :comments
+  has_many :articles
 end
 
 

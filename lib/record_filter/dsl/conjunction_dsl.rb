@@ -159,7 +159,7 @@ module RecordFilter
 
       # Create an implicit join using an association as the target. This method allows you to
       # easily specify a join without specifying the columns to use by taking any needed data
-      # from the specified ActiveRecord association. If given, the block will be evaluated in
+      # from the given ActiveRecord association. If provided, the block will be evaluated in
       # the context of the table that has been joined, so any restrictions or other joins will
       # be performed using its columns and associations. For example, if a Post has_many comments
       # then the following code will join to the comments table and restrict the comments based
@@ -169,12 +169,13 @@ module RecordFilter
       #       with(:created_at).greater_than(3.days.ago)
       #     end
       #   end
-      # If one argument is given, it is assumed to be a symbol representing the name of the association
-      # that will be used for the join and a join type of :inner will be used. If two arguments are 
-      # provided, the first one is assumed to be the join type, which can be one of :inner, :left or 
+      # If one argument is given, it is assumed to represent the name of the association
+      # that will be used for the join and a join type of :inner will be used by default. If two arguments
+      # are provided, the first one is assumed to be the join type, which can be one of :inner, :left or 
       # :right and the second one is the association name. An alias will automatically be created
       # for the joined table named "#{left_table}__#{association_name}", so in the above example, the
-      # alias would be posts__comments.
+      # alias would be posts__comments. It is also possible to provide a hash as the association
+      # name, in which case a trail of associations can be joined in one statment.
       #
       # ==== Parameters
       # join_type<Symbol>::

@@ -53,7 +53,7 @@ module RecordFilter
       #   a column in the class that is being filtered. With a hash argument, it is possible
       #   to specify a path to a column in one of the joined tables, as seen above.
       # direction<Symbol>::
-      #   Specifies the direction of the join. Should be either :asc or :desc.
+      #   Specifies the direction of the join. Should be either :asc or :desc and defaults to :asc.
       #
       # ==== Returns
       # nil

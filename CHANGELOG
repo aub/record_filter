@@ -1,4 +1,13 @@
-= New
+= 0.9.0 
+
+* Add tests for working with default scopes.
+
+* de-hackify the default aliases for explicit joins.
+
+* Fix a bug where strings wouldn't work as the names of associations in
+implicit joins.
+
+* Improve the README
 
 * Fix a bug when combining joins across multiple named filters that introduce
 the same join.

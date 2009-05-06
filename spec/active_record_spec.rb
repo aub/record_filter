@@ -157,4 +157,41 @@ describe 'active record options' do
       @blog.last_find[:joins].should == [%q(INNER JOIN "posts" AS blogs__posts ON "blogs".id = blogs__posts.blog_id), %q(INNER JOIN "comments" AS blogs__posts__comments ON blogs__posts.id = blogs__posts__comments.post_id), %q(INNER JOIN "ads" ON ads.blog_id = blogs.id)]
     end
   end
+
+  describe 'working with named scopes that join to the same table' do
+    before do
+      @blog = Class.new(Blog)
+      @blog.named_scope :with_crazy_post_permalinks, { :joins => :posts, :conditions => ["'posts'.permalink = ?", 'crazy'] }
+      @blog.named_filter(:with_empty_permalinks) { having(:posts).with(:permalink, nil) } 
+    end
+
+    it 'should concatenate the conditions correctly' do
+      @blog.with_crazy_post_permalinks.with_empty_permalinks.inspect 
+      @blog.last_find[:conditions].should == %q((blogs__posts.permalink IS NULL) AND ('posts'.permalink = 'crazy'))
+    end
+
+    it 'should concatenate the joins correctly' do
+      @blog.with_crazy_post_permalinks.with_empty_permalinks.inspect
+      @blog.last_find[:joins].should == [%q(INNER JOIN "posts" AS blogs__posts ON "blogs".id = blogs__posts.blog_id), %q(INNER JOIN "posts" ON posts.blog_id = blogs.id)]
+    end
+  end
+
+  describe 'working with default scopes' do
+    describe 'with a simple filter' do
+      before do
+        Article.filter do
+          with(:contents, 'something')
+        end.inspect
+      end
+
+      it 'should use the correct order' do
+        Article.last_find[:order].should == %q(created_at DESC)
+      end
+
+      it 'should use the correct conditions' do
+        pending 'currently the IS NULL condition is added twice.'
+        Article.last_find[:conditions].should == %q((("articles"."created_at" IS NULL) AND ("articles".contents = 'something')))
+      end
+    end
+  end
 end

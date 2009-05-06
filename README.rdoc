@@ -14,176 +14,242 @@ record_filter has the following top-level features:
 
   gem install outoftime-record_filter --source=http://gems.github.com
 
-== Usage
+== Using Filters
 
-=== Ad-hoc filters
+Given a Blog model having a has_many relationship with a Post model, a simple 
+filter with conditions and joins might look like this.
 
-  Post.filter do
-    with(:permalink, 'blog-post')
-    having(:blog).with(:name, 'Blog')
+  Blog.filter do
+    with(:created_at).greater_than(1.day.ago)
+    having(:posts).with(:permalink, nil)
   end
 
 This could be expressed in ActiveRecord as:
 
-  Post.find(:all, :joins => :blog, :conditions => ['posts.permalink = ? AND blogs.name = ?', 'blog-post', 'Blog')
+  Blog.find(
+    :all, 
+    :joins => :posts, 
+    :conditions => ['posts.permalink IS NULL AND blogs.created_at > ?', 'blog-post', 1.day.ago)
 
-and it returns the same result, a list of Post objects that are returned from the query.
-
-=== Named filters
+and it returns the same result, a list of Blog objects that are returned from the query. This
+type of filter is designed to be created on the fly, but if you have a filter that you would like
+to use in more than one place, it can be added to a class as a named filter. The following example
+creates the same filter as above and executes it:
 
   class Post < ActiveRecord::Base
-    named_filter(:with_title) do |title|
-      with(:title, title)
+    named_filter(:new_with_nil_permalink) do
+      with(:created_at).greater_than(1.day.ago)
+      having(:posts).with(:permalink, nil)
     end
   end
 
-  Post.with_title('posted')
+  Post.new_with_nil_permalink
 
-This is the same as the following code using named scopes, and returns the same result:
+This returns the same result as the example above but with the advantages that it is
+easily reusable and that it can be combined with other named filters to produce a more
+complex query:
 
   class Post < ActiveRecord::Base
-    named_scope :with_title, lambda { |title| { :conditions => ['title = ?', title] }}
-  end
-  
-  Post.with_title('scoped')
-
-=== Restrictions
-
-Restrictions are specified through the API using the 'with' function. The first argument to 'with' should be the
-name of the field that the restriction applies to. All restriction types can be negated by chaining the 'with'
-method with a call to 'not', as seen in some examples below.
-
-==== Equality
-
-If a second argument is supplied, it is assumed that you are 
-expressing an equality condition and that argument is used as the value.
-
-  with(:title, 'abc') # :conditions => ['title = ?', 'abc']
-
-Which can be negated with:
-
-  with(:title, 'abc').not # :conditions => ['title <> ?', 'abc']
-
-For the more verbose among us, this can also be specified as:
-
-  with(:title).equal_to('abc') # :conditions => ['title = ?', 'abc']
-
-Other types of restrictions are specified by omitting the second argument to 'with' and chaining it with one of the
-restriction methods.
-
-==== Comparison operators
-
-  with(:price).greater_than(10) # :conditions => ['price > ?', 10]
-
-  with(:created_at).less_than(2.days.ago) # :conditions => ['created_at < ?', 2.days.ago]
-
-These methods can also have _or_equal_to tagged onto the end, to obvious affect, and all of the comparison operators are aliased to
-their standard single-character variants:
-
-  gt, gte, lt and lte
-
-==== IS NULL
-
-  with(:price, nil) # :conditions => ['price IS NULL']
-
-This short form can also be made explicit by using the is_null, null, or nil functions on with:
-
-  with(:price).is_null # :conditions => ['price IS NULL']
-
-It can be negated either by chaining with the 'not' function or by using is_not_null:
-
-  with(:price).is_not_null # :conditions => ['price IS NOT NULL']
-  with(:price).is_null.not # "
-
-==== IN
-
-  with(:id).in([1, 2, 3]) # :conditions => ['id IN (?)', [1, 2, 3]]
-
-==== BETWEEN
-
-  with(:id).between(1, 5) # :conditions => ['id BETWEEN ? AND ?', 1, 5]
-
-The argument to between can also be either a tuple or a range
-
-  with(:created_at).between([Time.now, 3.days.ago]) # :conditions => ['created_at BETWEEN ? AND ?', Time.now, 3.days.ago]
-
-  with(:price).between(1..5) # :conditions => ['price BETWEEN ? AND ?', 1, 5]
-
-==== LIKE
-
-  with(:title).like('%help%') # :conditions => ['title LIKE ?', '%help%']
-
-
-=== Implicit Joins
-
-Implicit joins are specified using the 'having' function, which takes as its argument the name of an association to join on.
-
-  having(:comments) # :joins => :comments
-
-This function can be chained with calls to 'with' in order to specify conditions on the joined table:
-
-  having(:comments).with(:created_at).gt(2.days.ago) # :joins => :comments, :conditions => ['comments.created_at > ?', 2.days.ago]
-
-It can also take a block that can have any number of conditions or other clauses (including other joins) in it:
-
-  having(:comments) do
-    with(:created_at).gt(2.days.ago)
-    having(:author).with(:name, 'Bubba')
+    named_filter(:title_is_monkeys) { with(:title, 'monkeys') }
+    named_filter(:permalink_is_donkeys) { with(:title, 'donkeys') }
   end
 
-The 'having' function can also take :inner, :left or :right as its second argument in order to specify that a particular join type
-should be used.
+  Post.title_is_monkeys.permalink_is_donkeys
 
-=== Explicit joins
+This example will return all of the posts that meet both animal-related conditions. 
+There is no limit to the number of filters that can be combined, and because record_filter works 
+seamlessly with named scopes, they can also be combined in this way as well. 
 
-In cases where there is no ActiveRecord association that can be used to specify an implicit join, explicit joins are also
-supported, using the 'join' function. Its arguments are the class to be joined against, the join type (:inner, left or :right) and
-an optional alias for the join table. A block should also be supplied in order to specify the columns to use for the join using the
-'on' method.
+Named filters can also be customized by taking any number of arguments. The example above can
+be replicated with the following filter:
+
+  class Post < ActiveRecord::Base
+    named_filter(:with_title_and_permalink) do |title, permalink|
+      with(:title, title)
+      with(:permalink, permalink)
+    end
+  end
+
+  Post.with_title_and_permalink('monkeys', 'donkeys')
+
+Named filters can also be called from other named filters and will be invoked on the correct
+model even if called from a join.
+
+  class Comment < ActiveRecord::Base
+    named_filter(:offensive) { with(:offensive, true) }
+  end
+
+  class Post < ActiveRecord::Base
+    named_filter(:recursive_test) do
+      having(:comments) do
+        offensive
+      end
+    end
+  end
+
+== Specifying Filters
+
+record_filter supports all of SQL query abstractions provided by ActiveRecord, specifically:
+
+* Conditions
+* Boolean operations
+* Joins
+* Limits
+* Offsets
+* Ordering
+* Grouping
+
+The following example shows the use of each of these techniques:
 
   Post.filter do
-    join(Comment, :inner, :posts__comments_alias) do
-      on(:id => :commentable_id)
-      on(:commentable_type, 'Post')
+    any_of do
+      with(:permalink).is_null
+      having(:comments) do
+        with(:offensive, true)
+      end
+    end
+    limit(10, 100)
+    order(:created_at, :desc)
+    group_by(:comments => :offensive)
+  end
+
+=== Conditions
+
+Conditions are specified using the 'with' function, which takes as its first argument
+the name of the column to restrict. If a second argument is given, it will automatically
+be used as the value in an equality condition. The 'with' function will return a Restriction
+object that has methods to specify a number of different conditions and to negate them:
+
+  with(:permalink, 'aardvarks')            # :conditions => ['permalink = ?', 'aardvarks']
+  with(:permalink).equal_to('sheep')       # :conditions => ['permalink = ?', 'sheep']
+  with(:permalink).not.equal_to('cats')    # :conditions => ['permailnk <> ?', 'cats']
+
+  with(:permalink, nil)                    # :conditions => ['permalink IS NULL']
+  with(:permalink).is_null                 # :conditions => ['permalink IS NULL']
+  with(:permalink, nil).not                # :conditions => ['permalink IS NOT NULL']
+
+The following condition types are supported through the Restriction API:
+
+* Equality
+* Comparisons (> >= < <=)
+* Between
+* In
+* Is null
+* Like
+
+=== Boolean Operations
+
+Conditions can be combined with boolean operators using the methods all_of, any_of, none_of
+and not_all_of. These methods take a block where any conditions they contain will be combined
+using AND, OR and NOT to create the correct condition. The block can also contain any number of
+joins or other boolean operations. The default operator is all_of.
+
+  Post.filter do
+    with(:id, 4)
+    with(:permalink, 'ack')
+  end
+
+  :conditions => ['id = ? AND permalink = ?', 4, 'ack']
+
+  Post.filter do
+    any_of
+      with(:id, 3)
+      with(:permalink, 'booya')
     end
   end
 
-=== Conjunctions
+  :conditions => ['id = ? OR permalink = ?', 3, 'booya']
 
-The following conjunction types are supported:
-
-* any_of
-* all_of
-* none_of
-* not_all_of
-
-Each takes a block that can contain conditions or joins and will apply the expected boolean logic to the combination.
-
-  any_of
-    with(:price, 2)
-    with(:price).gt(100)
+  Post.filter do
+    none_of
+      with(:id, 2)
+      with(:permalink, 'ouch')
+    end
   end
 
-  # :conditions => ['price = ? OR price > ?', 2, 100]
+  :conditions => ['NOT (id = ? OR permalink = ?', 2, 'ouch']
 
-=== Limits and ordering
+=== Joins
 
-  limit(20)
+Joins in record_filter come in two varieties. Using the information in ActiveRecord associations,
+it is possible to perform most joins easily using the 'having' method, which requires no specification
+of the columns to use for the join. In cases where an association does not apply, it is also possible
+to create an explicit join that can include both the columns to combine as well as restrictions on
+the columns in the join table.
 
-  order(:id, :desc)
+In a filter for a Post model that has_many comments, the following two examples are equivalent:
 
-Multiple order clauses can be specified, and they will be applied in the order in which they are specified.
-When joins are used, order can also take a hash as the first argument that leads to the column to order on through the joins:
+  having(:comments)
+
+  join(Comment, :inner) do
+    on(:id => :post_id)
+  end
+
+With an explicit join, any number of columns can be matched in this way, and both join types
+accept a block in which any number of conditions, boolean operations, or other joins can be
+added. Explicit joins also allow conditions to be set on columns of the table being joined:
 
   having(:comments).with(:offensive, true)
-  order(:comments => :id, :desc)
 
+  having(:comments) do
+    with(:created_at).greater_than(2.days.ago)
+  end
+
+  join(Comment, :inner) do
+    on(:id => :commentable_id)
+    on(:commentable_type).equal_to('Post')
+  end
+
+With implicit joins, it is also possible to use a hash as the association name, in which case
+multiple joins can be created with one statement. If the comment model has_one Author, this 
+example will join both tables and add a condition on the author.
+
+  having(:comments => :author).with(:name, 'Bob')
+
+=== Limits and Offsets
+
+These are specified using the 'limit' method, which takes two arguments, the offset and the
+limit. If only one argument is given, it is assumed to be the limit.
+
+  limit(10, 100)   # :offset => 10, :limit => 100
+  limit(100)       # :offset => 0, :limit => 100
+
+=== Ordering
+
+Ordering is done through the 'order' method, which accepts arguments for the column and direction.
+The column can either be passed as the name of a column in the class that is being filtered or as
+a hash that represents a path through the joined associations to the correct column. The direction argument
+should be either :asc or :desc and defaults to :asc if not given. Multiple calls to 'order' are
+allowed and will be applied in the order in which they were given.
+
+  Post.filter do
+    having(:comments).with(:offensive, true)
+    order(:created_at, :desc)
+    order(:comments => :id)
+  end
+
+  # :order => "'posts'.created_at DESC posts__comments.id ASC"
+
+=== Grouping
+
+Grouping is specified with the 'group_by' method, which accepts either the name of a column in the
+class that is being filtered or a hash that represents a path through the joined associations. If
+there are multiple calls to 'group_by' they will be combined in the final result, maintaining the
+order in which they were given.
+
+  Post.filter do
+    having(:comments).with(:created_at).greater_than(1.hour.ago)
+    group_by(:permalink)
+    group_by(:comments => :offensive)
+  end
+
+  # :group => "'posts'.permalink, posts__comments.offensive'
 
 == LICENSE:
 
 (The MIT License)
 
-Copyright (c) 2008 Mat Brown
+Copyright (c) 2008 Mat Brown, Aubrey Holland
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the

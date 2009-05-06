@@ -17,6 +17,7 @@ module RecordFilter
     end
 
     def join_association(association_name, join_type=nil, options={})
+      association_name = association_name.to_sym
       @joins_cache[association_name] ||=
         begin
           association = @model_class.reflect_on_association(association_name)
@@ -115,7 +116,7 @@ module RecordFilter
     protected
 
     def alias_for_association(association)
-      "#{@aliased ? @table_alias.to_s : @model_class.table_name}__#{association.name}"
+      "#{@aliased ? @table_alias.to_s : @model_class.table_name}__#{association.name.to_s.downcase}"
     end
 
     alias_method :alias_for_class, :alias_for_association

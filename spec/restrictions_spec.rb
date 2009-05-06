@@ -61,6 +61,13 @@ describe 'RecordFilter restrictions' do
     Post.last_find.should == { :conditions => [%q{"posts".blog_id NOT IN (?)}, [1, 3, 5]] }
   end
 
+  it 'should work correctly for NOT IN' do
+    Post.filter do
+      with(:blog_id).not_in [1, 3, 5]
+    end.inspect
+    Post.last_find.should == { :conditions => [%q{"posts".blog_id NOT IN (?)}, [1, 3, 5]] }
+  end
+
   it 'should do the right thing for IN filters with empty arrays' do
     Post.filter do
       with(:blog_id).in([])

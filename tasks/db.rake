@@ -13,6 +13,11 @@ namespace :db do
           t.string :content
         end
 
+        create_table :articles do |t|
+          t.string :contents
+          t.timestamps
+        end
+
         create_table :authors do |t|
           t.references :post
           t.string :nickname

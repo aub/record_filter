@@ -201,6 +201,21 @@ module RecordFilter
         self
       end
 
+      # Create a negated IN restriction of the form ['column NOT IN (?)', value]
+      #
+      # ==== Parameters
+      # value::
+      #   Either a single item or an array of values to form the inclusion test.
+      #
+      # ==== Returns
+      # Restriction:: self
+      #
+      # @public
+      def not_in(value)
+        @value, @operator, @negated = value, :in, true
+        self
+      end
+
       # Create a LIKE restriction of the form ['column LIKE ?', value]
       #
       # ==== Parameters

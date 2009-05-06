@@ -310,4 +310,23 @@ describe 'implicit joins' do
       Post.last_find[:joins].should == [%q(INNER JOIN "authors" AS posts__author ON "posts".id = posts__author.post_id), %q(INNER JOIN "users" AS posts__author__user ON posts__author.user_id = posts__author__user.id)]
     end
   end
+
+  describe 'passing strings instead of symbols' do
+    before do
+      Post.filter do
+        having('comments') do
+          with('offensive', true)
+        end
+        with('id').gte(12)
+      end.inspect
+    end
+
+    it 'should create the correct condition' do
+      Post.last_find[:conditions].should == [%q((posts__comments.offensive = ?) AND ("posts".id >= ?)), true, 12]
+    end
+
+    it 'should create the correct join' do
+      Post.last_find[:joins].should == [%q(INNER JOIN "comments" AS posts__comments ON "posts".id = posts__comments.post_id)]
+    end
+  end
 end
