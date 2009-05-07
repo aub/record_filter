@@ -2,7 +2,6 @@ require 'rubygems'
 gem 'rspec', '~> 1.1'
 gem 'sqlite3-ruby'
 
-require 'ruby-debug'
 require 'spec'
 
 require File.join(File.dirname(__FILE__), '..', 'lib', 'record_filter')
