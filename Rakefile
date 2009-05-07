@@ -12,10 +12,10 @@ begin
   require 'jeweler'
   Jeweler::Tasks.new do |gemspec|
     gemspec.name = 'record_filter'
-    gemspec.summary = 'Pure-ruby criteria API for building complex queries in ActiveRecord'
+    gemspec.summary = 'An ActiveRecord query API for replacing SQL with awesome'
     gemspec.email = 'aubreyholland@gmail.com'
     gemspec.homepage = 'http://github.com/aub/record_filter/tree/master'
-    gemspec.description = 'Pure-ruby criteria API for building complex queries in ActiveRecord'
+    gemspec.description = 'RecordFilter is a Pure-ruby criteria API for building complex queries in ActiveRecord. It supports queries that are built on the fly as well as named filters that can be added to objects and chained to create complex queries. It also gets rid of the nasty hard-coded SQL that shows up in most ActiveRecord code with a clean API that makes queries simple and intuitive to build.'
     gemspec.authors = ['Aubrey Holland', 'Mat Brown']
   end
 rescue LoadError
