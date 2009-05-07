@@ -10,6 +10,19 @@ class Article < ActiveRecord::Base
 end
 
 
+class Asset < ActiveRecord::Base
+  extend TestModel
+  has_many :asset_attachments
+end
+
+
+class AssetAttachment < ActiveRecord::Base
+  extend TestModel
+  belongs_to :to, :polymorphic => true
+  belongs_to :from, :class_name => 'Asset'
+end
+
+
 class Author < ActiveRecord::Base
   extend TestModel
   belongs_to :user
@@ -56,7 +69,7 @@ end
 class Post < ActiveRecord::Base
   extend TestModel
   belongs_to :blog
-  belongs_to :publication, :class_name => 'Blog'
+  belongs_to :publication, :class_name => 'Blog', :foreign_key => 'blog_id'
   belongs_to :special_blog, :class_name => 'Blog', :foreign_key => :special_blog_id
   has_many :comments
   has_many :bad_comments, :conditions => { :offensive => true }, :class_name => 'Comment'

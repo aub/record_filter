@@ -80,7 +80,7 @@ module RecordFilter
       join_predicate =
         case association.macro
         when :belongs_to
-          [{ association.options[:foreign_key] || association.association_foreign_key.to_sym => @model_class.primary_key }]
+          [{ association.options[:foreign_key] || association.primary_key_name.to_sym => @model_class.primary_key }]
         when :has_many, :has_one
           [{ association.options[:primary_key] || @model_class.primary_key => association.primary_key_name.to_sym }]
         end

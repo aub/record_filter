@@ -105,6 +105,20 @@ describe 'active record options' do
       end
     end
 
+    describe 'using class_name when the association has a different name than the class name' do
+      before do
+        AssetAttachment.filter { having(:from).with(:id).gt(1) }.inspect
+      end
+
+      it 'should create the correct condition' do
+        AssetAttachment.last_find[:conditions].should == [%q(asset_attachments__from.id > ?), 1] 
+      end
+
+      it 'should create the correct join' do
+        AssetAttachment.last_find[:joins].should == [%q(INNER JOIN "assets" AS asset_attachments__from ON "asset_attachments".from_id = asset_attachments__from.id)]
+      end
+    end
+
     describe 'using foreign_key' do
       before do
         Post.filter do

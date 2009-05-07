@@ -18,6 +18,17 @@ namespace :db do
           t.timestamps
         end
 
+        create_table :assets do |t|
+          t.timestamps
+          t.string :format
+        end
+
+        create_table :asset_attachments do |t|
+          t.integer :to_id
+          t.string  :to_type
+          t.integer :from_id
+        end
+
         create_table :authors do |t|
           t.references :post
           t.string :nickname
