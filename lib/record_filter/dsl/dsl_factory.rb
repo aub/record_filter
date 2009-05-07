@@ -7,10 +7,10 @@ module RecordFilter
 
       class << self
         def create(clazz)
-          subclass(clazz).new(clazz, Conjunction.new(clazz, :all_of))
+          get_subclass(clazz).new(clazz, Conjunction.new(clazz, :all_of))
         end
 
-        def subclass(clazz)
+        def get_subclass(clazz)
           SUBCLASSES[clazz.object_id]
         end
       end

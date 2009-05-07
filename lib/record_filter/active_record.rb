@@ -63,7 +63,7 @@ module RecordFilter
           raise InvalidFilterNameException.new("A named filter with the name #{name} already exists on the class #{self.name}.")
         end
         local_named_filters << name.to_sym 
-        DSL::DSLFactory::subclass(self).module_eval do
+        DSL::DSLFactory::get_subclass(self).module_eval do
           define_method(name, &block)
         end
 

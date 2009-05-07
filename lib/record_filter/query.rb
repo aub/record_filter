@@ -44,8 +44,10 @@ module RecordFilter
     def dsl_for_named_filter(clazz, named_filter)
       return DSL::DSLFactory.create(clazz) if named_filter.blank?
       while (clazz)
-        dsl = DSL::DSLFactory.subclass(clazz)
-        return DSL::DSLFactory.create(clazz) if dsl && dsl.instance_methods(false).include?(named_filter.to_s)
+        dsl = DSL::DSLFactory.get_subclass(clazz)
+        if dsl && dsl.instance_methods(false).map { |m| m.to_sym }.include?(named_filter.to_sym)
+          return DSL::DSLFactory.create(clazz) 
+        end
         clazz = clazz.superclass
       end
     end

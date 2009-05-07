@@ -1,3 +1,7 @@
+= 0.9.2
+
+* Ruby 1.9 compatability
+
 = 0.9.1
 
 * Change group_by so that it will not throw an exception for missing column
