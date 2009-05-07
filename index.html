@@ -26,6 +26,18 @@ Blog.find(
 <p>In my browser, only one of them requires the use of a scrollbar to view the entire thing, and that's
 all I need to know.</p>
 
+<p>Record Filter also supports named filters, which work much like named scopes and are even compatible
+with them. The syntax for using named filters is exactly the same as for creating filters on the fly.</p>
+
+<pre><code>class Post < ActiveRecord::Base
+  named_scope :with_nil_permalink, :conditions => ['permalink IS NULL']
+  named_filter(:with_nil_content) { with(:content, nil) }
+  named_filter(:created_recently) { with(:created_at).greater_than(1.day.ago) }
+end
+
+Post.created_recently.with_nil_permalink.with_nil_content
+</code></pre>
+
 <p>Record Filter supports all of the following SQL-stomping features:</p>
 
 <ul>
