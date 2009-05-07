@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html lang='en'>
   <head>
-    <title>: RecordFilter::DSL::DSL [record_filter 0.9.0]</title>
+    <title>: RecordFilter::DSL::DSL [record_filter 0.9.1]</title>
     <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
     <link href='../../../rdoc-style.css' media='screen' rel='stylesheet' type='text/css'>
     <script type='text/javascript'>
@@ -45,26 +45,26 @@
             <h2>Methods</h2>
             <h3>public instance</h3>
             <ol>
-              <li><a href="#M000034">group_by</a></li>
-              <li><a href="#M000032">limit</a></li>
-              <li><a href="#M000033">order</a></li>
+              <li><a href="#M000025">group_by</a></li>
+              <li><a href="#M000023">limit</a></li>
+              <li><a href="#M000024">order</a></li>
             </ol>
           </div>
           <div id='section'>
             <div id='methods'>
               <h2>Public instance methods</h2>
-              <div class='public-instance method' id='method-M000034'>
-                <a name='M000034'>      </a>
+              <div class='public-instance method' id='method-M000025'>
+                <a name='M000025'>      </a>
                 <div class='synopsis'>
                   <span class='name'>group_by</span>
                   <span class='arguments'>(column)</span>
                 </div>
                 <div class='description'>
                   <p>
-                  Specify a <a href="DSL.html#M000034">group_by</a> clause for the resulting
+                  Specify a <a href="DSL.html#M000025">group_by</a> clause for the resulting
                   query. This method can only be called in the outermost scope of a filter
                   (i.e. not inside of a having block, etc.). Multiple calls will create
-                  multiple <a href="DSL.html#M000034">group_by</a> clauses in the resulting
+                  multiple <a href="DSL.html#M000025">group_by</a> clauses in the resulting
                   query, and they will be added in the order in which they were called in the
                   filter. In order to specify grouping on columns added through joins, a hash
                   can be passed as the argument, specifying a path through the joins to the
@@ -75,7 +75,8 @@
                   <table>
                   <tr><td valign="top">column<Symbol, Hash>:</td><td>If a symbol is specified, it is taken to represent the name of a column on
                   the class being filtered. If a hash is given, it should represent a path
-                  through the joins to a column in one of the joined tables.
+                  through the joins to a column in one of the joined tables. If a string is
+                  given, it is used without modification as the grouping parameter.
                   
                   </td></tr>
                   </table>
@@ -85,22 +86,22 @@
                   </p>
                   <h4>Alternatives</h4>
                   <p>
-                  As described above, it is possible to pass either a symbol or a hash as the
-                  argument.
+                  As described above, it is possible to pass either a symbol, a hash, or a
+                  string as the argument.
                   </p>
                   <p>
                   @public
                   </p>
                 </div>
                 <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('M000034-source'); return false">
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000025-source'); return false">
                     [show source]
                   </a>
-                  <pre id='M000034-source'><span class="ruby-comment cmt"># File lib/record_filter/dsl/dsl.rb, line 106</span>&#x000A;      <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">group_by</span>(<span class="ruby-identifier">column</span>)&#x000A;        <span class="ruby-ivar">@conjunction</span>.<span class="ruby-identifier">add_group_by</span>(<span class="ruby-identifier">column</span>)&#x000A;        <span class="ruby-keyword kw">nil</span>&#x000A;      <span class="ruby-keyword kw">end</span></pre>
+                  <pre id='M000025-source'><span class="ruby-comment cmt"># File lib/record_filter/dsl/dsl.rb, line 108</span>&#x000A;      <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">group_by</span>(<span class="ruby-identifier">column</span>)&#x000A;        <span class="ruby-ivar">@conjunction</span>.<span class="ruby-identifier">add_group_by</span>(<span class="ruby-identifier">column</span>)&#x000A;        <span class="ruby-keyword kw">nil</span>&#x000A;      <span class="ruby-keyword kw">end</span></pre>
                 </div>
               </div>
-              <div class='public-instance method' id='method-M000032'>
-                <a name='M000032'>      </a>
+              <div class='public-instance method' id='method-M000023'>
+                <a name='M000023'>      </a>
                 <div class='synopsis'>
                   <span class='name'>limit</span>
                   <span class='arguments'>(offset, limit=nil)</span>
@@ -135,14 +136,14 @@
                   </p>
                 </div>
                 <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('M000032-source'); return false">
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000023-source'); return false">
                     [show source]
                   </a>
-                  <pre id='M000032-source'><span class="ruby-comment cmt"># File lib/record_filter/dsl/dsl.rb, line 24</span>&#x000A;      <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">limit</span>(<span class="ruby-identifier">offset</span>, <span class="ruby-identifier">limit</span>=<span class="ruby-keyword kw">nil</span>)&#x000A;        <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">limit</span>&#x000A;          <span class="ruby-ivar">@conjunction</span>.<span class="ruby-identifier">add_limit</span>(<span class="ruby-identifier">limit</span>, <span class="ruby-identifier">offset</span>)&#x000A;        <span class="ruby-keyword kw">else</span>&#x000A;          <span class="ruby-ivar">@conjunction</span>.<span class="ruby-identifier">add_limit</span>(<span class="ruby-identifier">offset</span>, <span class="ruby-keyword kw">nil</span>)&#x000A;        <span class="ruby-keyword kw">end</span>&#x000A;        <span class="ruby-keyword kw">nil</span>&#x000A;      <span class="ruby-keyword kw">end</span></pre>
+                  <pre id='M000023-source'><span class="ruby-comment cmt"># File lib/record_filter/dsl/dsl.rb, line 24</span>&#x000A;      <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">limit</span>(<span class="ruby-identifier">offset</span>, <span class="ruby-identifier">limit</span>=<span class="ruby-keyword kw">nil</span>)&#x000A;        <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">limit</span>&#x000A;          <span class="ruby-ivar">@conjunction</span>.<span class="ruby-identifier">add_limit</span>(<span class="ruby-identifier">limit</span>, <span class="ruby-identifier">offset</span>)&#x000A;        <span class="ruby-keyword kw">else</span>&#x000A;          <span class="ruby-ivar">@conjunction</span>.<span class="ruby-identifier">add_limit</span>(<span class="ruby-identifier">offset</span>, <span class="ruby-keyword kw">nil</span>)&#x000A;        <span class="ruby-keyword kw">end</span>&#x000A;        <span class="ruby-keyword kw">nil</span>&#x000A;      <span class="ruby-keyword kw">end</span></pre>
                 </div>
               </div>
-              <div class='public-instance method' id='method-M000033'>
-                <a name='M000033'>      </a>
+              <div class='public-instance method' id='method-M000024'>
+                <a name='M000024'>      </a>
                 <div class='synopsis'>
                   <span class='name'>order</span>
                   <span class='arguments'>(column, direction=:asc)</span>
@@ -192,10 +193,10 @@
                   </p>
                 </div>
                 <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('M000033-source'); return false">
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000024-source'); return false">
                     [show source]
                   </a>
-                  <pre id='M000033-source'><span class="ruby-comment cmt"># File lib/record_filter/dsl/dsl.rb, line 70</span>&#x000A;      <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">order</span>(<span class="ruby-identifier">column</span>, <span class="ruby-identifier">direction</span>=<span class="ruby-identifier">:asc</span>)&#x000A;        <span class="ruby-keyword kw">unless</span> [<span class="ruby-identifier">:asc</span>, <span class="ruby-identifier">:desc</span>].<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">direction</span>)&#x000A;          <span class="ruby-identifier">raise</span> <span class="ruby-constant">InvalidFilterException</span>.<span class="ruby-identifier">new</span>(<span class="ruby-node">&quot;The direction for orders must be either :asc or :desc but was #{direction}&quot;</span>)&#x000A;        <span class="ruby-keyword kw">end</span>&#x000A;        <span class="ruby-ivar">@conjunction</span>.<span class="ruby-identifier">add_order</span>(<span class="ruby-identifier">column</span>, <span class="ruby-identifier">direction</span>)&#x000A;        <span class="ruby-keyword kw">nil</span>&#x000A;      <span class="ruby-keyword kw">end</span></pre>
+                  <pre id='M000024-source'><span class="ruby-comment cmt"># File lib/record_filter/dsl/dsl.rb, line 70</span>&#x000A;      <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">order</span>(<span class="ruby-identifier">column</span>, <span class="ruby-identifier">direction</span>=<span class="ruby-identifier">:asc</span>)&#x000A;        <span class="ruby-keyword kw">unless</span> [<span class="ruby-identifier">:asc</span>, <span class="ruby-identifier">:desc</span>].<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">direction</span>)&#x000A;          <span class="ruby-identifier">raise</span> <span class="ruby-constant">InvalidFilterException</span>.<span class="ruby-identifier">new</span>(<span class="ruby-node">&quot;The direction for orders must be either :asc or :desc but was #{direction}&quot;</span>)&#x000A;        <span class="ruby-keyword kw">end</span>&#x000A;        <span class="ruby-ivar">@conjunction</span>.<span class="ruby-identifier">add_order</span>(<span class="ruby-identifier">column</span>, <span class="ruby-identifier">direction</span>)&#x000A;        <span class="ruby-keyword kw">nil</span>&#x000A;      <span class="ruby-keyword kw">end</span></pre>
                 </div>
               </div>
             </div>
