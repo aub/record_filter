@@ -142,6 +142,8 @@ The following condition types are supported through the Restriction API:
 * Is null
 * Like
 
+See the RDoc page for {DSL::Restriction}[http://aub.github.com/record_filter/rdoc/classes/RecordFilter/DSL/Restriction.html] for specifics on how to use these.
+
 === Boolean Operations
 
 Conditions can be combined with boolean operators using the methods all_of, any_of, none_of
