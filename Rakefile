@@ -41,6 +41,7 @@ Rake::RDocTask.new do |rdoc|
   rdoc.title = "record_filter #{version}"
   rdoc.rdoc_files.include('README*')
   rdoc.rdoc_files.include('lib/**/*.rb')
+  rdoc.options << '--webcvs=http://github.com/aub/record_filter/tree/master/'
 end
 
 begin
