@@ -32,7 +32,7 @@
         </div>
         <div class='last-update'>
           Last Update:
-          <span class='datetime'>Thu May 07 16:07:06 -0400 2009</span>
+          <span class='datetime'>Fri May 08 01:28:54 -0400 2009</span>
         </div>
       </div>
       <div id='content'>
@@ -83,7 +83,7 @@
             <p>
             This could be expressed in ActiveRecord as:
             </p>
-            <pre>Blog.find(&#x000A;  :all,&#x000A;  :joins =&gt; :posts,&#x000A;  :conditions =&gt; ['posts.permalink IS NULL AND blogs.created_at &gt; ?', 'blog-post', 1.day.ago)</pre>
+            <pre>Blog.all(&#x000A;  :joins =&gt; :posts,&#x000A;  :conditions =&gt; {&#x000A;    :posts =&gt; {:permalink =&gt; nil},&#x000A;    :created_at =&gt; 1.day.ago..Time.now&#x000A;  }&#x000A;)</pre>
             <p>
             and it returns the same result, a list of Blog objects that are the result
             of the query. This type of filter is designed to be created on the fly, but
@@ -91,7 +91,7 @@
             can be added to a class as a named filter. The following example creates
             the same filter as above and executes it:
             </p>
-            <pre>class Post &lt; ActiveRecord::Base&#x000A;  named_filter(:new_with_nil_permalink) do&#x000A;    with(:created_at).greater_than(1.day.ago)&#x000A;    having(:posts).with(:permalink, nil)&#x000A;  end&#x000A;end&#x000A;&#x000A;Post.new_with_nil_permalink</pre>
+            <pre>class Blog &lt; ActiveRecord::Base&#x000A;  named_filter(:new_with_unlinked_posts) do&#x000A;    with(:created_at).greater_than(1.day.ago)&#x000A;    having(:posts).with(:permalink, nil)&#x000A;  end&#x000A;end&#x000A;&#x000A;Blog.new_with_unlinked_posts</pre>
             <p>
             This returns the same result as the example above but with the advantages
             that it is easily reusable and that it can be combined with other named
@@ -113,7 +113,7 @@
             Named filters can also be called from other named filters and will be
             invoked on the correct model even if called from a join.
             </p>
-            <pre>class Comment &lt; ActiveRecord::Base&#x000A;  named_filter(:offensive) { with(:offensive, true) }&#x000A;end&#x000A;&#x000A;class Post &lt; ActiveRecord::Base&#x000A;  named_filter(:recursive_test) do&#x000A;    having(:comments) do&#x000A;      offensive&#x000A;    end&#x000A;  end&#x000A;end</pre>
+            <pre>class Comment &lt; ActiveRecord::Base&#x000A;  named_filter(:offensive) { with(:offensive, true) }&#x000A;end&#x000A;&#x000A;class Post &lt; ActiveRecord::Base&#x000A;  named_filter(:using_other_filter) do&#x000A;    having(:comments) do&#x000A;      offensive&#x000A;    end&#x000A;  end&#x000A;end&#x000A;&#x000A;Post.using_other_filter</pre>
             <h2>Specifying Filters</h2>
             <p>
             record_filter supports all of the SQL query abstractions provided by
@@ -192,7 +192,7 @@
             the correct clause. The block can also contain any number of joins or other
             boolean operations. The default operator is all_of.
             </p>
-            <pre>Post.filter do&#x000A;  with(:id, 4)&#x000A;  with(:permalink, 'ack')&#x000A;end&#x000A;&#x000A;:conditions =&gt; ['id = ? AND permalink = ?', 4, 'ack']&#x000A;&#x000A;Post.filter do&#x000A;  any_of&#x000A;    with(:id, 3)&#x000A;    with(:permalink, 'booya')&#x000A;  end&#x000A;end&#x000A;&#x000A;:conditions =&gt; ['id = ? OR permalink = ?', 3, 'booya']&#x000A;&#x000A;Post.filter do&#x000A;  none_of&#x000A;    with(:id, 2)&#x000A;    with(:permalink, 'ouch')&#x000A;  end&#x000A;end&#x000A;&#x000A;:conditions =&gt; ['NOT (id = ? OR permalink = ?', 2, 'ouch']</pre>
+            <pre>Post.filter do&#x000A;  with(:id, 4)&#x000A;  with(:permalink, 'ack')&#x000A;end&#x000A;&#x000A;# :conditions =&gt; ['id = ? AND permalink = ?', 4, 'ack']&#x000A;&#x000A;Post.filter do&#x000A;  any_of do&#x000A;    with(:id, 3)&#x000A;    with(:permalink, 'booya')&#x000A;  end&#x000A;end&#x000A;&#x000A;# :conditions =&gt; ['id = ? OR permalink = ?', 3, 'booya']&#x000A;&#x000A;Post.filter do&#x000A;  none_of do&#x000A;    with(:id, 2)&#x000A;    with(:permalink, 'ouch')&#x000A;  end&#x000A;end&#x000A;&#x000A;# :conditions =&gt; ['NOT (id = ? OR permalink = ?', 2, 'ouch']</pre>
             <h3>Joins</h3>
             <p>
             Joins in record_filter come in two varieties. Using the information in
@@ -254,7 +254,7 @@
             (The MIT License)
             </p>
             <p>
-            Copyright &#169; 2008 Aubrey Holland, Mat Brown
+            Copyright &#169; 2008-2009 Aubrey Holland, Mat Brown
             </p>
             <p>
             Permission is hereby granted, free of charge, to any person obtaining a
