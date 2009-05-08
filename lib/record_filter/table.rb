@@ -5,7 +5,7 @@ module RecordFilter
     def initialize(model_class, table_alias = nil)
       @model_class = model_class
       @aliased = !table_alias.nil?
-      @table_alias = table_alias || model_class.quoted_table_name
+      @table_alias = table_alias || table_name
       @joins_cache = {}
       @joins = []
       @orders = []
@@ -13,7 +13,7 @@ module RecordFilter
     end
 
     def table_name
-      @model_class.quoted_table_name
+      @table_name ||= @model_class.quoted_table_name
     end
 
     def join_association(association_name, join_type=nil, options={})
@@ -78,14 +78,7 @@ module RecordFilter
     private
 
     def simple_join(association, join_type, options)
-      join_predicate =
-        case association.macro
-        when :belongs_to
-          [{ association.options[:foreign_key] || association.primary_key_name.to_sym => @model_class.primary_key }]
-        when :has_many, :has_one
-          [{ association.options[:primary_key] || @model_class.primary_key => association.primary_key_name.to_sym }]
-        else raise InvalidJoinException.new("I don't know how to do a simple join on an association of type #{association.macro}.")
-        end
+      join_predicate = simple_join_predicate(association)
 
       if association.options[:as]
         join_predicate << DSL::Restriction.new(association.options[:as].to_s + '_type').equal_to(association.active_record.base_class.name)
@@ -101,6 +94,17 @@ module RecordFilter
       join_table = Table.new(clazz, alias_for_association(association))
       @joins << join = Join.new(self, join_table, join_predicate, join_type)
       join
+    end
+
+    def simple_join_predicate(association)
+      join_predicate =
+        case association.macro
+        when :belongs_to
+          [{ association.options[:foreign_key] || association.primary_key_name.to_sym => @model_class.primary_key }]
+        when :has_many, :has_one
+          [{ association.options[:primary_key] || @model_class.primary_key => association.primary_key_name.to_sym }]
+        else raise InvalidJoinException.new("I don't know how to do a simple join on an association of type #{association.macro}.")
+        end
     end
 
     def compound_join(association, join_type)

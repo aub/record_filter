@@ -38,9 +38,9 @@ module RecordFilter
       params[:joins] = joins.map { |join| join.to_sql } unless joins.empty?
       if (joins.any? { |j| j.requires_distinct_select? })
         if count_query
-          params[:select] = "DISTINCT #{@table.model_class.quoted_table_name}.#{@table.model_class.primary_key}"
+          params[:select] = "DISTINCT #{@table.table_name}.#{@table.model_class.primary_key}"
         else
-          params[:select] = "DISTINCT #{@table.model_class.quoted_table_name}.*"
+          params[:select] = "DISTINCT #{@table.table_name}.*"
         end
       end
     end
