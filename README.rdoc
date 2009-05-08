@@ -134,13 +134,13 @@ the name of the column to restrict. If a second argument is given, it will autom
 be used as the value in an equality condition. The 'with' function will return a Restriction
 object that has methods to specify a number of different conditions and to negate them:
 
-  with(:permalink, 'aardvarks')            # :conditions => ['permalink = ?', 'aardvarks']
-  with(:permalink).equal_to('sheep')       # :conditions => ['permalink = ?', 'sheep']
-  with(:permalink).not.equal_to('cats')    # :conditions => ['permailnk <> ?', 'cats']
+  with(:permalink, 'aardvarks')            # ['permalink = ?', 'aardvarks']
+  with(:permalink).equal_to('sheep')       # ['permalink = ?', 'sheep']
+  with(:permalink).not.equal_to('cats')    # ['permailnk <> ?', 'cats']
 
-  with(:permalink, nil)                    # :conditions => ['permalink IS NULL']
-  with(:permalink).is_null                 # :conditions => ['permalink IS NULL']
-  with(:permalink, nil).not                # :conditions => ['permalink IS NOT NULL']
+  with(:permalink, nil)                    # ['permalink IS NULL']
+  with(:permalink).is_null                 # ['permalink IS NULL']
+  with(:permalink, nil).not                # ['permalink IS NOT NULL']
 
 The following condition types are supported through the Restriction API:
 
@@ -150,8 +150,23 @@ The following condition types are supported through the Restriction API:
 * In
 * Is null
 * Like
+* Negation of all of the above
 
-See the RDoc page for {DSL::Restriction}[http://aub.github.com/record_filter/rdoc/classes/RecordFilter/DSL/Restriction.html] for specifics on how to use these.
+And here are some examples. See the RDoc page for 
+{DSL::Restriction}[http://aub.github.com/record_filter/rdoc/classes/RecordFilter/DSL/Restriction.html] 
+for more details on how to use them.
+
+  with(:featured_at).greater_than(Time.now)  # ['featured_at > ?', Time.now]
+
+  with(:price).lte(1000)                     # ['price <= ?', 1000]
+
+  with(:created_at).between(time_a..time_b)  # ['created_at BETWEEN ? AND ?', time_a, time_b]
+
+  with(:id).in([1, 2, 3])                    # ['id in (?)', [1, 2, 3]]
+
+  with(:content).like('%easy%')              # ['content LIKE ?', '%easy%']
+
+  with(:content).not.like('%hard%')          # ['content NOT LIKE ?', '%hard%']
 
 === Boolean Operations
 
@@ -165,7 +180,7 @@ joins or other boolean operations. The default operator is all_of.
     with(:permalink, 'ack')
   end
 
-  # :conditions => ['id = ? AND permalink = ?', 4, 'ack']
+  # ['id = ? AND permalink = ?', 4, 'ack']
 
   Post.filter do
     any_of do
@@ -174,7 +189,7 @@ joins or other boolean operations. The default operator is all_of.
     end
   end
 
-  # :conditions => ['id = ? OR permalink = ?', 3, 'booya']
+  # ['id = ? OR permalink = ?', 3, 'booya']
 
   Post.filter do
     none_of do
@@ -183,7 +198,16 @@ joins or other boolean operations. The default operator is all_of.
     end
   end
 
-  # :conditions => ['NOT (id = ? OR permalink = ?', 2, 'ouch']
+  # ['NOT (id = ? OR permalink = ?', 2, 'ouch']
+
+  Post.filter do
+    not_all_of do
+      with(:id, 1)
+      with(:permalink, 'bonobo')
+    end
+  end
+
+  # ['NOT (id = ? AND permalink = ?', 1, 'bonobo']
 
 === Joins
 
