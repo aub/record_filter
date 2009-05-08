@@ -19,6 +19,10 @@ intended to be a getting started guide that should cover the most common uses.
 
   gem install aub-record_filter --source=http://gems.github.com
 
+In Rails, you'll need to add this to your config/environment.rb file:
+
+  config.gem 'aub-record_filter', :lib => 'record_filter', :source => 'http://gems.github.com'
+
 == Using Filters
 
 Given a Blog model having a has_many relationship with a Post model, a simple 
