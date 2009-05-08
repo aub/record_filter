@@ -11,10 +11,10 @@ heaping helping of DSL thrown in to save your Ruby-loving fingers from writing n
 Blog.filter do
   any_of do
     having(:posts) do
-      with(:created_at).greater_than(3.days.ago)
       having(:comments).with(:offensive, true)
+      with(:permalink, nil)
     end
-    with(:permalink, nil)
+    with(:created_at).greater_than(3.days.ago)
   end
   order(:created_at)
   limit(10)
@@ -26,12 +26,14 @@ with them. The syntax for using named filters is exactly the same as for creatin
 
 {% highlight ruby %}
 class Post < ActiveRecord::Base
-  named_scope :with_nil_permalink, :conditions => ['permalink IS NULL']
-  named_filter(:with_nil_content) { with(:content, nil) }
+  named_scope :with_permalink, lambda do |value| 
+    { :conditions => { :permalink => value } } 
+  end
+  named_filter(:with_content) { |value| with(:content, value) }
   named_filter(:created_recently) { with(:created_at).greater_than(1.day.ago) }
 end
 
-Post.created_recently.with_nil_permalink.with_nil_content
+Post.created_recently.with_permalink(nil).with_content('abc')
 {% endhighlight %}
 
 <p>Record Filter supports all of the following SQL-stomping features:</p>
