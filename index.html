@@ -26,9 +26,9 @@ with them. The syntax for using named filters is exactly the same as for creatin
 
 {% highlight ruby %}
 class Post < ActiveRecord::Base
-  named_scope :with_permalink, lambda do |value| 
+  named_scope :with_permalink, lambda { |value| 
     { :conditions => { :permalink => value } } 
-  end
+  }
   named_filter(:with_content) { |value| with(:content, value) }
   named_filter(:created_recently) { with(:created_at).greater_than(1.day.ago) }
 end
