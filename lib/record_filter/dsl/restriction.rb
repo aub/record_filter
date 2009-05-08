@@ -190,7 +190,7 @@ module RecordFilter
       #
       # ==== Parameters
       # value::
-      #   Either a single item or an array of values to form the values to be tested for inclusion.
+      #   Either a single item, an array of values, or a range to form the values to be tested for inclusion.
       #
       # ==== Returns
       # Restriction:: self
