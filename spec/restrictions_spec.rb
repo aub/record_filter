@@ -89,6 +89,13 @@ describe 'RecordFilter restrictions' do
     Post.last_find.should == { :conditions => [%q("posts".blog_id IN (?)), nil] }
   end
 
+  it 'should do the right thing for IN filters with a range' do
+    Post.filter do
+      with(:blog_id).in(1..5)
+    end.inspect
+    Post.last_find.should == { :conditions => [%q("posts".blog_id IN (?)), 1..5] }
+  end
+
   it 'should negate is_not_null conditions correctly' do
     Post.filter do
       with(:blog_id).is_not_null.not

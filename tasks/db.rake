@@ -3,8 +3,10 @@ namespace :db do
     desc 'drop database and recreate from test schema'
     task :prepare do
       require File.join(File.dirname(__FILE__), '..', 'spec', 'spec_helper')
-      
-      FileUtils.rm(File.join(File.dirname(__FILE__), '..', 'spec', 'test.db'))
+
+      db_file = File.join(File.dirname(__FILE__), '..', 'spec', 'test.db')
+
+      FileUtils.rm(db_file) if File.exists?(db_file)
 
       ActiveRecord::Schema.define do
 

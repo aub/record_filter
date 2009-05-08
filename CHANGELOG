@@ -1,3 +1,11 @@
+= New
+
+* Added a test to make sure that the IN restriction can take a range
+
+* Changed the default rake task to run db:spec:prepare first
+
+* Added code quality metrics tests
+
 = 0.9.3
 
 * Fix a bug when using class_name on belongs_to associations without

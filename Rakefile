@@ -6,7 +6,7 @@ require 'rake/testtask'
 
 FileList['tasks/**/*.rake'].each { |file| load file }
 
-task :default => :spec
+task :default => ["db:spec:prepare", :spec]
 
 begin
   require 'jeweler'
