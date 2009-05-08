@@ -69,9 +69,11 @@ module RecordFilter
       # column<Symbol, Hash>::
       #   Specify the column for the ordering. If a symbol is given, it is assumed to represent
       #   a column in the class that is being filtered. With a hash argument, it is possible
-      #   to specify a path to a column in one of the joined tables, as seen above.
+      #   to specify a path to a column in one of the joined tables, as seen above. If a string
+      #   is given and it doesn't match up with a column name, it is used as a literal string
+      #   for ordering.
       # direction<Symbol>::
-      #   Specifies the direction of the join. Should be either :asc or :desc and defaults to :asc.
+      #   Specifies the direction of the order. Should be either :asc or :desc and defaults to :asc.
       #
       # ==== Returns
       # nil
@@ -81,7 +83,7 @@ module RecordFilter
       #   If the direction is neither :asc nor :desc.
       #
       # ==== Alternatives
-      # As described above, it is possible to pass either a symbol or a hash as the first
+      # As described above, it is possible to pass a symbol, a hash or a string as the first
       # argument.
       #
       # @public
