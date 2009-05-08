@@ -17,10 +17,6 @@ module RecordFilter
       def to_negative_sql
         "NOT (#{to_positive_sql})"
       end
-
-      def self.class_from_operator(operator)
-        "RecordFilter::Restrictions::#{operator.to_s.camelize}".constantize
-      end
     end
 
     class EqualTo < Base

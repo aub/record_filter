@@ -46,9 +46,11 @@ module RecordFilter
       unless @right_table.has_column(dsl_restriction.column)
         raise ColumnNotFoundException.new("The column #{dsl_restriction.column} was not found in the table #{@right_table.table_name}")
       end
-      restriction_class = RecordFilter::Restrictions::Base.class_from_operator(dsl_restriction.operator)
-      restriction = restriction_class.new(
-        "#{@right_table.table_alias}.#{dsl_restriction.column}", dsl_restriction.value, :negated => dsl_restriction.negated)
+      restriction = RestrictionFactory.build(
+        dsl_restriction.operator,
+        "#{@right_table.table_alias}.#{dsl_restriction.column}",
+        dsl_restriction.value,
+        :negated => dsl_restriction.negated)
       @right_table.model_class.merge_conditions(restriction.to_conditions)
     end
 

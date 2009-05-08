@@ -19,6 +19,7 @@ ActiveRecord::Base.establish_connection(
 @blog.named_filter :somethings do
   having(:ads) do
     with(:content, nil)
+    with(:id).greater_than(25)
   end
   join(Post, :left) do
     on(:id => :blog_id)
@@ -28,6 +29,8 @@ ActiveRecord::Base.establish_connection(
     end
   end
   group_by(:id)
+  limit(10, 100)
+  order(:ads => :id)
 end
 
 10000.times do

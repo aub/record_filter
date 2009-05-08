@@ -1,5 +1,7 @@
 = New
 
+* Some small performance improvements
+
 * Added a test to make sure that the IN restriction can take a range
 
 * Changed the default rake task to run db:spec:prepare first

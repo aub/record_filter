@@ -118,7 +118,9 @@ module RecordFilter
     protected
 
     def alias_for_association(association)
-      "#{@aliased ? @table_alias.to_s : @model_class.table_name}__#{association.name.to_s.downcase}"
+      @alias_cache ||= {} 
+      @alias_cache[association.name] ||= 
+        "#{@aliased ? @table_alias.to_s : @model_class.table_name}__#{association.name.to_s.downcase}"
     end
 
     alias_method :alias_for_class, :alias_for_association
