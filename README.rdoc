@@ -31,24 +31,27 @@ filter with conditions and joins might look like this.
 
 This could be expressed in ActiveRecord as:
 
-  Blog.find(
-    :all, 
+  Blog.all(
     :joins => :posts, 
-    :conditions => ['posts.permalink IS NULL AND blogs.created_at > ?', 'blog-post', 1.day.ago)
+    :conditions => {
+      :posts => {:permalink => nil},
+      :created_at => 1.day.ago..Time.now
+    }
+  )
 
 and it returns the same result, a list of Blog objects that are the result of the query. This
 type of filter is designed to be created on the fly, but if you have a filter that you would like
 to use in more than one place, it can be added to a class as a named filter. The following example
 creates the same filter as above and executes it:
 
-  class Post < ActiveRecord::Base
-    named_filter(:new_with_nil_permalink) do
+  class Blog < ActiveRecord::Base
+    named_filter(:new_with_unlinked_posts) do
       with(:created_at).greater_than(1.day.ago)
       having(:posts).with(:permalink, nil)
     end
   end
 
-  Post.new_with_nil_permalink
+  Blog.new_with_unlinked_posts
 
 This returns the same result as the example above but with the advantages that it is
 easily reusable and that it can be combined with other named filters to produce a more
@@ -85,12 +88,14 @@ model even if called from a join.
   end
 
   class Post < ActiveRecord::Base
-    named_filter(:recursive_test) do
+    named_filter(:using_other_filter) do
       having(:comments) do
         offensive
       end
     end
   end
+
+  Post.using_other_filter
 
 == Specifying Filters
 
@@ -156,25 +161,25 @@ joins or other boolean operations. The default operator is all_of.
     with(:permalink, 'ack')
   end
 
-  :conditions => ['id = ? AND permalink = ?', 4, 'ack']
+  # :conditions => ['id = ? AND permalink = ?', 4, 'ack']
 
   Post.filter do
-    any_of
+    any_of do
       with(:id, 3)
       with(:permalink, 'booya')
     end
   end
 
-  :conditions => ['id = ? OR permalink = ?', 3, 'booya']
+  # :conditions => ['id = ? OR permalink = ?', 3, 'booya']
 
   Post.filter do
-    none_of
+    none_of do
       with(:id, 2)
       with(:permalink, 'ouch')
     end
   end
 
-  :conditions => ['NOT (id = ? OR permalink = ?', 2, 'ouch']
+  # :conditions => ['NOT (id = ? OR permalink = ?', 2, 'ouch']
 
 === Joins
 
