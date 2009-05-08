@@ -30,6 +30,24 @@ module RecordFilter
         nil
       end
 
+      # Define an offset for the results returned from the current
+      # filter. This method can only be called from the outermost scope of a filter
+      # (i.e. not inside of a having block, etc.). If it is called multiple times, the
+      # last one will override any others.
+      #
+      # ==== Parameters
+      # offset<Integer>::
+      #   The offset of the query.
+      #
+      # ==== Returns
+      # nil
+      #
+      # @public
+      def offset(offset)
+        @conjunction.add_limit(nil, offset)
+        nil
+      end
+
       # Define an order clause for the current query, with options for specifying
       # both the column to use as well as the direction. This method can only be called
       # in the outermost scope of a filter (i.e. not inside of a having block, etc.).

@@ -1,4 +1,7 @@
-= New
+= 0.9.4
+
+* Added an offset method to the DSL so that we can do offsets separately from
+limits
 
 * Some small performance improvements
 

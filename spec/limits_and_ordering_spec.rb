@@ -63,6 +63,50 @@ describe 'filter qualifiers' do
     end
   end
 
+  describe 'offsets' do
+    describe 'simple offset setting' do
+      before do
+        Post.filter do
+          with :published, true
+          offset 10
+        end.inspect
+      end
+
+      it 'should add the offset to the parameters' do
+        Post.last_find[:offset].should == 10
+      end
+    end
+
+    describe 'with multiple calls to offset' do
+      before do
+       Post.filter do
+          offset 5
+          with :published, true
+          offset 6
+        end.inspect
+      end
+
+      it 'should add the offset to the parameters' do
+        Post.last_find[:offset].should == 6 
+      end
+    end
+
+    describe 'offsetting named scopes' do
+      before do
+        @post = Class.new(Post)
+        @post.named_filter(:published_ones) do
+          offset(2)
+          with(:published, false)
+        end
+      end
+
+      it 'should offset the query' do
+        @post.published_ones.inspect
+        @post.last_find[:offset].should == 2
+      end
+    end
+  end
+
   describe 'ordering' do
     describe 'with a simple order supplied' do
       before do
@@ -115,7 +159,7 @@ describe 'filter qualifiers' do
         end.inspect
       end
 
-      it 'should add the limit to the parameters' do
+      it 'should add the order to the parameters' do
         Post.last_find[:order].should == %q(posts__photo.path DESC, "posts".permalink ASC)
       end
     end
