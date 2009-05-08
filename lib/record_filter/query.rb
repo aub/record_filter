@@ -20,15 +20,7 @@ module RecordFilter
         params = {}
         conditions = @conjunction.to_conditions
         params = { :conditions => conditions } if conditions
-        joins = @table.all_joins
-        params[:joins] = joins.map { |join| join.to_sql } unless joins.empty?
-        if (joins.any? { |j| j.requires_distinct_select? })
-          if count_query
-            params[:select] = "DISTINCT #{@table.model_class.quoted_table_name}.#{@table.model_class.primary_key}"
-          else
-            params[:select] = "DISTINCT #{@table.model_class.quoted_table_name}.*"
-          end
-        end
+        add_joins(params, count_query)
         orders = @table.orders
         params[:order] = orders.map { |order| order.to_sql } * ', ' unless orders.empty?
         group_bys = @table.group_bys
@@ -40,6 +32,18 @@ module RecordFilter
     end
 
     protected
+
+    def add_joins(params, count_query)
+      joins = @table.all_joins
+      params[:joins] = joins.map { |join| join.to_sql } unless joins.empty?
+      if (joins.any? { |j| j.requires_distinct_select? })
+        if count_query
+          params[:select] = "DISTINCT #{@table.model_class.quoted_table_name}.#{@table.model_class.primary_key}"
+        else
+          params[:select] = "DISTINCT #{@table.model_class.quoted_table_name}.*"
+        end
+      end
+    end
 
     def dsl_for_named_filter(clazz, named_filter)
       return DSL::DSLFactory.create(clazz) if named_filter.blank?

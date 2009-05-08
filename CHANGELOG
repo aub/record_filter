@@ -4,7 +4,9 @@
 
 * Changed the default rake task to run db:spec:prepare first
 
-* Added code quality metrics tests
+* Added metric_fu for code quality metrics tests
+
+* Refactored a bunch of code to improve the metric numbers
 
 = 0.9.3
 

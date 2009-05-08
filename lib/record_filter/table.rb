@@ -41,6 +41,7 @@ module RecordFilter
               simple_join(association, join_type, options)
             when :has_and_belongs_to_many
               compound_join(association, join_type)
+            else raise InvalidJoinException.new("I don't know how to join on an association of type #{association.macro}.")
             end
           end
         end
@@ -83,6 +84,7 @@ module RecordFilter
           [{ association.options[:foreign_key] || association.primary_key_name.to_sym => @model_class.primary_key }]
         when :has_many, :has_one
           [{ association.options[:primary_key] || @model_class.primary_key => association.primary_key_name.to_sym }]
+        else raise InvalidJoinException.new("I don't know how to do a simple join on an association of type #{association.macro}.")
         end
 
       if association.options[:as]

@@ -9,6 +9,7 @@ module RecordFilter
           when :all_of then AllOf.new(table)
           when :none_of then NoneOf.new(table)
           when :not_all_of then NotAllOf.new(table)
+          else raise InvalidFilterException.new("An invalid conjunction type of #{dsl_conjunction.type} was used.")
         end
 
         dsl_conjunction.steps.each do |step|
@@ -32,6 +33,7 @@ module RecordFilter
             result.add_group_by(step.column)
           when DSL::NamedFilter
             result.add_named_filter(step.name, step.args)
+          else raise InvalidFilterException.new('And invalid filter step was provided.')
           end
         end
         result
@@ -60,8 +62,7 @@ module RecordFilter
       def add_join_on_association(association_name, join_type)
         table = @table
         while association_name.is_a?(Hash)
-          result = table.join_association(association_name.keys[0], join_type)
-          table = result.right_table
+          table = table.join_association(association_name.keys[0], join_type).right_table
           association_name = association_name.values[0]
         end
         table.join_association(association_name, join_type)

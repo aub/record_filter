@@ -5,3 +5,4 @@ rdoc
 *.gem
 *.swp
 spec/test.db
+tmp

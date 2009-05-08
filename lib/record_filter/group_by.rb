@@ -1,5 +1,7 @@
 module RecordFilter
   class GroupBy # :nodoc: all
+    include ColumnParser
+
     attr_reader :column, :table
 
     def initialize(column, table)
@@ -7,11 +9,7 @@ module RecordFilter
     end
 
     def to_sql
-      table, column = @table, @column
-      while column.is_a?(Hash)
-        table = table.join_association(column.keys[0]).right_table
-        column = column.values[0]
-      end
+      column, table = parse_column_in_table(@column, @table, false)
 
       if (table.has_column(column))
         "#{table.table_alias}.#{column}"
