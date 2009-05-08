@@ -39,6 +39,7 @@ namespace :db do
           t.string :name
           t.boolean :published
           t.integer :special_id
+          t.timestamps
         end
 
         create_table :comments do |t|
@@ -73,6 +74,7 @@ namespace :db do
           t.string :permalink
           t.timestamp :created_at
           t.boolean :published
+          t.string :content
         end
 
         create_table :posts_tags, :id => false do |t|
