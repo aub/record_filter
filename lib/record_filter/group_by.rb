@@ -9,7 +9,7 @@ module RecordFilter
     end
 
     def to_sql
-      column, table = parse_column_in_table(@column, @table, false)
+      column, table = parse_column_in_table(@column, @table)
 
       if (table.has_column(column))
         "#{table.table_alias}.#{column}"

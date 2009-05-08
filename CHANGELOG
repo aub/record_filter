@@ -1,5 +1,7 @@
 = 0.9.4
 
+* Stop forcing order to take a real column name and let it accept a string
+
 * Added an offset method to the DSL so that we can do offsets separately from
 limits
 

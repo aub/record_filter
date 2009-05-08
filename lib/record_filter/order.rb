@@ -14,8 +14,14 @@ module RecordFilter
         when :desc then 'DESC'
         else raise InvalidFilterException.new("An invalid order of #{@direction} was specified.") 
       end
+
       column, table = parse_column_in_table(@column, @table)
-      "#{table.table_alias}.#{column} #{dir}"
+
+      if (table.has_column(column))
+        "#{table.table_alias}.#{column} #{dir}"
+      else
+        "#{column} #{dir}"
+      end
     end
   end
 end

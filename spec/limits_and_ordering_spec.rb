@@ -163,6 +163,20 @@ describe 'filter qualifiers' do
         Post.last_find[:order].should == %q(posts__photo.path DESC, "posts".permalink ASC)
       end
     end
+
+    describe 'with the order supplied as a string' do
+      before do
+        Post.filter do
+          with :published, true
+          group_by(:published)
+          order('SUM(id)', :desc)
+        end.inspect
+      end
+
+      it 'should add the order to the query' do
+        Post.last_find[:order].should == %q(SUM(id) DESC)
+      end
+    end
   end
 
   describe 'group_by' do

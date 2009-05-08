@@ -34,12 +34,12 @@ describe 'raising exceptions' do
       }.should raise_error(RecordFilter::ColumnNotFoundException)
     end
 
-    it 'should get ColumnNotFoundException for order' do
+    it 'should not get ColumnNotFoundException for order' do
       lambda {
         Post.filter do
-          order(:this_is_not_there, :asc)
+          order('this_is_not_there', :asc)
         end.inspect
-      }.should raise_error(RecordFilter::ColumnNotFoundException)
+      }.should_not raise_error(RecordFilter::ColumnNotFoundException)
     end
 
     it 'should not get ColumnNotFoundException for group_by' do
