@@ -47,6 +47,7 @@ namespace :db do
           t.references :user
           t.string :contents
           t.boolean :offensive
+          t.timestamps
         end
 
         create_table :features do |t|
@@ -75,6 +76,7 @@ namespace :db do
           t.timestamp :created_at
           t.boolean :published
           t.string :content
+          t.string :title
         end
 
         create_table :posts_tags, :id => false do |t|
