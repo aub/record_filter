@@ -198,7 +198,7 @@ joins or other boolean operations. The default operator is all_of.
     end
   end
 
-  # ['NOT (id = ? OR permalink = ?', 2, 'ouch']
+  # ['NOT (id = ? OR permalink = ?)', 2, 'ouch']
 
   Post.filter do
     not_all_of do
@@ -207,7 +207,7 @@ joins or other boolean operations. The default operator is all_of.
     end
   end
 
-  # ['NOT (id = ? AND permalink = ?', 1, 'bonobo']
+  # ['NOT (id = ? AND permalink = ?)', 1, 'bonobo']
 
 === Joins
 
