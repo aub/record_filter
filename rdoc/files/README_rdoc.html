@@ -32,7 +32,7 @@
         </div>
         <div class='last-update'>
           Last Update:
-          <span class='datetime'>Thu May 07 16:07:06 -0400 2009</span>
+          <span class='datetime'>Fri May 08 11:28:07 -0400 2009</span>
         </div>
       </div>
       <div id='content'>
@@ -74,6 +74,10 @@
             </p>
             <h2>Installation</h2>
             <pre>gem install aub-record_filter --source=http://gems.github.com</pre>
+            <p>
+            In Rails, you&#8217;ll need to add this to your config/environment.rb file:
+            </p>
+            <pre>config.gem 'aub-record_filter', :lib =&gt; 'record_filter', :source =&gt; 'http://gems.github.com'</pre>
             <h2>Using Filters</h2>
             <p>
             Given a Blog model having a has_many relationship with a Post model, a
@@ -83,7 +87,7 @@
             <p>
             This could be expressed in ActiveRecord as:
             </p>
-            <pre>Blog.find(&#x000A;  :all,&#x000A;  :joins =&gt; :posts,&#x000A;  :conditions =&gt; ['posts.permalink IS NULL AND blogs.created_at &gt; ?', 'blog-post', 1.day.ago)</pre>
+            <pre>Blog.all(&#x000A;  :joins =&gt; :posts,&#x000A;  :conditions =&gt; {&#x000A;    :posts =&gt; {:permalink =&gt; nil},&#x000A;    :created_at =&gt; 1.day.ago..Time.now&#x000A;  }&#x000A;)</pre>
             <p>
             and it returns the same result, a list of Blog objects that are the result
             of the query. This type of filter is designed to be created on the fly, but
@@ -91,7 +95,7 @@
             can be added to a class as a named filter. The following example creates
             the same filter as above and executes it:
             </p>
-            <pre>class Post &lt; ActiveRecord::Base&#x000A;  named_filter(:new_with_nil_permalink) do&#x000A;    with(:created_at).greater_than(1.day.ago)&#x000A;    having(:posts).with(:permalink, nil)&#x000A;  end&#x000A;end&#x000A;&#x000A;Post.new_with_nil_permalink</pre>
+            <pre>class Blog &lt; ActiveRecord::Base&#x000A;  named_filter(:new_with_unlinked_posts) do&#x000A;    with(:created_at).greater_than(1.day.ago)&#x000A;    having(:posts).with(:permalink, nil)&#x000A;  end&#x000A;end&#x000A;&#x000A;Blog.new_with_unlinked_posts</pre>
             <p>
             This returns the same result as the example above but with the advantages
             that it is easily reusable and that it can be combined with other named
@@ -113,7 +117,7 @@
             Named filters can also be called from other named filters and will be
             invoked on the correct model even if called from a join.
             </p>
-            <pre>class Comment &lt; ActiveRecord::Base&#x000A;  named_filter(:offensive) { with(:offensive, true) }&#x000A;end&#x000A;&#x000A;class Post &lt; ActiveRecord::Base&#x000A;  named_filter(:recursive_test) do&#x000A;    having(:comments) do&#x000A;      offensive&#x000A;    end&#x000A;  end&#x000A;end</pre>
+            <pre>class Comment &lt; ActiveRecord::Base&#x000A;  named_filter(:offensive) { with(:offensive, true) }&#x000A;end&#x000A;&#x000A;class Post &lt; ActiveRecord::Base&#x000A;  named_filter(:using_other_filter) do&#x000A;    having(:comments) do&#x000A;      offensive&#x000A;    end&#x000A;  end&#x000A;end&#x000A;&#x000A;Post.using_other_filter</pre>
             <h2>Specifying Filters</h2>
             <p>
             record_filter supports all of the SQL query abstractions provided by
@@ -155,7 +159,7 @@
             Restriction object that has methods to specify a number of different
             conditions and to negate them:
             </p>
-            <pre>with(:permalink, 'aardvarks')            # :conditions =&gt; ['permalink = ?', 'aardvarks']&#x000A;with(:permalink).equal_to('sheep')       # :conditions =&gt; ['permalink = ?', 'sheep']&#x000A;with(:permalink).not.equal_to('cats')    # :conditions =&gt; ['permailnk &lt;&gt; ?', 'cats']&#x000A;&#x000A;with(:permalink, nil)                    # :conditions =&gt; ['permalink IS NULL']&#x000A;with(:permalink).is_null                 # :conditions =&gt; ['permalink IS NULL']&#x000A;with(:permalink, nil).not                # :conditions =&gt; ['permalink IS NOT NULL']</pre>
+            <pre>with(:permalink, 'aardvarks')            # ['permalink = ?', 'aardvarks']&#x000A;with(:permalink).equal_to('sheep')       # ['permalink = ?', 'sheep']&#x000A;with(:permalink).not.equal_to('cats')    # ['permailnk &lt;&gt; ?', 'cats']&#x000A;&#x000A;with(:permalink, nil)                    # ['permalink IS NULL']&#x000A;with(:permalink).is_null                 # ['permalink IS NULL']&#x000A;with(:permalink, nil).not                # ['permalink IS NOT NULL']</pre>
             <p>
             The following condition types are supported through the Restriction API:
             </p>
@@ -178,12 +182,16 @@
             <li>Like
             
             </li>
+            <li>Negation of all of the above
+            
+            </li>
             </ul>
             <p>
-            See the RDoc page for <a
+            And here are some examples. See the RDoc page for <a
             href="http://aub.github.com/record_filter/rdoc/classes/RecordFilter/DSL/Restriction.html">DSL::Restriction</a>
-            for specifics on how to use these.
+            for more details on how to use them.
             </p>
+            <pre>with(:featured_at).greater_than(Time.now)  # ['featured_at &gt; ?', Time.now]&#x000A;&#x000A;with(:price).lte(1000)                     # ['price &lt;= ?', 1000]&#x000A;&#x000A;with(:created_at).between(time_a..time_b)  # ['created_at BETWEEN ? AND ?', time_a, time_b]&#x000A;&#x000A;with(:id).in([1, 2, 3])                    # ['id in (?)', [1, 2, 3]]&#x000A;&#x000A;with(:content).like('%easy%')              # ['content LIKE ?', '%easy%']&#x000A;&#x000A;with(:content).not.like('%hard%')          # ['content NOT LIKE ?', '%hard%']</pre>
             <h3>Boolean Operations</h3>
             <p>
             Conditions can be combined with boolean operators using the methods all_of,
@@ -192,7 +200,7 @@
             the correct clause. The block can also contain any number of joins or other
             boolean operations. The default operator is all_of.
             </p>
-            <pre>Post.filter do&#x000A;  with(:id, 4)&#x000A;  with(:permalink, 'ack')&#x000A;end&#x000A;&#x000A;:conditions =&gt; ['id = ? AND permalink = ?', 4, 'ack']&#x000A;&#x000A;Post.filter do&#x000A;  any_of&#x000A;    with(:id, 3)&#x000A;    with(:permalink, 'booya')&#x000A;  end&#x000A;end&#x000A;&#x000A;:conditions =&gt; ['id = ? OR permalink = ?', 3, 'booya']&#x000A;&#x000A;Post.filter do&#x000A;  none_of&#x000A;    with(:id, 2)&#x000A;    with(:permalink, 'ouch')&#x000A;  end&#x000A;end&#x000A;&#x000A;:conditions =&gt; ['NOT (id = ? OR permalink = ?', 2, 'ouch']</pre>
+            <pre>Post.filter do&#x000A;  with(:id, 4)&#x000A;  with(:permalink, 'ack')&#x000A;end&#x000A;&#x000A;# ['id = ? AND permalink = ?', 4, 'ack']&#x000A;&#x000A;Post.filter do&#x000A;  any_of do&#x000A;    with(:id, 3)&#x000A;    with(:permalink, 'booya')&#x000A;  end&#x000A;end&#x000A;&#x000A;# ['id = ? OR permalink = ?', 3, 'booya']&#x000A;&#x000A;Post.filter do&#x000A;  none_of do&#x000A;    with(:id, 2)&#x000A;    with(:permalink, 'ouch')&#x000A;  end&#x000A;end&#x000A;&#x000A;# ['NOT (id = ? OR permalink = ?)', 2, 'ouch']&#x000A;&#x000A;Post.filter do&#x000A;  not_all_of do&#x000A;    with(:id, 1)&#x000A;    with(:permalink, 'bonobo')&#x000A;  end&#x000A;end&#x000A;&#x000A;# ['NOT (id = ? AND permalink = ?)', 1, 'bonobo']</pre>
             <h3>Joins</h3>
             <p>
             Joins in record_filter come in two varieties. Using the information in
@@ -254,7 +262,7 @@
             (The MIT License)
             </p>
             <p>
-            Copyright &#169; 2008 Aubrey Holland, Mat Brown
+            Copyright &#169; 2008-2009 Aubrey Holland, Mat Brown
             </p>
             <p>
             Permission is hereby granted, free of charge, to any person obtaining a
