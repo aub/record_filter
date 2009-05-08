@@ -11,8 +11,8 @@ heaping helping of DSL thrown in to save your Ruby-loving fingers from writing n
 Blog.filter do
   any_of do
     having(:posts) do
-      having(:comments).with(:offensive, true)
       with(:permalink, nil)
+      having(:comments).with(:offensive, true)
     end
     with(:created_at).greater_than(3.days.ago)
   end
