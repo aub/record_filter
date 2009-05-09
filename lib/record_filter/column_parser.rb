@@ -1,5 +1,5 @@
 module RecordFilter
-  module ColumnParser
+  module ColumnParser # :nodoc: all
 
     protected
 
