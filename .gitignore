@@ -4,7 +4,6 @@ pkg
 rdoc
 *.gem
 *.swp
-spec/test.db
 tmp
 _site
 
