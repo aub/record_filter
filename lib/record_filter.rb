@@ -1,5 +1,5 @@
 require 'rubygems'
-gem 'activerecord', '~> 2.2'
+gem 'activerecord', '~> 2.3'
 require 'active_record'
 
 %w(active_record column_parser query table conjunctions restrictions restriction_factory filter join order group_by dsl).each do |file|
