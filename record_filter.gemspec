@@ -57,11 +57,10 @@ Gem::Specification.new do |s|
     "test/performance_test.rb",
     "test/test.db"
   ]
-  s.has_rdoc = true
   s.homepage = %q{http://github.com/aub/record_filter/tree/master}
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
-  s.rubygems_version = %q{1.3.2}
+  s.rubygems_version = %q{1.3.3}
   s.summary = %q{An ActiveRecord query API for replacing SQL with awesome}
   s.test_files = [
     "spec/active_record_spec.rb",
