@@ -5,39 +5,35 @@ layout: default
 <p>
 Record Filter gives you the full power of ActiveRecord's query building tools with a
 heaping helping of DSL thrown in to save your Ruby-loving fingers from writing nasty SQL.
-Which one of these looks better to you?
 </p>
 
 {% highlight ruby %}
-## Record Filter ##
-
 Blog.filter do
-  with(:created_at).greater_than(1.day.ago)
-  having(:posts).with(:permalink, nil)
+  any_of do
+    having(:posts) do
+      with(:permalink, nil)
+      having(:comments).with(:offensive, true)
+    end
+    with(:created_at).greater_than(3.days.ago)
+  end
+  order(:created_at)
+  limit(10)
 end
-
-## ActiveRecord ##
-
-Blog.find(
-  :all,
-  :joins => :posts,
-  :conditions => ['posts.permalink IS NULL AND blogs.created_at > ?', 'blog-post', 1.day.ago)
 {% endhighlight %}
-
-<p>In my browser, only one of them requires the use of a scrollbar to view the entire thing, and that's
-all I need to know.</p>
 
 <p>Record Filter also supports named filters, which work much like named scopes and are even compatible
 with them. The syntax for using named filters is exactly the same as for creating filters on the fly.</p>
 
 {% highlight ruby %}
 class Post < ActiveRecord::Base
-  named_scope :with_nil_permalink, :conditions => ['permalink IS NULL']
-  named_filter(:with_nil_content) { with(:content, nil) }
+  named_scope :with_permalink, lambda { |value| 
+    { :conditions => { :permalink => value } } 
+  }
+  named_filter(:with_content) { |value| with(:content, value) }
   named_filter(:created_recently) { with(:created_at).greater_than(1.day.ago) }
 end
 
-Post.created_recently.with_nil_permalink.with_nil_content
+Post.created_recently.with_permalink(nil).with_content('abc')
 {% endhighlight %}
 
 <p>Record Filter supports all of the following SQL-stomping features:</p>
@@ -60,4 +56,8 @@ for all the gory details.
 <h2>Get It</h2>
 
 <pre><code>$ sudo gem install aub-record_filter --source=http://gems.github.com</code></pre>
+
+<p>In Rails, you'll need to add this to your environment.rb file:
+
+<pre><code>config.gem 'aub-record_filter', :lib => 'record_filter', :source => 'http://gems.github.com'</code></pre>
 

@@ -2,3 +2,4 @@ _site
 coverage
 perf
 tmp
+*.swp
