@@ -1,0 +1,173 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang='en'>
+  <head>
+    <title>: RecordFilter::ActiveRecordExtension::ClassMethods [record_filter 0.9.4]</title>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
+    <link href='../../../rdoc-style.css' media='screen' rel='stylesheet' type='text/css'>
+    <script type='text/javascript'>
+      //<![CDATA[
+        function popupCode(url) {
+          window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+        }
+        
+        function toggleCode(id) {
+          var code = document.getElementById(id)
+        
+          code.style.display = code.style.display != 'block' ? 'block' : 'none'
+          return true
+        }
+        
+        // Make codeblocks hidden by default
+        document.writeln('<' + 'style type="text/css">.method .source pre { display: none }<\/style>')
+      //]]>
+    </script>
+  </head>
+  <body class='page'>
+    <div class='class' id='wrapper'>
+      <div class='header'>
+        <h1 class='name'>
+          <span class='type'>Module</span>
+          RecordFilter::ActiveRecordExtension::ClassMethods
+        </h1>
+        <ol class='paths'>
+          <li>
+            <a href="../../../files/lib/record_filter/active_record_rb.html">lib/record_filter/active_record.rb</a>
+            (<a href="http://github.com/aub/record_filter/tree/master/lib/record_filter/active_record.rb">view online</a>)
+          </li>
+        </ol>
+      </div>
+      <div id='content'>
+        <div id='text'>
+          <div id='method-list'>
+            <h2>Methods</h2>
+            <h3>public instance</h3>
+            <ol>
+              <li><a href="#M000001">filter</a></li>
+              <li><a href="#M000002">named_filter</a></li>
+              <li><a href="#M000003">named_filters</a></li>
+            </ol>
+          </div>
+          <div id='section'>
+            <div id='methods'>
+              <h2>Public instance methods</h2>
+              <div class='public-instance method' id='method-M000001'>
+                <a name='M000001'>      </a>
+                <div class='synopsis'>
+                  <span class='name'>filter</span>
+                  <span class='arguments'>(&amp;block)</span>
+                </div>
+                <div class='description'>
+                  <p>
+                  Create a filter on the fly to find a set of results that matches the given
+                  criteria. This method, which can be called on any ActiveRecord::Base
+                  subclass, accepts a block that defines the contents of the filter and
+                  returns a <a href="../Filter.html">Filter</a> object that contains a list
+                  of the objects resulting from the query. See the documentation for <a
+                  href="../DSL.html">RecordFilter::DSL</a> for more information on how to
+                  specify the filter.
+                  </p>
+                  <h4>Parameters</h4>
+                  <table>
+                  <tr><td valign="top">block<Proc>:</td><td>A block that specifies the contents of the filter.
+                  
+                  </td></tr>
+                  </table>
+                  <h4>Returns</h4>
+                  <table>
+                  <tr><td valign="top">Filter:</td><td>The <a href="../Filter.html">Filter</a> object resulting from the query,
+                  which can be treated as an array of the results.
+                  
+                  </td></tr>
+                  </table>
+                  <h4>Example</h4>
+                  <pre>Blog.filter do&#x000A;  having(:posts).with(:name, nil)&#x000A;end</pre>
+                  <p>
+                  @public
+                  </p>
+                </div>
+                <div class='source'>
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000001-source'); return false">
+                    [show source]
+                  </a>
+                  <pre id='M000001-source'><span class="ruby-comment cmt"># File lib/record_filter/active_record.rb, line 30</span>&#x000A;      <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">filter</span>(<span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)&#x000A;        <span class="ruby-constant">Filter</span>.<span class="ruby-identifier">new</span>(<span class="ruby-keyword kw">self</span>, <span class="ruby-keyword kw">nil</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)&#x000A;      <span class="ruby-keyword kw">end</span></pre>
+                </div>
+              </div>
+              <div class='public-instance method' id='method-M000002'>
+                <a name='M000002'>      </a>
+                <div class='synopsis'>
+                  <span class='name'>named_filter</span>
+                  <span class='arguments'>(name, &amp;block)</span>
+                </div>
+                <div class='description'>
+                  <p>
+                  Create a new named filter, which defines a function on the callee class
+                  that provides easy access to the query defined by the filter. Any number of
+                  named filters can be created on a class, and they can also be chained to
+                  create complex queries out of simple building blocks. In addition, named
+                  filters can accept any number of arguments in order to allow customization
+                  of their behavior when used. For more details on how to specify the
+                  contents of named filters, see the documentation for <a
+                  href="../DSL.html">RecordFilter::DSL</a>.
+                  </p>
+                  <pre>Post.named_filter(:without_permalink) do&#x000A;  with(:permalink, nil)&#x000A;end&#x000A;&#x000A;Post.named_filter(:created_after) do |time|&#x000A;  with(:created_at).gt(time)&#x000A;end&#x000A;&#x000A;Post.without_permalink                             # :conditions =&gt; ['permalink IS NULL']&#x000A;Post.created_after(3.hours.ago)                    # :conditions =&gt; ['created_at &gt; ?', 3.hours.ago]&#x000A;Post.without_permalink.created_after(3.hours.ago)  # :conditions =&gt; ['permalink IS NULL AND created_at &gt; ?', 3.hours.ago]</pre>
+                  <h4>Raises</h4>
+                  <table>
+                  <tr><td valign="top">InvalidFilterNameException:</td><td>There is already a named filter with the given name on this class or one of
+                  its superclasses.
+                  
+                  </td></tr>
+                  </table>
+                  <h4>Returns</h4>
+                  <p>
+                  nil
+                  </p>
+                  <p>
+                  @public
+                  </p>
+                </div>
+                <div class='source'>
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000002-source'); return false">
+                    [show source]
+                  </a>
+                  <pre id='M000002-source'><span class="ruby-comment cmt"># File lib/record_filter/active_record.rb, line 61</span>&#x000A;      <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">named_filter</span>(<span class="ruby-identifier">name</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)&#x000A;        <span class="ruby-identifier">name</span> = <span class="ruby-identifier">name</span>.<span class="ruby-identifier">to_sym</span>&#x000A;        <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">named_filters</span>.<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">name</span>)&#x000A;          <span class="ruby-identifier">raise</span> <span class="ruby-constant">InvalidFilterNameException</span>.<span class="ruby-identifier">new</span>(<span class="ruby-node">&quot;A named filter with the name #{name} already exists on the class #{self.name}.&quot;</span>)&#x000A;        <span class="ruby-keyword kw">end</span>&#x000A;        <span class="ruby-identifier">local_named_filters</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">name</span>&#x000A;        <span class="ruby-constant">DSL</span><span class="ruby-operator">::</span><span class="ruby-constant">DSLFactory</span><span class="ruby-operator">::</span><span class="ruby-identifier">get_subclass</span>(<span class="ruby-keyword kw">self</span>).<span class="ruby-identifier">module_eval</span> <span class="ruby-keyword kw">do</span>&#x000A;          <span class="ruby-identifier">define_method</span>(<span class="ruby-identifier">name</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)&#x000A;        <span class="ruby-keyword kw">end</span>&#x000A;&#x000A;        (<span class="ruby-keyword kw">class</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-keyword kw">self</span>; <span class="ruby-keyword kw">self</span>; <span class="ruby-keyword kw">end</span>).<span class="ruby-identifier">instance_eval</span> <span class="ruby-keyword kw">do</span>&#x000A;          <span class="ruby-identifier">define_method</span>(<span class="ruby-identifier">name</span>) <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-operator">*</span><span class="ruby-identifier">args</span><span class="ruby-operator">|</span>&#x000A;            <span class="ruby-constant">Filter</span>.<span class="ruby-identifier">new</span>(<span class="ruby-keyword kw">self</span>, <span class="ruby-identifier">name</span>, <span class="ruby-operator">*</span><span class="ruby-identifier">args</span>)&#x000A;          <span class="ruby-keyword kw">end</span>&#x000A;        <span class="ruby-keyword kw">end</span>&#x000A;        <span class="ruby-keyword kw">nil</span>&#x000A;      <span class="ruby-keyword kw">end</span></pre>
+                </div>
+              </div>
+              <div class='public-instance method' id='method-M000003'>
+                <a name='M000003'>      </a>
+                <div class='synopsis'>
+                  <span class='name'>named_filters</span>
+                  <span class='arguments'>()</span>
+                </div>
+                <div class='description'>
+                  <p>
+                  Retreive a list of named filters that apply to a specific class, including
+                  ones that were defined in its superclasses.
+                  </p>
+                  <h4>Returns</h4>
+                  <table>
+                  <tr><td valign="top">Array:</td><td>A list of the names of the named filters, as symbols.
+                  
+                  </td></tr>
+                  </table>
+                  <p>
+                  @public
+                  </p>
+                </div>
+                <div class='source'>
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000003-source'); return false">
+                    [show source]
+                  </a>
+                  <pre id='M000003-source'><span class="ruby-comment cmt"># File lib/record_filter/active_record.rb, line 86</span>&#x000A;      <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">named_filters</span>&#x000A;        <span class="ruby-identifier">result</span> = <span class="ruby-identifier">local_named_filters</span>.<span class="ruby-identifier">dup</span>&#x000A;        <span class="ruby-identifier">result</span>.<span class="ruby-identifier">concat</span>(<span class="ruby-identifier">superclass</span>.<span class="ruby-identifier">named_filters</span>) <span class="ruby-keyword kw">if</span> (<span class="ruby-identifier">superclass</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">superclass</span>.<span class="ruby-identifier">respond_to?</span>(<span class="ruby-identifier">:named_filters</span>))&#x000A;        <span class="ruby-identifier">result</span>&#x000A;      <span class="ruby-keyword kw">end</span></pre>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id='footer-push'></div>
+    </div>
+    <div id='footer'>
+      <a href="http://github.com/mislav/hanna/tree/master"><strong>Hanna</strong> RDoc template</a>
+    </div>
+  </body>
+</html>
