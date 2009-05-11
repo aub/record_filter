@@ -1,3 +1,8 @@
+= New
+
+* Added 'and' and 'or' methods to the DSL::Restriction class so that you can do
+things like with(:expired_at).gt(Time.now).or.is_null
+
 = 0.9.4
 
 * Stop forcing order to take a real column name and let it accept a string

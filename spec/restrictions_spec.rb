@@ -214,4 +214,25 @@ describe 'RecordFilter restrictions' do
     end.inspect
     Post.last_find.should == { :conditions => [%q("posts".permalink <> ?), 'Post'] }
   end
+
+  it 'should work correctly for one-line ORs with is_null' do
+    Post.filter do
+      with(:permalink, 'abc').or.is_null
+    end.inspect
+    Post.last_find.should == { :conditions => [%q(("posts".permalink = ?) OR ("posts".permalink IS NULL)), 'abc'] }
+  end
+
+  it 'should work correctly for one-line ANDs with is_null' do
+    Post.filter do
+      with(:id).gt(56).and.lt(200)
+    end.inspect
+    Post.last_find.should == { :conditions => [%q(("posts".id > ?) AND ("posts".id < ?)), 56, 200] }
+  end
+
+  it 'should work properly with multiple one-line conjunctions' do
+    Post.filter do
+      with(:id).gt(56).and.lt(200).or.gt(500).or.lt(15)
+    end.inspect
+    Post.last_find.should == { :conditions => [%q(("posts".id > ?) AND (("posts".id < ?) OR (("posts".id > ?) OR ("posts".id < ?)))), 56, 200, 500, 15] } 
+  end
 end

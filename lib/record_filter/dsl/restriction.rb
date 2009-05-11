@@ -23,6 +23,7 @@ module RecordFilter
     class Restriction
 
       attr_reader :column, :negated, :operator, :value # :nodoc:
+      attr_reader :conjuncted_restriction_type, :conjuncted_restriction # :nodoc:
 
       DEFAULT_VALUE = Object.new
 
@@ -47,6 +48,7 @@ module RecordFilter
       # @public
       def initialize(column, value=DEFAULT_VALUE) # :nodoc:
         @column, @negated, @operator = column, false, nil
+        @conjuncted_restriction, @conjuncted_restriction_type = nil, nil
         take_value(value)
       end
 
@@ -256,6 +258,46 @@ module RecordFilter
           @value = start
         end
         self
+      end
+
+      # Create a secondary OR restriction that will be conjuncted with the current one. This
+      # function allows you to easily create restrictions on one line that would otherwise
+      # require the use of any_of and is intended as a space-saver.
+      # 
+      # ==== Example
+      #
+      # with(:expired_at).greater_than(Time.now).or.is_null
+      #
+      # # conditions => ['expired_at > ? OR expired_at IS NULL', Time.now]
+      #
+      # ==== Returns
+      # Restriction::
+      #   A new restriction object that this one will be OR'ed with.
+      #
+      # @public
+      def or
+        @conjuncted_restriction_type = :any_of
+        @conjuncted_restriction = Restriction.new(@column)
+      end
+
+      # Create a secondary AND restriction that will be conjuncted with the current one. This
+      # function allows you to easily create restrictions on one line that would otherwise
+      # require the use of all_of and is intended as a space-saver.
+      # 
+      # ==== Example
+      #
+      # with(:expired_at).greater_than(Time.now).and.less_than(3.days.from_now)
+      #
+      # # conditions => ['expired_at > ? AND expired_at < ?', Time.now, 3.days.from_now]
+      #
+      # ==== Returns
+      # Restriction::
+      #   A new restriction object that this one will be OR'ed with.
+      #
+      # @public
+      def and
+        @conjuncted_restriction_type = :all_of
+        @conjuncted_restriction = Restriction.new(@column)
       end
 
       protected

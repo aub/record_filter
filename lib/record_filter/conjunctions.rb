@@ -15,7 +15,7 @@ module RecordFilter
         dsl_conjunction.steps.each do |step|
           case step
           when DSL::Restriction 
-            result.add_restriction(step.column, step.operator, step.value, :negated => step.negated)
+            handle_restriction_step(step, result, table, true)
           when DSL::Conjunction 
             result.add_conjunction(create_from(step, table)) 
           when DSL::Join
@@ -50,7 +50,6 @@ module RecordFilter
         check_column_exists!(column_name)
         restriction = RestrictionFactory.build(operator, "#{@table_name}.#{column_name}", value, options)
         self << restriction
-        restriction
       end
 
       def add_conjunction(conjunction)
@@ -126,6 +125,17 @@ module RecordFilter
       def check_column_exists!(column_name)
         if (!@table.has_column(column_name))
           raise ColumnNotFoundException.new("The column #{column_name} was not found in #{@table.table_name}.")
+        end
+      end
+
+      def self.handle_restriction_step(step, conjunction, table, follow_conjunctions=true)
+        if ((cr = step.conjuncted_restriction) && follow_conjunctions)
+          restriction_conjunction = create_from(DSL::Conjunction.new(nil, step.conjuncted_restriction_type), table)
+          handle_restriction_step(step, restriction_conjunction, table, false)
+          handle_restriction_step(cr, restriction_conjunction, table, true)
+          conjunction.add_conjunction(restriction_conjunction)
+        else
+          conjunction.add_restriction(step.column, step.operator, step.value, :negated => step.negated)
         end
       end
     end
