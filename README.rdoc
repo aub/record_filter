@@ -141,6 +141,7 @@ object that has methods to specify a number of different conditions and to negat
   with(:permalink, nil)                    # ['permalink IS NULL']
   with(:permalink).is_null                 # ['permalink IS NULL']
   with(:permalink, nil).not                # ['permalink IS NOT NULL']
+  with(:permalink).is_not_null             # ['permalink IS NOT NULL']
 
 The following condition types are supported through the Restriction API:
 
@@ -164,9 +165,21 @@ for more details on how to use them.
 
   with(:id).in([1, 2, 3])                    # ['id in (?)', [1, 2, 3]]
 
+  with(:id).not_in([4, 5, 6])                # ['id NOT IN (?)', [4, 5, 6]]
+
   with(:content).like('%easy%')              # ['content LIKE ?', '%easy%']
 
   with(:content).not.like('%hard%')          # ['content NOT LIKE ?', '%hard%']
+
+The comparison operators (greater_than, less_than, greater_than_or_equal_to and less_than_or_equal_to)
+are aliased to their short forms (gt, lt, gte and lte).
+
+It is also possible to specify multiple conditions on a single line using the 'and' and 'or' methods,
+eliminating the need to use a conjunction block in many common cases.
+
+  with(:expired_at).gt(Time.now).or.is_null  # ['expired_at > ? OR expired_at IS NULL', Time.now]
+
+  with(:id).gt(100).and.lt(1000)             # ['id > ? AND id < ?', 100, 1000]
 
 === Boolean Operations
 
