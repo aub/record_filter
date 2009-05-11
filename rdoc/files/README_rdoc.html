@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html lang='en'>
   <head>
-    <title>File: README.rdoc [record_filter 0.9.4]</title>
+    <title>File: README.rdoc [record_filter 0.9.5]</title>
     <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
     <link href='../rdoc-style.css' media='screen' rel='stylesheet' type='text/css'>
     <script type='text/javascript'>
@@ -32,7 +32,7 @@
         </div>
         <div class='last-update'>
           Last Update:
-          <span class='datetime'>Sat May 09 10:11:00 -0400 2009</span>
+          <span class='datetime'>Mon May 11 16:37:36 -0400 2009</span>
         </div>
       </div>
       <div id='content'>
@@ -159,7 +159,7 @@
             Restriction object that has methods to specify a number of different
             conditions and to negate them:
             </p>
-            <pre>with(:permalink, 'aardvarks')            # ['permalink = ?', 'aardvarks']&#x000A;with(:permalink).equal_to('sheep')       # ['permalink = ?', 'sheep']&#x000A;with(:permalink).not.equal_to('cats')    # ['permailnk &lt;&gt; ?', 'cats']&#x000A;&#x000A;with(:permalink, nil)                    # ['permalink IS NULL']&#x000A;with(:permalink).is_null                 # ['permalink IS NULL']&#x000A;with(:permalink, nil).not                # ['permalink IS NOT NULL']</pre>
+            <pre>with(:permalink, 'aardvarks')            # ['permalink = ?', 'aardvarks']&#x000A;with(:permalink).equal_to('sheep')       # ['permalink = ?', 'sheep']&#x000A;with(:permalink).not.equal_to('cats')    # ['permailnk &lt;&gt; ?', 'cats']&#x000A;&#x000A;with(:permalink, nil)                    # ['permalink IS NULL']&#x000A;with(:permalink).is_null                 # ['permalink IS NULL']&#x000A;with(:permalink, nil).not                # ['permalink IS NOT NULL']&#x000A;with(:permalink).is_not_null             # ['permalink IS NOT NULL']</pre>
             <p>
             The following condition types are supported through the Restriction API:
             </p>
@@ -191,7 +191,18 @@
             href="http://aub.github.com/record_filter/rdoc/classes/RecordFilter/DSL/Restriction.html">DSL::Restriction</a>
             for more details on how to use them.
             </p>
-            <pre>with(:featured_at).greater_than(Time.now)  # ['featured_at &gt; ?', Time.now]&#x000A;&#x000A;with(:price).lte(1000)                     # ['price &lt;= ?', 1000]&#x000A;&#x000A;with(:created_at).between(time_a..time_b)  # ['created_at BETWEEN ? AND ?', time_a, time_b]&#x000A;&#x000A;with(:id).in([1, 2, 3])                    # ['id in (?)', [1, 2, 3]]&#x000A;&#x000A;with(:content).like('%easy%')              # ['content LIKE ?', '%easy%']&#x000A;&#x000A;with(:content).not.like('%hard%')          # ['content NOT LIKE ?', '%hard%']</pre>
+            <pre>with(:featured_at).greater_than(Time.now)  # ['featured_at &gt; ?', Time.now]&#x000A;&#x000A;with(:price).lte(1000)                     # ['price &lt;= ?', 1000]&#x000A;&#x000A;with(:created_at).between(time_a..time_b)  # ['created_at BETWEEN ? AND ?', time_a, time_b]&#x000A;&#x000A;with(:id).in([1, 2, 3])                    # ['id in (?)', [1, 2, 3]]&#x000A;&#x000A;with(:id).not_in([4, 5, 6])                # ['id NOT IN (?)', [4, 5, 6]]&#x000A;&#x000A;with(:content).like('%easy%')              # ['content LIKE ?', '%easy%']&#x000A;&#x000A;with(:content).not.like('%hard%')          # ['content NOT LIKE ?', '%hard%']</pre>
+            <p>
+            The comparison operators (greater_than, less_than, greater_than_or_equal_to
+            and less_than_or_equal_to) are aliased to their short forms (gt, lt, gte
+            and lte).
+            </p>
+            <p>
+            It is also possible to specify multiple conditions on a single line using
+            the &#8216;and&#8217; and &#8216;or&#8217; methods, eliminating the need to
+            use a conjunction block in many common cases.
+            </p>
+            <pre>with(:expired_at).gt(Time.now).or.is_null  # ['expired_at &gt; ? OR expired_at IS NULL', Time.now]&#x000A;&#x000A;with(:id).gt(100).and.lt(1000)             # ['id &gt; ? AND id &lt; ?', 100, 1000]</pre>
             <h3>Boolean Operations</h3>
             <p>
             Conditions can be combined with boolean operators using the methods all_of,
