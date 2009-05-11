@@ -1,4 +1,4 @@
-= New
+= 0.9.5
 
 * Added 'and' and 'or' methods to the DSL::Restriction class so that you can do
 things like with(:expired_at).gt(Time.now).or.is_null
