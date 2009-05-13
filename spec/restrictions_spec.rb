@@ -9,7 +9,7 @@ describe 'RecordFilter restrictions' do
     Post.filter do
       with :permalink, 'blog-post'
     end.inspect
-    Post.last_find.should == { :conditions => [%q{"posts".permalink = ?}, 'blog-post'] }
+    Post.last_find.should == { :readonly => false, :conditions => [%q{"posts".permalink = ?}, 'blog-post'] }
   end
 
   it 'should filter for equality with multiple conditions' do
@@ -17,7 +17,7 @@ describe 'RecordFilter restrictions' do
       with :permalink, 'blog-post'
       with :blog_id, 3
     end.inspect
-    Post.last_find.should == { :conditions => [%q{("posts".permalink = ?) AND ("posts".blog_id = ?)}, 'blog-post', 3] }
+    Post.last_find.should == { :readonly => false, :conditions => [%q{("posts".permalink = ?) AND ("posts".blog_id = ?)}, 'blog-post', 3] }
   end
 
   it 'should filter by comparison operators' do
@@ -26,17 +26,22 @@ describe 'RecordFilter restrictions' do
        Post.filter do
          with(:created_at).send(set[0], Time.parse('2009-01-03 23:02:00'))
        end.inspect
-       Post.last_find.should == { :conditions => ["\"posts\".created_at #{set[2]} ?", Time.parse('2009-01-03 23:02:00')] }
+       Post.last_find.should == { :readonly => false, :conditions => ["\"posts\".created_at #{set[2]} ?", Time.parse('2009-01-03 23:02:00')] }
+
+       Post.filter do
+         with(:id).send(set[0], nil)
+       end.inspect
+       Post.last_find.should == { :readonly => false, :conditions => ["\"posts\".id #{set[2]} NULL"] }
 
        Post.filter do
          with(:created_at).send(set[1], Time.parse('2009-01-03 23:02:00'))
        end.inspect
-       Post.last_find.should == { :conditions => ["\"posts\".created_at #{set[2]} ?", Time.parse('2009-01-03 23:02:00')] }
+       Post.last_find.should == { :readonly => false, :conditions => ["\"posts\".created_at #{set[2]} ?", Time.parse('2009-01-03 23:02:00')] }
 
        Post.filter do
          with(:created_at).not.send(set[0], Time.parse('2009-02-02 02:22:22'))
        end.inspect
-       Post.last_find.should == { :conditions => ["NOT (\"posts\".created_at #{set[2]} ?)", Time.parse('2009-02-02 02:22:22')] }
+       Post.last_find.should == { :readonly => false, :conditions => ["NOT (\"posts\".created_at #{set[2]} ?)", Time.parse('2009-02-02 02:22:22')] }
      end
   end
 
@@ -44,70 +49,70 @@ describe 'RecordFilter restrictions' do
     Post.filter do
       with(:blog_id).equal_to(nil)
     end.inspect
-    Post.last_find.should == { :conditions => [%q("posts".blog_id IS NULL)] }
+    Post.last_find.should == { :readonly => false, :conditions => [%q("posts".blog_id IS NULL)] }
   end
 
   it 'should filter for in' do
     Post.filter do
       with(:blog_id).in [1, 3, 5]
     end.inspect
-    Post.last_find.should == { :conditions => [%q{"posts".blog_id IN (?)}, [1, 3, 5]] }
+    Post.last_find.should == { :readonly => false, :conditions => [%q{"posts".blog_id IN (?)}, [1, 3, 5]] }
   end
 
   it 'should negate IN filters correctly' do
     Post.filter do
       with(:blog_id).not.in [1, 3, 5]
     end.inspect
-    Post.last_find.should == { :conditions => [%q{"posts".blog_id NOT IN (?)}, [1, 3, 5]] }
+    Post.last_find.should == { :readonly => false, :conditions => [%q{"posts".blog_id NOT IN (?)}, [1, 3, 5]] }
   end
 
   it 'should work correctly for NOT IN' do
     Post.filter do
       with(:blog_id).not_in [1, 3, 5]
     end.inspect
-    Post.last_find.should == { :conditions => [%q{"posts".blog_id NOT IN (?)}, [1, 3, 5]] }
+    Post.last_find.should == { :readonly => false, :conditions => [%q{"posts".blog_id NOT IN (?)}, [1, 3, 5]] }
   end
 
   it 'should do the right thing for IN filters with empty arrays' do
     Post.filter do
       with(:blog_id).in([])
     end.inspect
-    Post.last_find.should == { :conditions => [%q("posts".blog_id IN (?)), []] }
+    Post.last_find.should == { :readonly => false, :conditions => [%q("posts".blog_id IN (?)), []] }
   end
 
   it 'should do the right thing for IN filters with single values' do
     Post.filter do
       with(:blog_id).in(1)
     end.inspect
-    Post.last_find.should == { :conditions => [%q("posts".blog_id IN (?)), 1] }
+    Post.last_find.should == { :readonly => false, :conditions => [%q("posts".blog_id IN (?)), 1] }
   end
 
   it 'should do the right thing for IN filters with nil' do
     Post.filter do
       with(:blog_id).in(nil)
     end.inspect
-    Post.last_find.should == { :conditions => [%q("posts".blog_id IN (?)), nil] }
+    Post.last_find.should == { :readonly => false, :conditions => [%q("posts".blog_id IN (?)), nil] }
   end
 
   it 'should do the right thing for IN filters with a range' do
     Post.filter do
       with(:blog_id).in(1..5)
     end.inspect
-    Post.last_find.should == { :conditions => [%q("posts".blog_id IN (?)), 1..5] }
+    Post.last_find.should == { :readonly => false, :conditions => [%q("posts".blog_id IN (?)), 1..5] }
   end
 
   it 'should negate is_not_null conditions correctly' do
     Post.filter do
       with(:blog_id).is_not_null.not
     end.inspect
-    Post.last_find.should == { :conditions => [%q("posts".blog_id IS NULL)] }
+    Post.last_find.should == { :readonly => false, :conditions => [%q("posts".blog_id IS NULL)] }
   end 
   
   it 'should double-negate correctly' do
     Post.filter do
       with(:blog_id, 3).not.not
     end.inspect
-    Post.last_find.should == { :conditions => [%q("posts".blog_id = ?), 3] }
+    Post.last_find.should == { :readonly => false, :conditions => [%q("posts".blog_id = ?), 3] }
   end
 
   it 'should filter for between' do
@@ -116,21 +121,21 @@ describe 'RecordFilter restrictions' do
     Post.filter do
       with(:created_at).between time1..time2
     end.inspect
-    Post.last_find.should == { :conditions => [%q{"posts".created_at BETWEEN ? AND ?}, time1, time2] }
+    Post.last_find.should == { :readonly => false, :conditions => [%q{"posts".created_at BETWEEN ? AND ?}, time1, time2] }
   end
 
   it 'should filter for between with two arguments passed' do
     Post.filter do
       with(:id).between(1, 5)
     end.inspect
-    Post.last_find.should == { :conditions => [%q("posts".id BETWEEN ? AND ?), 1, 5] }
+    Post.last_find.should == { :readonly => false, :conditions => [%q("posts".id BETWEEN ? AND ?), 1, 5] }
   end
 
   it 'should filter for between with an array passed' do
     Post.filter do
       with(:id).between([2, 6])
     end.inspect
-    Post.last_find.should == { :conditions => [%q("posts".id BETWEEN ? AND ?), 2, 6] }
+    Post.last_find.should == { :readonly => false, :conditions => [%q("posts".id BETWEEN ? AND ?), 2, 6] }
   end
 
   it 'should filter by none_of' do
@@ -140,7 +145,7 @@ describe 'RecordFilter restrictions' do
         with(:permalink, 'eek')
       end
     end.inspect
-    Post.last_find.should == { :conditions => [%q{NOT (("posts".blog_id = ?) OR ("posts".permalink = ?))}, 1, 'eek'] }
+    Post.last_find.should == { :readonly => false, :conditions => [%q{NOT (("posts".blog_id = ?) OR ("posts".permalink = ?))}, 1, 'eek'] }
   end
 
   it 'should filter by not_all_of' do
@@ -150,7 +155,7 @@ describe 'RecordFilter restrictions' do
         with(:permalink, 'eek')
       end
     end.inspect
-    Post.last_find.should == { :conditions => [%q{NOT (("posts".blog_id = ?) AND ("posts".permalink = ?))}, 1, 'eek'] }
+    Post.last_find.should == { :readonly => false, :conditions => [%q{NOT (("posts".blog_id = ?) AND ("posts".permalink = ?))}, 1, 'eek'] }
   end
 
   it 'should filter by disjunction' do
@@ -160,7 +165,7 @@ describe 'RecordFilter restrictions' do
         with(:permalink).equal_to 'my-post'
       end
     end.inspect
-    Post.last_find.should == { :conditions => [%q{("posts".blog_id = ?) OR ("posts".permalink = ?)}, 1, 'my-post'] }
+    Post.last_find.should == { :readonly => false, :conditions => [%q{("posts".blog_id = ?) OR ("posts".permalink = ?)}, 1, 'my-post'] }
   end
 
   it 'should filter by disjunction composed of conjunction' do
@@ -174,8 +179,8 @@ describe 'RecordFilter restrictions' do
       end
     end.inspect
 
-    Post.last_find.should == { :conditions => [%q{(("posts".blog_id = ?) AND ("posts".permalink = ?)) OR ("posts".permalink = ?)},
-                                               1, 'my-post', 'another-post'] }
+    Post.last_find.should == { :readonly => false, :conditions => [%q{(("posts".blog_id = ?) AND ("posts".permalink = ?)) OR ("posts".permalink = ?)},
+                                                                  1, 'my-post', 'another-post'] }
   end
 
   it 'should filter for nil' do
@@ -183,7 +188,7 @@ describe 'RecordFilter restrictions' do
       Post.filter do
         with(:permalink).send(method)
       end.inspect
-      Post.last_find.should == { :conditions => [%q("posts".permalink IS NULL)] }
+      Post.last_find.should == { :readonly => false, :conditions => [%q("posts".permalink IS NULL)] }
     end
   end
 
@@ -191,48 +196,48 @@ describe 'RecordFilter restrictions' do
     Post.filter do
       with(:permalink).is_not_null
     end.inspect
-    Post.last_find.should == { :conditions => [%q("posts".permalink IS NOT NULL)] }
+    Post.last_find.should == { :readonly => false, :conditions => [%q("posts".permalink IS NOT NULL)] }
   end
 
   it 'should support like' do
     Post.filter do
       with(:permalink).like('%piglets%')
     end.inspect
-    Post.last_find.should == { :conditions => [%q("posts".permalink LIKE ?), '%piglets%'] }
+    Post.last_find.should == { :readonly => false, :conditions => [%q("posts".permalink LIKE ?), '%piglets%'] }
   end
 
   it 'should support NOT LIKE' do
     Post.filter do
       with(:permalink).not.like('%ostriches%')
     end.inspect
-    Post.last_find.should == { :conditions => [%q("posts".permalink NOT LIKE ?), '%ostriches%'] }
+    Post.last_find.should == { :readonly => false, :conditions => [%q("posts".permalink NOT LIKE ?), '%ostriches%'] }
   end
 
   it 'should provide access to the filter class in the filter' do
     Post.filter do
       with(:permalink).not.equal_to(filter_class.name)
     end.inspect
-    Post.last_find.should == { :conditions => [%q("posts".permalink <> ?), 'Post'] }
+    Post.last_find.should == { :readonly => false, :conditions => [%q("posts".permalink <> ?), 'Post'] }
   end
 
   it 'should work correctly for one-line ORs with is_null' do
     Post.filter do
       with(:permalink, 'abc').or.is_null
     end.inspect
-    Post.last_find.should == { :conditions => [%q(("posts".permalink = ?) OR ("posts".permalink IS NULL)), 'abc'] }
+    Post.last_find.should == { :readonly => false, :conditions => [%q(("posts".permalink = ?) OR ("posts".permalink IS NULL)), 'abc'] }
   end
 
   it 'should work correctly for one-line ANDs with is_null' do
     Post.filter do
       with(:id).gt(56).and.lt(200)
     end.inspect
-    Post.last_find.should == { :conditions => [%q(("posts".id > ?) AND ("posts".id < ?)), 56, 200] }
+    Post.last_find.should == { :readonly => false, :conditions => [%q(("posts".id > ?) AND ("posts".id < ?)), 56, 200] }
   end
 
   it 'should work properly with multiple one-line conjunctions' do
     Post.filter do
       with(:id).gt(56).and.lt(200).or.gt(500).or.lt(15)
     end.inspect
-    Post.last_find.should == { :conditions => [%q(("posts".id > ?) AND (("posts".id < ?) OR (("posts".id > ?) OR ("posts".id < ?)))), 56, 200, 500, 15] } 
+    Post.last_find.should == { :readonly => false, :conditions => [%q(("posts".id > ?) AND (("posts".id < ?) OR (("posts".id > ?) OR ("posts".id < ?)))), 56, 200, 500, 15] } 
   end
 end

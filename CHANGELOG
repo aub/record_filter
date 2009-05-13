@@ -1,3 +1,15 @@
+= 0.9.6
+
+* Build the alias for explicit join tables correctly for multi-word class
+names.
+
+* Set params[:readonly] to false by default. Not sure why we need to do that.
+
+* If nil is passed as the argument to a comparison operator, don't fail with a
+lack of bind variables, just do what AR does and compare against NULL.
+
+* Add ability to order on columns in tables that were explicitly joined.
+
 = 0.9.5
 
 * Added 'and' and 'or' methods to the DSL::Restriction class so that you can do

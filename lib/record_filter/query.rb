@@ -27,6 +27,7 @@ module RecordFilter
         params[:group] = group_bys.map { |group_by| group_by.to_sql } * ', ' unless group_bys.empty?
         params[:limit] = @conjunction.limit if @conjunction.limit
         params[:offset] = @conjunction.offset if @conjunction.offset
+        params[:readonly] = false
         params
       end
     end

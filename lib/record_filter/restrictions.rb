@@ -41,25 +41,25 @@ module RecordFilter
 
     class LessThan < Base
       def to_positive_sql
-        "#{@column_name} < ?"
+        "#{@column_name} < #{@value.nil? ? 'NULL' : '?'}"
       end
     end
 
     class LessThanOrEqualTo < Base
       def to_positive_sql
-        "#{@column_name} <= ?"
+        "#{@column_name} <= #{@value.nil? ? 'NULL' : '?'}"
       end
     end
 
     class GreaterThan < Base
       def to_positive_sql
-        "#{@column_name} > ?"
+        "#{@column_name} > #{@value.nil? ? 'NULL' : '?'}"
       end
     end
 
     class GreaterThanOrEqualTo < Base
       def to_positive_sql
-        "#{@column_name} >= ?"
+        "#{@column_name} >= #{@value.nil? ? 'NULL' : '?'}"
       end
     end
 

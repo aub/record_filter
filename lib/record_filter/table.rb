@@ -56,6 +56,16 @@ module RecordFilter
         end
     end
 
+    def find_join(join_key)
+      @joins_cache[join_key]
+    end
+
+    def find_join!(join_key)
+      join = find_join(join_key)
+      raise InvalidJoinException.new("The join #{join_key} was not found.") unless join
+      join
+    end
+
     def all_joins
       @joins + @joins.inject([]) do |child_joins, join|
         child_joins.concat(join.right_table.all_joins)
@@ -124,7 +134,7 @@ module RecordFilter
     def alias_for_association(association)
       @alias_cache ||= {} 
       @alias_cache[association.name] ||= 
-        "#{@aliased ? @table_alias.to_s : @model_class.table_name}__#{association.name.to_s.downcase}"
+        "#{@aliased ? @table_alias.to_s : @model_class.table_name}__#{association.name.to_s.underscore}"
     end
 
     alias_method :alias_for_class, :alias_for_association

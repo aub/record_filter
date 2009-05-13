@@ -258,7 +258,7 @@ describe 'named filters' do
     it 'should have an empty conditions hash' do
       blog = Class.new(Blog)
       blog.named_filter(:ordered_by_id) { order(:id, :desc) }
-      blog.ordered_by_id.proxy_options.should == { :order => %q("blogs".id DESC) }
+      blog.ordered_by_id.proxy_options.should == { :readonly => false, :order => %q("blogs".id DESC) }
     end
   end
 end

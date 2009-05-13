@@ -164,6 +164,22 @@ describe 'filter qualifiers' do
       end
     end
 
+    describe 'with explicit joins' do
+      before do
+        Post.filter do
+          with(:published, false)
+          join(Comment, :inner) do
+            on(:id => :post_id)
+          end
+          order(Comment => :id)
+        end.inspect
+      end
+
+      it 'should create the correct order params' do
+        Post.last_find[:order].should == %q(posts__comment.id ASC)
+      end
+    end
+
     describe 'with the order supplied as a string' do
       before do
         Post.filter do

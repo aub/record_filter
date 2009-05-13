@@ -26,7 +26,8 @@ module RecordFilter
   # already exists in the class it is created on or one of its superclasses.
   class InvalidFilterNameException < StandardError; end
 
-  # An exception that is raised when no columns are privided to specify an explicit join. 
+  # An exception that is raised when no columns are privided to specify an explicit join
+  # or when the join names are incorrect.
   class InvalidJoinException < StandardError; end
 
   # An exception raised in the case where a named filter is called from within a filter
