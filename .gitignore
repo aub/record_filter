@@ -2,4 +2,5 @@ _site
 coverage
 perf
 tmp
+pkg
 *.swp
