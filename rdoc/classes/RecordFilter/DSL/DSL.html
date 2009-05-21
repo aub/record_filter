@@ -1,374 +1,249 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
-<!DOCTYPE html 
-     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<head>
-  <title>Class: RecordFilter::DSL::DSL</title>
-  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-  <meta http-equiv="Content-Script-Type" content="text/javascript" />
-  <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
-  <script type="text/javascript">
-  // <![CDATA[
-
-  function popupCode( url ) {
-    window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
-  }
-
-  function toggleCode( id ) {
-    if ( document.getElementById )
-      elem = document.getElementById( id );
-    else if ( document.all )
-      elem = eval( "document.all." + id );
-    else
-      return false;
-
-    elemStyle = elem.style;
-    
-    if ( elemStyle.display != "block" ) {
-      elemStyle.display = "block"
-    } else {
-      elemStyle.display = "none"
-    }
-
-    return true;
-  }
-  
-  // Make codeblocks hidden by default
-  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
-  
-  // ]]>
-  </script>
-
-</head>
-<body>
-
-
-
-    <div id="classHeader">
-        <table class="header-table">
-        <tr class="top-aligned-row">
-          <td><strong>Class</strong></td>
-          <td class="class-name-in-header">RecordFilter::DSL::DSL</td>
-        </tr>
-        <tr class="top-aligned-row">
-            <td><strong>In:</strong></td>
-            <td>
-                <a href="../../../files/lib/record_filter/dsl/dsl_rb.html">
-                lib/record_filter/dsl/dsl.rb
-                </a>
-        &nbsp;(<a href="http://github.com/aub/record_filter/tree/master/lib/record_filter/dsl/dsl.rb"><acronym title="Concurrent Versioning System">CVS</acronym></a>)
-        <br />
-            </td>
-        </tr>
-
-        <tr class="top-aligned-row">
-            <td><strong>Parent:</strong></td>
-            <td>
-                <a href="ConjunctionDSL.html">
-                ConjunctionDSL
-               </a>
-            </td>
-        </tr>
-        </table>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang='en'>
+  <head>
+    <title>: RecordFilter::DSL::DSL [record_filter 0.9.6]</title>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
+    <link href='../../../rdoc-style.css' media='screen' rel='stylesheet' type='text/css'>
+    <script type='text/javascript'>
+      //<![CDATA[
+        function popupCode(url) {
+          window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+        }
+        
+        function toggleCode(id) {
+          var code = document.getElementById(id)
+        
+          code.style.display = code.style.display != 'block' ? 'block' : 'none'
+          return true
+        }
+        
+        // Make codeblocks hidden by default
+        document.writeln('<' + 'style type="text/css">.method .source pre { display: none }<\/style>')
+      //]]>
+    </script>
+  </head>
+  <body class='page'>
+    <div class='class' id='wrapper'>
+      <div class='header'>
+        <h1 class='name'>
+          <span class='type'>Class</span>
+          RecordFilter::DSL::DSL
+        </h1>
+        <ol class='paths'>
+          <li>
+            <a href="../../../files/lib/record_filter/dsl/dsl_rb.html">lib/record_filter/dsl/dsl.rb</a>
+            (<a href="http://github.com/aub/record_filter/tree/master/lib/record_filter/dsl/dsl.rb">view online</a>)
+          </li>
+        </ol>
+        <div class='parent'>
+          Parent:
+          <strong><a href="ConjunctionDSL.html">RecordFilter::DSL::ConjunctionDSL</a></strong>
+        </div>
+      </div>
+      <div id='content'>
+        <div id='text'>
+          <div id='method-list'>
+            <h2>Methods</h2>
+            <h3>public instance</h3>
+            <ol>
+              <li><a href="#M000028">group_by</a></li>
+              <li><a href="#M000025">limit</a></li>
+              <li><a href="#M000026">offset</a></li>
+              <li><a href="#M000027">order</a></li>
+            </ol>
+          </div>
+          <div id='section'>
+            <div id='methods'>
+              <h2>Public instance methods</h2>
+              <div class='public-instance method' id='method-M000028'>
+                <a name='M000028'>      </a>
+                <div class='synopsis'>
+                  <span class='name'>group_by</span>
+                  <span class='arguments'>(column)</span>
+                </div>
+                <div class='description'>
+                  <p>
+                  Specify a <a href="DSL.html#M000028">group_by</a> clause for the resulting
+                  query. This method can only be called in the outermost scope of a filter
+                  (i.e. not inside of a having block, etc.). Multiple calls will create
+                  multiple <a href="DSL.html#M000028">group_by</a> clauses in the resulting
+                  query, and they will be added in the order in which they were called in the
+                  filter. In order to specify grouping on columns added through joins, a hash
+                  can be passed as the argument, specifying a path through the joins to the
+                  column, as in this example:
+                  </p>
+                  <pre>Blog.filter do&#x000A;  having(:posts) do&#x000A;    having(:comments).with(:created_at).greater_than(3.days.ago)&#x000A;  end&#x000A;  group_by(:posts =&gt; :comments =&gt; :offensive)&#x000A;  group_by(:id)&#x000A;end</pre>
+                  <h4>Parameters</h4>
+                  <table>
+                  <tr><td valign="top">column<Symbol, Hash>:</td><td>If a symbol is specified, it is taken to represent the name of a column on
+                  the class being filtered. If a hash is given, it should represent a path
+                  through the joins to a column in one of the joined tables. If a string is
+                  given, it is used without modification as the grouping parameter.
+                  
+                  </td></tr>
+                  </table>
+                  <h4>Returns</h4>
+                  <p>
+                  nil
+                  </p>
+                  <h4>Alternatives</h4>
+                  <p>
+                  As described above, it is possible to pass either a symbol, a hash, or a
+                  string as the argument.
+                  </p>
+                  <p>
+                  @public
+                  </p>
+                </div>
+                <div class='source'>
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000028-source'); return false">
+                    [show source]
+                  </a>
+                  <pre id='M000028-source'><span class="ruby-comment cmt"># File lib/record_filter/dsl/dsl.rb, line 128</span>&#x000A;      <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">group_by</span>(<span class="ruby-identifier">column</span>)&#x000A;        <span class="ruby-ivar">@conjunction</span>.<span class="ruby-identifier">add_group_by</span>(<span class="ruby-identifier">column</span>)&#x000A;        <span class="ruby-keyword kw">nil</span>&#x000A;      <span class="ruby-keyword kw">end</span></pre>
+                </div>
+              </div>
+              <div class='public-instance method' id='method-M000025'>
+                <a name='M000025'>      </a>
+                <div class='synopsis'>
+                  <span class='name'>limit</span>
+                  <span class='arguments'>(offset, limit=nil)</span>
+                </div>
+                <div class='description'>
+                  <p>
+                  Define an limit and/or offset for the results returned from the current
+                  filter. This method can only be called from the outermost scope of a filter
+                  (i.e. not inside of a having block, etc.). If it is called multiple times,
+                  the last one will override any others.
+                  </p>
+                  <h4>Parameters</h4>
+                  <table>
+                  <tr><td valign="top">offset<Integer>:</td><td>Used for the offset of the query.
+                  
+                  </td></tr>
+                  <tr><td valign="top">limit<Integer:</td><td>Used as the limit for the query.
+                  
+                  </td></tr>
+                  </table>
+                  <h4>Returns</h4>
+                  <p>
+                  nil
+                  </p>
+                  <h4>Alternatives</h4>
+                  <p>
+                  If called with a single argument, it is assumed to represent the limit, and
+                  no offset will be specified.
+                  </p>
+                  <p>
+                  @public
+                  </p>
+                </div>
+                <div class='source'>
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000025-source'); return false">
+                    [show source]
+                  </a>
+                  <pre id='M000025-source'><span class="ruby-comment cmt"># File lib/record_filter/dsl/dsl.rb, line 24</span>&#x000A;      <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">limit</span>(<span class="ruby-identifier">offset</span>, <span class="ruby-identifier">limit</span>=<span class="ruby-keyword kw">nil</span>)&#x000A;        <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">limit</span>&#x000A;          <span class="ruby-ivar">@conjunction</span>.<span class="ruby-identifier">add_limit</span>(<span class="ruby-identifier">limit</span>, <span class="ruby-identifier">offset</span>)&#x000A;        <span class="ruby-keyword kw">else</span>&#x000A;          <span class="ruby-ivar">@conjunction</span>.<span class="ruby-identifier">add_limit</span>(<span class="ruby-identifier">offset</span>, <span class="ruby-keyword kw">nil</span>)&#x000A;        <span class="ruby-keyword kw">end</span>&#x000A;        <span class="ruby-keyword kw">nil</span>&#x000A;      <span class="ruby-keyword kw">end</span></pre>
+                </div>
+              </div>
+              <div class='public-instance method' id='method-M000026'>
+                <a name='M000026'>      </a>
+                <div class='synopsis'>
+                  <span class='name'>offset</span>
+                  <span class='arguments'>(offset)</span>
+                </div>
+                <div class='description'>
+                  <p>
+                  Define an offset for the results returned from the current filter. This
+                  method can only be called from the outermost scope of a filter (i.e. not
+                  inside of a having block, etc.). If it is called multiple times, the last
+                  one will override any others.
+                  </p>
+                  <h4>Parameters</h4>
+                  <table>
+                  <tr><td valign="top">offset<Integer>:</td><td>The offset of the query.
+                  
+                  </td></tr>
+                  </table>
+                  <h4>Returns</h4>
+                  <p>
+                  nil
+                  </p>
+                  <p>
+                  @public
+                  </p>
+                </div>
+                <div class='source'>
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000026-source'); return false">
+                    [show source]
+                  </a>
+                  <pre id='M000026-source'><span class="ruby-comment cmt"># File lib/record_filter/dsl/dsl.rb, line 46</span>&#x000A;      <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">offset</span>(<span class="ruby-identifier">offset</span>)&#x000A;        <span class="ruby-ivar">@conjunction</span>.<span class="ruby-identifier">add_limit</span>(<span class="ruby-keyword kw">nil</span>, <span class="ruby-identifier">offset</span>)&#x000A;        <span class="ruby-keyword kw">nil</span>&#x000A;      <span class="ruby-keyword kw">end</span></pre>
+                </div>
+              </div>
+              <div class='public-instance method' id='method-M000027'>
+                <a name='M000027'>      </a>
+                <div class='synopsis'>
+                  <span class='name'>order</span>
+                  <span class='arguments'>(column, direction=:asc)</span>
+                </div>
+                <div class='description'>
+                  <p>
+                  Define an order clause for the current query, with options for specifying
+                  both the column to use as well as the direction. This method can only be
+                  called in the outermost scope of a filter (i.e. not inside of a having
+                  block, etc.). Multiple calls will create multiple order clauses in the
+                  resulting query, and they will be added in the order in which they were
+                  called in the filter. In order to specify ordering on columns added through
+                  joins, a hash can be passed as the first argument, specifying a path
+                  through the joins to the column, as in this example:
+                  </p>
+                  <pre>Blog.filter do&#x000A;  having(:posts) do&#x000A;    having(:comments).with(:created_at).greater_than(3.days.ago)&#x000A;  end&#x000A;  order(:posts =&gt; :comments =&gt; :created_at, :desc)&#x000A;  order(:id, :asc)&#x000A;end</pre>
+                  <h4>Parameters</h4>
+                  <table>
+                  <tr><td valign="top">column<Symbol, Hash>:</td><td>Specify the column for the ordering. If a symbol is given, it is assumed to
+                  represent a column in the class that is being filtered. With a hash
+                  argument, it is possible to specify a path to a column in one of the joined
+                  tables, as seen above. If a string is given and it doesn&#8217;t match up
+                  with a column name, it is used as a literal string for ordering.
+                  
+                  </td></tr>
+                  <tr><td valign="top">direction<Symbol>:</td><td>Specifies the direction of the order. Should be either :asc or :desc and
+                  defaults to :asc.
+                  
+                  </td></tr>
+                  </table>
+                  <h4>Returns</h4>
+                  <p>
+                  nil
+                  </p>
+                  <h4>Raises</h4>
+                  <table>
+                  <tr><td valign="top">InvalidFilterException:</td><td>If the direction is neither :asc nor :desc.
+                  
+                  </td></tr>
+                  </table>
+                  <h4>Alternatives</h4>
+                  <p>
+                  As described above, it is possible to pass a symbol, a hash or a string as
+                  the first argument.
+                  </p>
+                  <p>
+                  @public
+                  </p>
+                </div>
+                <div class='source'>
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000027-source'); return false">
+                    [show source]
+                  </a>
+                  <pre id='M000027-source'><span class="ruby-comment cmt"># File lib/record_filter/dsl/dsl.rb, line 90</span>&#x000A;      <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">order</span>(<span class="ruby-identifier">column</span>, <span class="ruby-identifier">direction</span>=<span class="ruby-identifier">:asc</span>)&#x000A;        <span class="ruby-keyword kw">unless</span> [<span class="ruby-identifier">:asc</span>, <span class="ruby-identifier">:desc</span>].<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">direction</span>)&#x000A;          <span class="ruby-identifier">raise</span> <span class="ruby-constant">InvalidFilterException</span>.<span class="ruby-identifier">new</span>(<span class="ruby-node">&quot;The direction for orders must be either :asc or :desc but was #{direction}&quot;</span>)&#x000A;        <span class="ruby-keyword kw">end</span>&#x000A;        <span class="ruby-ivar">@conjunction</span>.<span class="ruby-identifier">add_order</span>(<span class="ruby-identifier">column</span>, <span class="ruby-identifier">direction</span>)&#x000A;        <span class="ruby-keyword kw">nil</span>&#x000A;      <span class="ruby-keyword kw">end</span></pre>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id='footer-push'></div>
     </div>
-  <!-- banner header -->
-
-  <div id="bodyContent">
-
-
-
-  <div id="contextContent">
-
-
-
-   </div>
-
-    <div id="method-list">
-      <h3 class="section-bar">Methods</h3>
-
-      <div class="name-list">
-      <a href="#M000028">group_by</a>&nbsp;&nbsp;
-      <a href="#M000025">limit</a>&nbsp;&nbsp;
-      <a href="#M000026">offset</a>&nbsp;&nbsp;
-      <a href="#M000027">order</a>&nbsp;&nbsp;
-      </div>
+    <div id='footer'>
+      <a href="http://github.com/mislav/hanna/tree/master"><strong>Hanna</strong> RDoc template</a>
     </div>
-
-  </div>
-
-
-    <!-- if includes -->
-
-    <div id="section">
-
-
-
-
-
-      
-
-
-    <!-- if method_list -->
-    <div id="methods">
-      <h3 class="section-bar">Public Instance methods</h3>
-
-      <div id="method-M000028" class="method-detail">
-        <a name="M000028"></a>
-
-        <div class="method-heading">
-          <a href="#M000028" class="method-signature">
-          <span class="method-name">group_by</span><span class="method-args">(column)</span>
-          </a>
-        </div>
-      
-        <div class="method-description">
-          <p>
-Specify a <a href="DSL.html#M000028">group_by</a> clause for the resulting
-query. This method can only be called in the outermost scope of a filter
-(i.e. not inside of a having block, etc.). Multiple calls will create
-multiple <a href="DSL.html#M000028">group_by</a> clauses in the resulting
-query, and they will be added in the <a href="DSL.html#M000027">order</a>
-in which they were called in the filter. In <a
-href="DSL.html#M000027">order</a> to specify grouping on columns added
-through joins, a hash can be passed as the argument, specifying a path
-through the joins to the column, as in this example:
-</p>
-<pre>
-  Blog.filter do
-    having(:posts) do
-      having(:comments).with(:created_at).greater_than(3.days.ago)
-    end
-    group_by(:posts =&gt; :comments =&gt; :offensive)
-    group_by(:id)
-  end
-</pre>
-<h4>Parameters</h4>
-<table>
-<tr><td valign="top">column&lt;Symbol, Hash&gt;:</td><td>If a symbol is specified, it is taken to represent the name of a column on
-the class being filtered. If a hash is given, it should represent a path
-through the joins to a column in one of the joined tables. If a string is
-given, it is used without modification as the grouping parameter.
-
-</td></tr>
-</table>
-<h4>Returns</h4>
-<p>
-nil
-</p>
-<h4>Alternatives</h4>
-<p>
-As described above, it is possible to pass either a symbol, a hash, or a
-string as the argument.
-</p>
-<p>
-@public
-</p>
-          <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000028-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000028-source">
-<pre>
-<span class="ruby-comment cmt"># File lib/record_filter/dsl/dsl.rb, line 128</span>
-      <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">group_by</span>(<span class="ruby-identifier">column</span>)
-        <span class="ruby-ivar">@conjunction</span>.<span class="ruby-identifier">add_group_by</span>(<span class="ruby-identifier">column</span>)
-        <span class="ruby-keyword kw">nil</span>
-      <span class="ruby-keyword kw">end</span>
-</pre>
-          </div>
-        </div>
-      </div>
-
-      <div id="method-M000025" class="method-detail">
-        <a name="M000025"></a>
-
-        <div class="method-heading">
-          <a href="#M000025" class="method-signature">
-          <span class="method-name">limit</span><span class="method-args">(offset, limit=nil)</span>
-          </a>
-        </div>
-      
-        <div class="method-description">
-          <p>
-Define an <a href="DSL.html#M000025">limit</a> and/or <a
-href="DSL.html#M000026">offset</a> for the results returned from the
-current filter. This method can only be called from the outermost scope of
-a filter (i.e. not inside of a having block, etc.). If it is called
-multiple times, the last one will override any others.
-</p>
-<h4>Parameters</h4>
-<table>
-<tr><td valign="top"><a href="DSL.html#M000026">offset</a>&lt;Integer&gt;:</td><td>Used for the <a href="DSL.html#M000026">offset</a> of the query.
-
-</td></tr>
-<tr><td valign="top"><a href="DSL.html#M000025">limit</a>&lt;Integer:</td><td>Used as the <a href="DSL.html#M000025">limit</a> for the query.
-
-</td></tr>
-</table>
-<h4>Returns</h4>
-<p>
-nil
-</p>
-<h4>Alternatives</h4>
-<p>
-If called with a single argument, it is assumed to represent the <a
-href="DSL.html#M000025">limit</a>, and no <a
-href="DSL.html#M000026">offset</a> will be specified.
-</p>
-<p>
-@public
-</p>
-          <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000025-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000025-source">
-<pre>
-<span class="ruby-comment cmt"># File lib/record_filter/dsl/dsl.rb, line 24</span>
-      <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">limit</span>(<span class="ruby-identifier">offset</span>, <span class="ruby-identifier">limit</span>=<span class="ruby-keyword kw">nil</span>)
-        <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">limit</span>
-          <span class="ruby-ivar">@conjunction</span>.<span class="ruby-identifier">add_limit</span>(<span class="ruby-identifier">limit</span>, <span class="ruby-identifier">offset</span>)
-        <span class="ruby-keyword kw">else</span>
-          <span class="ruby-ivar">@conjunction</span>.<span class="ruby-identifier">add_limit</span>(<span class="ruby-identifier">offset</span>, <span class="ruby-keyword kw">nil</span>)
-        <span class="ruby-keyword kw">end</span>
-        <span class="ruby-keyword kw">nil</span>
-      <span class="ruby-keyword kw">end</span>
-</pre>
-          </div>
-        </div>
-      </div>
-
-      <div id="method-M000026" class="method-detail">
-        <a name="M000026"></a>
-
-        <div class="method-heading">
-          <a href="#M000026" class="method-signature">
-          <span class="method-name">offset</span><span class="method-args">(offset)</span>
-          </a>
-        </div>
-      
-        <div class="method-description">
-          <p>
-Define an <a href="DSL.html#M000026">offset</a> for the results returned
-from the current filter. This method can only be called from the outermost
-scope of a filter (i.e. not inside of a having block, etc.). If it is
-called multiple times, the last one will override any others.
-</p>
-<h4>Parameters</h4>
-<table>
-<tr><td valign="top"><a href="DSL.html#M000026">offset</a>&lt;Integer&gt;:</td><td>The <a href="DSL.html#M000026">offset</a> of the query.
-
-</td></tr>
-</table>
-<h4>Returns</h4>
-<p>
-nil
-</p>
-<p>
-@public
-</p>
-          <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000026-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000026-source">
-<pre>
-<span class="ruby-comment cmt"># File lib/record_filter/dsl/dsl.rb, line 46</span>
-      <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">offset</span>(<span class="ruby-identifier">offset</span>)
-        <span class="ruby-ivar">@conjunction</span>.<span class="ruby-identifier">add_limit</span>(<span class="ruby-keyword kw">nil</span>, <span class="ruby-identifier">offset</span>)
-        <span class="ruby-keyword kw">nil</span>
-      <span class="ruby-keyword kw">end</span>
-</pre>
-          </div>
-        </div>
-      </div>
-
-      <div id="method-M000027" class="method-detail">
-        <a name="M000027"></a>
-
-        <div class="method-heading">
-          <a href="#M000027" class="method-signature">
-          <span class="method-name">order</span><span class="method-args">(column, direction=:asc)</span>
-          </a>
-        </div>
-      
-        <div class="method-description">
-          <p>
-Define an <a href="DSL.html#M000027">order</a> clause for the current
-query, with options for specifying both the column to use as well as the
-direction. This method can only be called in the outermost scope of a
-filter (i.e. not inside of a having block, etc.). Multiple calls will
-create multiple <a href="DSL.html#M000027">order</a> clauses in the
-resulting query, and they will be added in the <a
-href="DSL.html#M000027">order</a> in which they were called in the filter.
-In <a href="DSL.html#M000027">order</a> to specify ordering on columns
-added through joins, a hash can be passed as the first argument, specifying
-a path through the joins to the column, as in this example:
-</p>
-<pre>
-  Blog.filter do
-    having(:posts) do
-      having(:comments).with(:created_at).greater_than(3.days.ago)
-    end
-    order(:posts =&gt; :comments =&gt; :created_at, :desc)
-    order(:id, :asc)
-  end
-</pre>
-<h4>Parameters</h4>
-<table>
-<tr><td valign="top">column&lt;Symbol, Hash&gt;:</td><td>Specify the column for the ordering. If a symbol is given, it is assumed to
-represent a column in the class that is being filtered. With a hash
-argument, it is possible to specify a path to a column in one of the joined
-tables, as seen above. If a string is given and it doesn&#8216;t match up
-with a column name, it is used as a literal string for ordering.
-
-</td></tr>
-<tr><td valign="top">direction&lt;Symbol&gt;:</td><td>Specifies the direction of the <a href="DSL.html#M000027">order</a>. Should
-be either :asc or :desc and defaults to :asc.
-
-</td></tr>
-</table>
-<h4>Returns</h4>
-<p>
-nil
-</p>
-<h4>Raises</h4>
-<table>
-<tr><td valign="top"><a href="../InvalidFilterException.html">InvalidFilterException</a>:</td><td>If the direction is neither :asc nor :desc.
-
-</td></tr>
-</table>
-<h4>Alternatives</h4>
-<p>
-As described above, it is possible to pass a symbol, a hash or a string as
-the first argument.
-</p>
-<p>
-@public
-</p>
-          <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000027-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000027-source">
-<pre>
-<span class="ruby-comment cmt"># File lib/record_filter/dsl/dsl.rb, line 90</span>
-      <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">order</span>(<span class="ruby-identifier">column</span>, <span class="ruby-identifier">direction</span>=<span class="ruby-identifier">:asc</span>)
-        <span class="ruby-keyword kw">unless</span> [<span class="ruby-identifier">:asc</span>, <span class="ruby-identifier">:desc</span>].<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">direction</span>)
-          <span class="ruby-identifier">raise</span> <span class="ruby-constant">InvalidFilterException</span>.<span class="ruby-identifier">new</span>(<span class="ruby-node">&quot;The direction for orders must be either :asc or :desc but was #{direction}&quot;</span>)
-        <span class="ruby-keyword kw">end</span>
-        <span class="ruby-ivar">@conjunction</span>.<span class="ruby-identifier">add_order</span>(<span class="ruby-identifier">column</span>, <span class="ruby-identifier">direction</span>)
-        <span class="ruby-keyword kw">nil</span>
-      <span class="ruby-keyword kw">end</span>
-</pre>
-          </div>
-        </div>
-      </div>
-
-
-    </div>
-
-
-  </div>
-
-
-<div id="validator-badges">
-  <p><small><a href="http://validator.w3.org/check/referer">[Validate]</a></small></p>
-</div>
-
-</body>
+  </body>
 </html>
