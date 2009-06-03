@@ -104,4 +104,29 @@ describe 'explicit joins' do
       @blog.last_find[:joins].should == [%q(INNER JOIN "ads" AS blogs__ads ON "blogs".id = blogs__ads.blog_id), %q(LEFT OUTER JOIN "posts" AS blogs__post ON "blogs".id = blogs__post.blog_id), %q(INNER JOIN "comments" AS blogs__post__comment ON blogs__post.id = blogs__post__comment.post_id AND (blogs__post__comment.offensive = 't'))]
     end
   end
+
+  describe 'using the same join multiple times' do
+    before do
+      @blog = Class.new(Blog)
+      @blog.named_filter(:things) do
+        join(Post, :inner, 'blogs_posts_1') do
+          on(:id => :blog_id)
+          with(:title, 'ack')
+        end
+        join(Post, :inner, 'blogs_posts_2') do
+          on(:id => :blog_id)
+          with(:title, 'hmm')
+        end
+      end
+      @blog.things.inspect
+    end
+
+    it 'should create the correct join' do
+      @blog.last_find[:joins].should == [%q(INNER JOIN "posts" AS blogs_posts_1 ON "blogs".id = blogs_posts_1.blog_id), %q(INNER JOIN "posts" AS blogs_posts_2 ON "blogs".id = blogs_posts_2.blog_id)] 
+    end
+
+    it 'should create the correct conditions' do
+      @blog.last_find[:conditions].should == [%q((blogs_posts_1.title = ?) AND (blogs_posts_2.title = ?)), 'ack', 'hmm'] 
+    end
+  end
 end

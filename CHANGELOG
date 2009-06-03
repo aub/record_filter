@@ -1,3 +1,8 @@
+= 0.9.7
+
+* Fix a bug where explicit joins would not honor different aliases if joining
+the same class twice.
+
 = 0.9.6
 
 * Build the alias for explicit join tables correctly for multi-word class

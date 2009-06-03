@@ -48,21 +48,29 @@ module RecordFilter
     end
 
     def join_class(clazz, join_type, table_alias, conditions)
-      @joins_cache[clazz] ||= 
+      use_alias = table_alias || alias_for_class(clazz)
+      @joins_cache[use_alias] ||= 
         begin
-          join_table = Table.new(clazz, table_alias || alias_for_class(clazz))
+          join_table = Table.new(clazz, use_alias)
           @joins << (join = Join.new(self, join_table, conditions, join_type))
           join
         end
     end
 
-    def find_join(join_key)
-      @joins_cache[join_key]
+    def join_key_for(key)
+      case key
+      when Class then alias_for_class(key)
+      when String, Symbol then key
+      end
     end
 
-    def find_join!(join_key)
-      join = find_join(join_key)
-      raise InvalidJoinException.new("The join #{join_key} was not found.") unless join
+    def find_join(key)
+      @joins_cache[join_key_for(key)]
+    end
+
+    def find_join!(key)
+      join = find_join(key)
+      raise InvalidJoinException.new("The join #{key} was not found.") unless join
       join
     end
 

@@ -2,80 +2,87 @@
 
 Gem::Specification.new do |s|
   s.name = %q{record_filter}
-  s.version = "0.9.6"
+  s.version = "0.9.7"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Aubrey Holland", "Mat Brown"]
-  s.date = %q{2009-05-13}
+  s.date = %q{2009-06-03}
   s.description = %q{RecordFilter is a Pure-ruby criteria API for building complex queries in ActiveRecord. It supports queries that are built on the fly as well as named filters that can be added to objects and chained to create complex queries. It also gets rid of the nasty hard-coded SQL that shows up in most ActiveRecord code with a clean API that makes queries simple and intuitive to build.}
   s.email = %q{aubreyholland@gmail.com}
   s.extra_rdoc_files = [
     "README.rdoc"
   ]
   s.files = [
-    "README.rdoc",
-    "Rakefile",
-    "VERSION.yml",
-    "lib/record_filter.rb",
-    "lib/record_filter/active_record.rb",
-    "lib/record_filter/column_parser.rb",
-    "lib/record_filter/conjunctions.rb",
-    "lib/record_filter/dsl.rb",
-    "lib/record_filter/dsl/class_join.rb",
-    "lib/record_filter/dsl/conjunction.rb",
-    "lib/record_filter/dsl/conjunction_dsl.rb",
-    "lib/record_filter/dsl/dsl.rb",
-    "lib/record_filter/dsl/dsl_factory.rb",
-    "lib/record_filter/dsl/group_by.rb",
-    "lib/record_filter/dsl/join.rb",
-    "lib/record_filter/dsl/join_condition.rb",
-    "lib/record_filter/dsl/join_dsl.rb",
-    "lib/record_filter/dsl/limit.rb",
-    "lib/record_filter/dsl/named_filter.rb",
-    "lib/record_filter/dsl/order.rb",
-    "lib/record_filter/dsl/restriction.rb",
-    "lib/record_filter/filter.rb",
-    "lib/record_filter/group_by.rb",
-    "lib/record_filter/join.rb",
-    "lib/record_filter/order.rb",
-    "lib/record_filter/query.rb",
-    "lib/record_filter/restriction_factory.rb",
-    "lib/record_filter/restrictions.rb",
-    "lib/record_filter/table.rb",
-    "spec/active_record_spec.rb",
-    "spec/exception_spec.rb",
-    "spec/explicit_join_spec.rb",
-    "spec/implicit_join_spec.rb",
-    "spec/limits_and_ordering_spec.rb",
-    "spec/models.rb",
-    "spec/named_filter_spec.rb",
-    "spec/proxying_spec.rb",
-    "spec/restrictions_spec.rb",
-    "spec/select_spec.rb",
-    "spec/spec_helper.rb",
-    "spec/test.db",
-    "test/performance_test.rb",
-    "test/test.db"
+    ".gitignore",
+     "CHANGELOG",
+     "README.rdoc",
+     "Rakefile",
+     "VERSION.yml",
+     "config/roodi.yml",
+     "lib/record_filter.rb",
+     "lib/record_filter/active_record.rb",
+     "lib/record_filter/column_parser.rb",
+     "lib/record_filter/conjunctions.rb",
+     "lib/record_filter/dsl.rb",
+     "lib/record_filter/dsl/class_join.rb",
+     "lib/record_filter/dsl/conjunction.rb",
+     "lib/record_filter/dsl/conjunction_dsl.rb",
+     "lib/record_filter/dsl/dsl.rb",
+     "lib/record_filter/dsl/dsl_factory.rb",
+     "lib/record_filter/dsl/group_by.rb",
+     "lib/record_filter/dsl/join.rb",
+     "lib/record_filter/dsl/join_condition.rb",
+     "lib/record_filter/dsl/join_dsl.rb",
+     "lib/record_filter/dsl/limit.rb",
+     "lib/record_filter/dsl/named_filter.rb",
+     "lib/record_filter/dsl/order.rb",
+     "lib/record_filter/dsl/restriction.rb",
+     "lib/record_filter/filter.rb",
+     "lib/record_filter/group_by.rb",
+     "lib/record_filter/join.rb",
+     "lib/record_filter/order.rb",
+     "lib/record_filter/query.rb",
+     "lib/record_filter/restriction_factory.rb",
+     "lib/record_filter/restrictions.rb",
+     "lib/record_filter/table.rb",
+     "record_filter.gemspec",
+     "script/console",
+     "spec/active_record_spec.rb",
+     "spec/exception_spec.rb",
+     "spec/explicit_join_spec.rb",
+     "spec/implicit_join_spec.rb",
+     "spec/limits_and_ordering_spec.rb",
+     "spec/models.rb",
+     "spec/named_filter_spec.rb",
+     "spec/proxying_spec.rb",
+     "spec/restrictions_spec.rb",
+     "spec/select_spec.rb",
+     "spec/spec_helper.rb",
+     "spec/test.db",
+     "tasks/db.rake",
+     "tasks/rcov.rake",
+     "tasks/spec.rake",
+     "test/performance_test.rb",
+     "test/test.db"
   ]
-  s.has_rdoc = true
   s.homepage = %q{http://github.com/aub/record_filter/tree/master}
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
-  s.rubygems_version = %q{1.3.2}
+  s.rubygems_version = %q{1.3.3}
   s.summary = %q{An ActiveRecord query API for replacing SQL with awesome}
   s.test_files = [
     "spec/active_record_spec.rb",
-    "spec/exception_spec.rb",
-    "spec/explicit_join_spec.rb",
-    "spec/implicit_join_spec.rb",
-    "spec/limits_and_ordering_spec.rb",
-    "spec/models.rb",
-    "spec/named_filter_spec.rb",
-    "spec/proxying_spec.rb",
-    "spec/restrictions_spec.rb",
-    "spec/select_spec.rb",
-    "spec/spec_helper.rb",
-    "test/performance_test.rb"
+     "spec/exception_spec.rb",
+     "spec/explicit_join_spec.rb",
+     "spec/implicit_join_spec.rb",
+     "spec/limits_and_ordering_spec.rb",
+     "spec/models.rb",
+     "spec/named_filter_spec.rb",
+     "spec/proxying_spec.rb",
+     "spec/restrictions_spec.rb",
+     "spec/select_spec.rb",
+     "spec/spec_helper.rb",
+     "test/performance_test.rb"
   ]
 
   if s.respond_to? :specification_version then
