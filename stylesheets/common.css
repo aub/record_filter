@@ -41,5 +41,6 @@
 	ul#nav li a								{}
 	div#content								{}
 	div#footer								{border-top: 1px solid #ccc; margin-top: 20px; font-size: 12px; padding: 20px 0px 0 0;}
+  p.upgrade-note            { font-size: 12px; font-weight: bold; }
 }
 
