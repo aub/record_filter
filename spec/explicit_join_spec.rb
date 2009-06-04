@@ -8,7 +8,7 @@ describe 'explicit joins' do
   describe 'specifying a simple join' do
     before do
       Post.filter do
-        join(Blog, :left, :posts_blogs) do
+        join(Blog, :join_type => :left, :alias => :posts_blogs) do
           on(:blog_id => :id)
           with(:name, 'Test Name')
         end
@@ -27,7 +27,7 @@ describe 'explicit joins' do
   describe 'specifying a complex join through polymorphic associations' do
     before do
       Review.filter do
-        join(Feature, :left, :reviews_features) do
+        join(Feature, :join_type => :left, :alias => :reviews_features) do
           on(:reviewable_id => :featurable_id)
           on(:reviewable_type => :featurable_type)
           with(:priority, 5)
@@ -47,7 +47,7 @@ describe 'explicit joins' do
   describe 'should use values as join parameters instead of columns if given' do
     before do
       Review.filter do
-        join(Feature, :left) do
+        join(Feature, :join_type => :left) do
           on(:reviewable_id => :featurable_id)
           on(:reviewable_type => :featurable_type)
           on(:featurable_type, 'SomeType')
@@ -64,7 +64,7 @@ describe 'explicit joins' do
   describe 'using restrictions on join conditions' do
     before do
       Review.filter do
-        join(Feature, :left) do
+        join(Feature, :join_type => :left) do
           on(:featurable_type, nil)
           on(:featurable_id).gte(12)
           on(:priority).not(6)
@@ -84,9 +84,9 @@ describe 'explicit joins' do
         having(:ads) do
           with(:content, nil)
         end
-        join(Post, :left) do
+        join(Post, :join_type => :left) do
           on(:id => :blog_id)
-          join(Comment, :inner) do
+          join(Comment, :join_type => :inner) do
             on(:id => :post_id)
             on(:offensive, true)
           end
@@ -109,11 +109,11 @@ describe 'explicit joins' do
     before do
       @blog = Class.new(Blog)
       @blog.named_filter(:things) do
-        join(Post, :inner, 'blogs_posts_1') do
+        join(Post, :join_type => :inner, :alias => 'blogs_posts_1') do
           on(:id => :blog_id)
           with(:title, 'ack')
         end
-        join(Post, :inner, 'blogs_posts_2') do
+        join(Post, :join_type => :inner, :alias => 'blogs_posts_2') do
           on(:id => :blog_id)
           with(:title, 'hmm')
         end

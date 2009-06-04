@@ -364,4 +364,40 @@ describe 'implicit joins' do
       Post.last_find[:joins].should == [%q(INNER JOIN "comments" AS ooohs ON "posts".id = ooohs.post_id), %q(INNER JOIN "comments" AS aaahs ON "posts".id = aaahs.post_id)]
     end
   end
+
+  describe 'using a table alias with has_many :through associations' do
+    before do
+      Blog.filter do
+        having(:comments, :alias => 'arghs') do
+          with(:offensive, true)
+        end
+      end.inspect
+    end
+
+    it 'should create the correct condition' do
+      Blog.last_find[:conditions].should == [%q(arghs.offensive = ?), true]
+    end
+
+    it 'should create the correct join' do
+      Blog.last_find[:joins].should == [%q(INNER JOIN "posts" AS blogs__posts ON "blogs".id = blogs__posts.blog_id), %q(INNER JOIN "comments" AS arghs ON blogs__posts.id = arghs.post_id)]
+    end
+  end
+
+  describe 'using a table alias' do
+    before do
+      Post.filter do
+        having(:comments, :alias => 'arghs') do
+          with(:offensive, true)
+        end
+      end.inspect
+    end
+
+    it 'should create the correct condition' do
+      Post.last_find[:conditions].should == [%q(arghs.offensive = ?), true]
+    end
+
+    it 'should create the correct join' do
+      Post.last_find[:joins].should == [%q(INNER JOIN "comments" AS arghs ON "posts".id = arghs.post_id)]
+    end
+  end
 end

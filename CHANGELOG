@@ -1,5 +1,15 @@
 = 0.9.8
 
+* BREAKING CHANGE: changed the 'limit' method so that the limit is always the
+first argument, with an optional offset as the second argument. This makes the
+functionality much clearer by avoiding obnoxious argument swapping.
+
+* BREAKING CHANGE: changed the arguments to the 'join' method so that it
+takes a class and an options hash. The options hash can contain a :join_type
+and an :alias, allowing only the arguments that the client wants to use to be
+specified. This will break existing code where the join type was passed as
+the second argument.
+
 * BREAKING CHANGE: changed the arguments to the 'having' method so that it
 takes an association name and an options hash. The options hash takes
 :join_type and :alias. This will break existing code where the join_type was

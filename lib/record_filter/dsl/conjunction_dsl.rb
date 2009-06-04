@@ -209,19 +209,26 @@ module RecordFilter
       # joins to be speficied than can be created using having, including jump joins and ones that
       # include conditions on column values. The method accepts a block that can contain any sequence
       # of conjunctions, restrictions, or other joins, but it must also contain at least one call to
-      # JoinDSL.on to specify the conditions for the join.
+      # JoinDSL.on to specify the conditions for the join. The options hash accepts :join_type and
+      # :alias parameters. The :join_type parameter can be either :inner, :left or :right and defaults
+      # to :inner. The :alias parameter allows you to specify an alias for the table in the join and
+      # defaults to "#{left_table}__#{clazz.name}".
       #
       # ==== Parameters
       # clazz<Class>::
       #   The class that is being joined to.
-      # join_type<Symbol>::
-      #   Indicates the type of join to use and must be one of :inner, :left or :right, where :left
-      #   or :right will create a LEFT or RIGHT OUTER join respectively.
-      # table_alias<String, optional>::
-      #   If provided, will specify an alias to use in the SQL when referring to the joined table.
-      #   If the argument is not given, the alias will be "#{left_table}__#{clazz.name}"
+      # options<Hash>::
+      #   An options hash (see below)
       # block<Proc>
       #   The contents of the join block can contain any sequence of conjunctions, restrictions, or joins.
+      #
+      # ==== Options(options)
+      # :join_type<Symbol>::
+      #   Indicates the type of join to use and must be one of :inner, :left or :right, where :left
+      #   or :right will create a LEFT or RIGHT OUTER join respectively.
+      # :alias<String>::
+      #   If provided, will specify an alias to use in the SQL when referring to the joined table.
+      #   If the argument is not given, the alias will be "#{left_table}__#{clazz.name}"
       #
       # ==== Returns
       # JoinDSL::
@@ -229,8 +236,8 @@ module RecordFilter
       #   for constructions like: join(Comment, :inner).on(:id => :post_id)
       #
       # @public
-      def join(clazz, join_type, table_alias=nil, &block)
-        @conjunction.add_class_join(clazz, join_type, table_alias, &block)
+      def join(clazz, options={}, &block)
+        @conjunction.add_class_join(clazz, options[:join_type], options[:alias], &block)
       end
 
       # Access the class that the current filter is being applied to. This is necessary
@@ -290,7 +297,7 @@ module RecordFilter
       # Define these_methods here just so that we can throw exceptions when they are called. They should not
       # be callable in the scope of a conjunction_dsl.
       #
-      def limit(offset_or_limit, limit=nil) # :nodoc:
+      def limit(limit, offset=nil) # :nodoc:
         raise InvalidFilterException.new('Calls to limit can only be made in the outer block of a filter.')
       end
 

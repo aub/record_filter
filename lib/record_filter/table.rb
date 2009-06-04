@@ -37,6 +37,7 @@ module RecordFilter
           through_join.right_table.join_association(
             association.options[:source] || association_name, 
             :join_type => join_type,
+            :alias => options[:alias],
             :join_class => association.options[:source_type])
         else
           case association.macro

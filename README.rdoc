@@ -122,7 +122,7 @@ The following example shows the use of each of these techniques:
         with(:offensive, true)
       end
     end
-    limit(10, 100)
+    limit(100, 10)
     order(:created_at, :desc)
     group_by(:comments => :offensive)
   end
@@ -234,7 +234,7 @@ In a filter for a Post model that has_many comments, the following two examples 
 
   having(:comments)
 
-  join(Comment, :inner) do
+  join(Comment, :join_type => :inner) do
     on(:id => :post_id)
   end
 
@@ -248,7 +248,7 @@ added. Explicit joins also allow conditions to be set on columns of the table be
     with(:created_at).greater_than(2.days.ago)
   end
 
-  join(Comment, :inner) do
+  join(Comment, :join_type => :inner) do
     on(:id => :commentable_id)
     on(:commentable_type).equal_to('Post')
     with(:created_at).less_than(1.year.ago)
@@ -260,13 +260,29 @@ example will join both tables and add a condition on the author.
 
   having(:comments => :author).with(:name, 'Bob')
 
+For both join types, an options hash can be provided as the second argument for passing the join
+type and/or an alias to use for the joined table. The join type defaults to :inner, and the alias
+defaults to a unique name for identifying the table. Using aliases allows you to join to a given table
+twice with two different names. How about a contrived example? Awesome.
+
+  Blog.filter do
+    having(:posts, :join_type => :left, :alias => 'posts_1').with(:title, 'a')
+    having(:posts, :alias => 'posts_2').with(:title, 'b')
+  end
+
+  # SELECT DISTINCT "blogs".* FROM "blogs" 
+  #   LEFT OUTER JOIN "posts" AS posts_1 ON "blogs".id = posts_1.blog_id 
+  #   INNER JOIN "posts" AS posts_2 ON "blogs".id = posts_2.blog_id 
+  #   WHERE ((posts_1.title = 'a') AND (posts_2.title = 'b'))
+
 === Limits and Offsets
 
-These are specified using the 'limit' method, which takes two arguments, the offset and the
-limit. If only one argument is given, it is assumed to be the limit.
+These are specified using the 'limit' method, which takes two arguments, the limit and the
+offset. The offset is optional. For specifying only offsets, the 'offset' method is also available.
 
-  limit(10, 100)   # :offset => 10, :limit => 100
-  limit(100)       # :offset => 0, :limit => 100
+  limit(100, 10)   # :limit => 100, :offset => 100
+  limit(100)       # :limit => 100
+  offset(10)       # :offset => 10
 
 === Ordering
 
@@ -298,6 +314,19 @@ order in which they were given.
   end
 
   # :group => "'posts'.permalink, posts__comments.offensive'
+
+=== Distinct
+
+Filters that include outer joins are automatically made distinct by record_filter. For filters that
+use inner joins, use the 'distinct' method in the DSL to force the select to be distinct.
+
+  Blog.filter do
+    with(:created_at).greater_than(1.day.ago)
+    having(:posts).with(:permalink, nil)
+    distinct
+  end
+  
+  # :select => "DISTINCT 'blogs'.*"
 
 == LICENSE:
 

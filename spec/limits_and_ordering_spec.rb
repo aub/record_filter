@@ -52,7 +52,7 @@ describe 'filter qualifiers' do
       before do
         Post.filter do
           with :published, true
-          limit(20, 10)
+          limit(10, 20)
         end.inspect
       end
 
@@ -168,7 +168,7 @@ describe 'filter qualifiers' do
       before do
         Post.filter do
           with(:published, false)
-          join(Comment, :inner) do
+          join(Comment, :join_type => :inner) do
             on(:id => :post_id)
           end
           order(Comment => :id)

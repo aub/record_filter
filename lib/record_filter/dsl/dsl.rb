@@ -8,25 +8,18 @@ module RecordFilter
       # last one will override any others.
       #
       # ==== Parameters
+      # limit<Integer>::
+      #   Used for the limit of the query.
       # offset<Integer>::
-      #   Used for the offset of the query.
-      # limit<Integer::
-      #   Used as the limit for the query.
+      #   Used as the offset for the query. This argument is optional, with the default
+      #   being no offset.
       #
       # ==== Returns
       # nil
       #
-      # ==== Alternatives
-      # If called with a single argument, it is assumed to represent the limit, and
-      # no offset will be specified.
-      #
       # @public
-      def limit(offset, limit=nil)
-        if limit
-          @conjunction.add_limit(limit, offset)
-        else
-          @conjunction.add_limit(offset, nil)
-        end
+      def limit(limit, offset=nil)
+        @conjunction.add_limit(limit, offset)
         nil
       end
 

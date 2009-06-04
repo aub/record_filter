@@ -61,7 +61,7 @@ describe 'raising exceptions' do
     it 'should raise ColumnNotFoundException for explicit joins on bad column names for the right table' do
       lambda {
         Review.filter do
-          join(Feature, :left) do
+          join(Feature, :join_type => :left) do
             on(:reviewable_id => :ftrable_id)
             on(:reviewable_type => :ftrable_type)
             with(:priority, 5)
@@ -73,7 +73,7 @@ describe 'raising exceptions' do
     it 'should raise ColumnNotFoundException for explicit joins on bad column names for the left table' do
       lambda {
         Review.filter do
-          join(Feature, :inner) do
+          join(Feature, :join_type => :inner) do
             on(:rvwable_id => :featurable_id)
             on(:rvwable_type => :featurable_type)
             with(:priority, 5)
@@ -85,7 +85,7 @@ describe 'raising exceptions' do
     it 'should raise ColumnNotFoundException for explicit joins on bad column names in conditions' do
       lambda {
         Review.filter do
-          join(Feature, :inner) do
+          join(Feature, :join_type => :inner) do
             on(:reviewable_id).gt(12)
           end
         end.inspect
@@ -95,7 +95,7 @@ describe 'raising exceptions' do
     it 'should raise an ArgumentError if an invalid join type is specified' do
       lambda {
         Review.filter do
-          join(Feature, :crazy) do
+          join(Feature, :join_type => :crazy) do
             on(:reviewable_type => :featurable_type)
           end
         end.inspect
@@ -105,7 +105,7 @@ describe 'raising exceptions' do
     it 'should raise an InvalidJoinException if no columns are specified for the join' do
       lambda {
         Review.filter do
-          join(Feature, :inner)
+          join(Feature, :join_type => :inner)
         end.inspect
       }.should raise_error(RecordFilter::InvalidJoinException)
     end
