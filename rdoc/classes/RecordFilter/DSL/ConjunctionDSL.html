@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html lang='en'>
   <head>
-    <title>: RecordFilter::DSL::ConjunctionDSL [record_filter 0.9.6]</title>
+    <title>: RecordFilter::DSL::ConjunctionDSL [record_filter 0.9.8]</title>
     <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
     <link href='../../../rdoc-style.css' media='screen' rel='stylesheet' type='text/css'>
     <script type='text/javascript'>
@@ -48,10 +48,10 @@
             restrictions, conjunctions and joins, with methods that can be accessed
             from any point in a filter declaration. The where method is used for
             creating restrictions, conjunctions are specified through <a
-            href="ConjunctionDSL.html#M000030">any_of</a>, <a
-            href="ConjunctionDSL.html#M000031">all_of</a>, <a
-            href="ConjunctionDSL.html#M000032">none_of</a> and <a
-            href="ConjunctionDSL.html#M000033">not_all_of</a>, and joins are described
+            href="ConjunctionDSL.html#M000031">any_of</a>, <a
+            href="ConjunctionDSL.html#M000032">all_of</a>, <a
+            href="ConjunctionDSL.html#M000033">none_of</a> and <a
+            href="ConjunctionDSL.html#M000034">not_all_of</a>, and joins are described
             by having and join.
             </p>
           </div>
@@ -59,22 +59,22 @@
             <h2>Methods</h2>
             <h3>public instance</h3>
             <ol>
-              <li><a href="#M000031">all_of</a></li>
-              <li><a href="#M000030">any_of</a></li>
-              <li><a href="#M000036">filter_class</a></li>
-              <li><a href="#M000034">having</a></li>
-              <li><a href="#M000035">join</a></li>
-              <li><a href="#M000037">method_missing</a></li>
-              <li><a href="#M000032">none_of</a></li>
-              <li><a href="#M000033">not_all_of</a></li>
-              <li><a href="#M000029">with</a></li>
+              <li><a href="#M000032">all_of</a></li>
+              <li><a href="#M000031">any_of</a></li>
+              <li><a href="#M000037">filter_class</a></li>
+              <li><a href="#M000035">having</a></li>
+              <li><a href="#M000036">join</a></li>
+              <li><a href="#M000038">method_missing</a></li>
+              <li><a href="#M000033">none_of</a></li>
+              <li><a href="#M000034">not_all_of</a></li>
+              <li><a href="#M000030">with</a></li>
             </ol>
           </div>
           <div id='section'>
             <div id='methods'>
               <h2>Public instance methods</h2>
-              <div class='public-instance method' id='method-M000031'>
-                <a name='M000031'>      </a>
+              <div class='public-instance method' id='method-M000032'>
+                <a name='M000032'>      </a>
                 <div class='synopsis'>
                   <span class='name'>all_of</span>
                   <span class='arguments'>(&amp;block)</span>
@@ -103,14 +103,14 @@
                   </p>
                 </div>
                 <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('M000031-source'); return false">
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000032-source'); return false">
                     [show source]
                   </a>
-                  <pre id='M000031-source'><span class="ruby-comment cmt"># File lib/record_filter/dsl/conjunction_dsl.rb, line 101</span>&#x000A;      <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">all_of</span>(<span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)&#x000A;        <span class="ruby-ivar">@conjunction</span>.<span class="ruby-identifier">add_conjunction</span>(<span class="ruby-identifier">:all_of</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)&#x000A;        <span class="ruby-keyword kw">nil</span>&#x000A;      <span class="ruby-keyword kw">end</span></pre>
+                  <pre id='M000032-source'><span class="ruby-comment cmt"># File lib/record_filter/dsl/conjunction_dsl.rb, line 101</span>&#x000A;      <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">all_of</span>(<span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)&#x000A;        <span class="ruby-ivar">@conjunction</span>.<span class="ruby-identifier">add_conjunction</span>(<span class="ruby-identifier">:all_of</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)&#x000A;        <span class="ruby-keyword kw">nil</span>&#x000A;      <span class="ruby-keyword kw">end</span></pre>
                 </div>
               </div>
-              <div class='public-instance method' id='method-M000030'>
-                <a name='M000030'>      </a>
+              <div class='public-instance method' id='method-M000031'>
+                <a name='M000031'>      </a>
                 <div class='synopsis'>
                   <span class='name'>any_of</span>
                   <span class='arguments'>(&amp;block)</span>
@@ -139,14 +139,14 @@
                   </p>
                 </div>
                 <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('M000030-source'); return false">
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000031-source'); return false">
                     [show source]
                   </a>
-                  <pre id='M000030-source'><span class="ruby-comment cmt"># File lib/record_filter/dsl/conjunction_dsl.rb, line 74</span>&#x000A;      <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">any_of</span>(<span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)&#x000A;        <span class="ruby-ivar">@conjunction</span>.<span class="ruby-identifier">add_conjunction</span>(<span class="ruby-identifier">:any_of</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)&#x000A;        <span class="ruby-keyword kw">nil</span>&#x000A;      <span class="ruby-keyword kw">end</span></pre>
+                  <pre id='M000031-source'><span class="ruby-comment cmt"># File lib/record_filter/dsl/conjunction_dsl.rb, line 74</span>&#x000A;      <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">any_of</span>(<span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)&#x000A;        <span class="ruby-ivar">@conjunction</span>.<span class="ruby-identifier">add_conjunction</span>(<span class="ruby-identifier">:any_of</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)&#x000A;        <span class="ruby-keyword kw">nil</span>&#x000A;      <span class="ruby-keyword kw">end</span></pre>
                 </div>
               </div>
-              <div class='public-instance method' id='method-M000036'>
-                <a name='M000036'>      </a>
+              <div class='public-instance method' id='method-M000037'>
+                <a name='M000037'>      </a>
                 <div class='synopsis'>
                   <span class='name'>filter_class</span>
                   <span class='arguments'>()</span>
@@ -171,17 +171,17 @@
                   </p>
                 </div>
                 <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('M000036-source'); return false">
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000037-source'); return false">
                     [show source]
                   </a>
-                  <pre id='M000036-source'><span class="ruby-comment cmt"># File lib/record_filter/dsl/conjunction_dsl.rb, line 242</span>&#x000A;      <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">filter_class</span>&#x000A;        <span class="ruby-ivar">@model_class</span>&#x000A;      <span class="ruby-keyword kw">end</span></pre>
+                  <pre id='M000037-source'><span class="ruby-comment cmt"># File lib/record_filter/dsl/conjunction_dsl.rb, line 254</span>&#x000A;      <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">filter_class</span>&#x000A;        <span class="ruby-ivar">@model_class</span>&#x000A;      <span class="ruby-keyword kw">end</span></pre>
                 </div>
               </div>
-              <div class='public-instance method' id='method-M000034'>
-                <a name='M000034'>      </a>
+              <div class='public-instance method' id='method-M000035'>
+                <a name='M000035'>      </a>
                 <div class='synopsis'>
                   <span class='name'>having</span>
-                  <span class='arguments'>(join_type, association=nil, &amp;block)</span>
+                  <span class='arguments'>(association, options={}, &amp;block)</span>
                 </div>
                 <div class='description'>
                   <p>
@@ -196,25 +196,36 @@
                   </p>
                   <pre>Post.filter do&#x000A;  having(:comments) do&#x000A;    with(:created_at).greater_than(3.days.ago)&#x000A;  end&#x000A;end</pre>
                   <p>
-                  If one argument is given, it is assumed to represent the name of the
-                  association that will be used for the join and a join type of :inner will
-                  be used by default. If two arguments are provided, the first one is assumed
-                  to be the join type, which can be one of :inner, :left or :right and the
-                  second one is the association name. An alias will automatically be created
-                  for the joined table named
-                  &#8220;#{left_table}__#{association_name}&#8221;, so in the above example,
-                  the alias would be posts__comments. It is also possible to provide a hash
-                  as the association name, in which case a trail of associations can be
-                  joined in one statment.
+                  Options can be passed to provide a custom join type or table alias through
+                  the options hash. The :join_type option can be either :inner, :left or
+                  :right and will default to :inner if not provided. The :alias option allows
+                  you to provide an alias for use in joining the table. If the same
+                  association is joined twice with different aliases, it will be treated as
+                  two separate joins. By default an alias will automatically be created for
+                  the joined table named &#8220;#{left_table}__#{association_name}&#8221;, so
+                  in the above example, the alias would be posts__comments. It is also
+                  possible to provide a hash as the association name, in which case a trail
+                  of associations can be joined in one statment.
                   </p>
                   <h4>Parameters</h4>
                   <table>
-                  <tr><td valign="top">join_type<Symbol>:</td><td>Specifies the type of join to perform, and can be one of :inner, :left or
-                  :right. :left and :right will create left and right outer joins,
-                  respectively.
+                  <tr><td valign="top">association<Symbol>:</td><td>The name of the association to use as a base for the join.
                   
                   </td></tr>
-                  <tr><td valign="top">association<Symbol>:</td><td>The name of the association to use as a base for the join.
+                  <tr><td valign="top">options<Hash>:</td><td>An options hash (see below)
+                  
+                  </td></tr>
+                  </table>
+                  <h4>Options (options)</h4>
+                  <table>
+                  <tr><td valign="top">:join_type<Symbol>:</td><td>The type of join to use. Available options are :inner, :left and :right.
+                  Defaults to :inner.
+                  
+                  </td></tr>
+                  <tr><td valign="top">:alias<String>:</td><td>An alias to use for the table name in the join. If provided, will create a
+                  unique name for the join and allow the same association to be joined
+                  multiple times. By default, the alias will be
+                  &#8220;#{left_table}__#{association_name}&#8221;.
                   
                   </td></tr>
                   </table>
@@ -235,17 +246,17 @@
                   </p>
                 </div>
                 <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('M000034-source'); return false">
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000035-source'); return false">
                     [show source]
                   </a>
-                  <pre id='M000034-source'><span class="ruby-comment cmt"># File lib/record_filter/dsl/conjunction_dsl.rb, line 196</span>&#x000A;      <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">having</span>(<span class="ruby-identifier">join_type</span>, <span class="ruby-identifier">association</span>=<span class="ruby-keyword kw">nil</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)&#x000A;        <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">association</span>.<span class="ruby-identifier">nil?</span>&#x000A;          <span class="ruby-identifier">association</span>, <span class="ruby-identifier">join_type</span> = <span class="ruby-identifier">join_type</span>, <span class="ruby-keyword kw">nil</span>&#x000A;        <span class="ruby-keyword kw">end</span>&#x000A;        <span class="ruby-ivar">@conjunction</span>.<span class="ruby-identifier">add_join</span>(<span class="ruby-identifier">association</span>, <span class="ruby-identifier">join_type</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)&#x000A;      <span class="ruby-keyword kw">end</span></pre>
+                  <pre id='M000035-source'><span class="ruby-comment cmt"># File lib/record_filter/dsl/conjunction_dsl.rb, line 204</span>&#x000A;      <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">having</span>(<span class="ruby-identifier">association</span>, <span class="ruby-identifier">options</span>={}, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)&#x000A;        <span class="ruby-ivar">@conjunction</span>.<span class="ruby-identifier">add_join</span>(<span class="ruby-identifier">association</span>, <span class="ruby-identifier">options</span>[<span class="ruby-identifier">:join_type</span>], <span class="ruby-identifier">options</span>[<span class="ruby-identifier">:alias</span>], <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)&#x000A;      <span class="ruby-keyword kw">end</span></pre>
                 </div>
               </div>
-              <div class='public-instance method' id='method-M000035'>
-                <a name='M000035'>      </a>
+              <div class='public-instance method' id='method-M000036'>
+                <a name='M000036'>      </a>
                 <div class='synopsis'>
                   <span class='name'>join</span>
-                  <span class='arguments'>(clazz, join_type, table_alias=nil, &amp;block)</span>
+                  <span class='arguments'>(clazz, options={}, &amp;block)</span>
                 </div>
                 <div class='description'>
                   <p>
@@ -255,21 +266,17 @@
                   method accepts a block that can contain any sequence of conjunctions,
                   restrictions, or other joins, but it must also contain at least one call to
                   <a href="JoinDSL.html#M000004">JoinDSL.on</a> to specify the conditions for
-                  the join.
+                  the join. The options hash accepts :join_type and :alias parameters. The
+                  :join_type parameter can be either :inner, :left or :right and defaults to
+                  :inner. The :alias parameter allows you to specify an alias for the table
+                  in the join and defaults to &#8220;#{left_table}__#{clazz.name}&#8221;.
                   </p>
                   <h4>Parameters</h4>
                   <table>
                   <tr><td valign="top">clazz<Class>:</td><td>The class that is being joined to.
                   
                   </td></tr>
-                  <tr><td valign="top">join_type<Symbol>:</td><td>Indicates the type of join to use and must be one of :inner, :left or
-                  :right, where :left or :right will create a LEFT or RIGHT OUTER join
-                  respectively.
-                  
-                  </td></tr>
-                  <tr><td valign="top">table_alias<String, optional>:</td><td>If provided, will specify an alias to use in the SQL when referring to the
-                  joined table. If the argument is not given, the alias will be
-                  &#8220;#{left_table}__#{clazz.name}&#8220;
+                  <tr><td valign="top">options<Hash>:</td><td>An options hash (see below)
                   
                   </td></tr>
                   </table>
@@ -277,6 +284,19 @@
                   block<Proc>
                   </p>
                   <pre>The contents of the join block can contain any sequence of conjunctions, restrictions, or joins.</pre>
+                  <h4>Options(options)</h4>
+                  <table>
+                  <tr><td valign="top">:join_type<Symbol>:</td><td>Indicates the type of join to use and must be one of :inner, :left or
+                  :right, where :left or :right will create a LEFT or RIGHT OUTER join
+                  respectively.
+                  
+                  </td></tr>
+                  <tr><td valign="top">:alias<String>:</td><td>If provided, will specify an alias to use in the SQL when referring to the
+                  joined table. If the argument is not given, the alias will be
+                  &#8220;#{left_table}__#{clazz.name}&#8220;
+                  
+                  </td></tr>
+                  </table>
                   <h4>Returns</h4>
                   <table>
                   <tr><td valign="top">JoinDSL:</td><td>A <a href="DSL.html">DSL</a> object that can be used to specify the
@@ -290,14 +310,14 @@
                   </p>
                 </div>
                 <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('M000035-source'); return false">
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000036-source'); return false">
                     [show source]
                   </a>
-                  <pre id='M000035-source'><span class="ruby-comment cmt"># File lib/record_filter/dsl/conjunction_dsl.rb, line 227</span>&#x000A;      <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">join</span>(<span class="ruby-identifier">clazz</span>, <span class="ruby-identifier">join_type</span>, <span class="ruby-identifier">table_alias</span>=<span class="ruby-keyword kw">nil</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)&#x000A;        <span class="ruby-ivar">@conjunction</span>.<span class="ruby-identifier">add_class_join</span>(<span class="ruby-identifier">clazz</span>, <span class="ruby-identifier">join_type</span>, <span class="ruby-identifier">table_alias</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)&#x000A;      <span class="ruby-keyword kw">end</span></pre>
+                  <pre id='M000036-source'><span class="ruby-comment cmt"># File lib/record_filter/dsl/conjunction_dsl.rb, line 239</span>&#x000A;      <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">join</span>(<span class="ruby-identifier">clazz</span>, <span class="ruby-identifier">options</span>={}, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)&#x000A;        <span class="ruby-ivar">@conjunction</span>.<span class="ruby-identifier">add_class_join</span>(<span class="ruby-identifier">clazz</span>, <span class="ruby-identifier">options</span>[<span class="ruby-identifier">:join_type</span>], <span class="ruby-identifier">options</span>[<span class="ruby-identifier">:alias</span>], <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)&#x000A;      <span class="ruby-keyword kw">end</span></pre>
                 </div>
               </div>
-              <div class='public-instance method' id='method-M000037'>
-                <a name='M000037'>      </a>
+              <div class='public-instance method' id='method-M000038'>
+                <a name='M000038'>      </a>
                 <div class='synopsis'>
                   <span class='name'>method_missing</span>
                   <span class='arguments'>(method, *args)</span>
@@ -320,14 +340,14 @@
                   </p>
                 </div>
                 <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('M000037-source'); return false">
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000038-source'); return false">
                     [show source]
                   </a>
-                  <pre id='M000037-source'><span class="ruby-comment cmt"># File lib/record_filter/dsl/conjunction_dsl.rb, line 280</span>&#x000A;      <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">method_missing</span>(<span class="ruby-identifier">method</span>, <span class="ruby-operator">*</span><span class="ruby-identifier">args</span>)&#x000A;        <span class="ruby-ivar">@conjunction</span>.<span class="ruby-identifier">add_named_filter</span>(<span class="ruby-identifier">method</span>, <span class="ruby-operator">*</span><span class="ruby-identifier">args</span>)&#x000A;      <span class="ruby-keyword kw">end</span></pre>
+                  <pre id='M000038-source'><span class="ruby-comment cmt"># File lib/record_filter/dsl/conjunction_dsl.rb, line 292</span>&#x000A;      <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">method_missing</span>(<span class="ruby-identifier">method</span>, <span class="ruby-operator">*</span><span class="ruby-identifier">args</span>)&#x000A;        <span class="ruby-ivar">@conjunction</span>.<span class="ruby-identifier">add_named_filter</span>(<span class="ruby-identifier">method</span>, <span class="ruby-operator">*</span><span class="ruby-identifier">args</span>)&#x000A;      <span class="ruby-keyword kw">end</span></pre>
                 </div>
               </div>
-              <div class='public-instance method' id='method-M000032'>
-                <a name='M000032'>      </a>
+              <div class='public-instance method' id='method-M000033'>
+                <a name='M000033'>      </a>
                 <div class='synopsis'>
                   <span class='name'>none_of</span>
                   <span class='arguments'>(&amp;block)</span>
@@ -357,14 +377,14 @@
                   </p>
                 </div>
                 <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('M000032-source'); return false">
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000033-source'); return false">
                     [show source]
                   </a>
-                  <pre id='M000032-source'><span class="ruby-comment cmt"># File lib/record_filter/dsl/conjunction_dsl.rb, line 128</span>&#x000A;      <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">none_of</span>(<span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)&#x000A;        <span class="ruby-ivar">@conjunction</span>.<span class="ruby-identifier">add_conjunction</span>(<span class="ruby-identifier">:none_of</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)&#x000A;        <span class="ruby-keyword kw">nil</span>&#x000A;      <span class="ruby-keyword kw">end</span></pre>
+                  <pre id='M000033-source'><span class="ruby-comment cmt"># File lib/record_filter/dsl/conjunction_dsl.rb, line 128</span>&#x000A;      <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">none_of</span>(<span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)&#x000A;        <span class="ruby-ivar">@conjunction</span>.<span class="ruby-identifier">add_conjunction</span>(<span class="ruby-identifier">:none_of</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)&#x000A;        <span class="ruby-keyword kw">nil</span>&#x000A;      <span class="ruby-keyword kw">end</span></pre>
                 </div>
               </div>
-              <div class='public-instance method' id='method-M000033'>
-                <a name='M000033'>      </a>
+              <div class='public-instance method' id='method-M000034'>
+                <a name='M000034'>      </a>
                 <div class='synopsis'>
                   <span class='name'>not_all_of</span>
                   <span class='arguments'>(&amp;block)</span>
@@ -394,14 +414,14 @@
                   </p>
                 </div>
                 <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('M000033-source'); return false">
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000034-source'); return false">
                     [show source]
                   </a>
-                  <pre id='M000033-source'><span class="ruby-comment cmt"># File lib/record_filter/dsl/conjunction_dsl.rb, line 155</span>&#x000A;      <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">not_all_of</span>(<span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)&#x000A;        <span class="ruby-ivar">@conjunction</span>.<span class="ruby-identifier">add_conjunction</span>(<span class="ruby-identifier">:not_all_of</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)&#x000A;        <span class="ruby-keyword kw">nil</span>&#x000A;      <span class="ruby-keyword kw">end</span></pre>
+                  <pre id='M000034-source'><span class="ruby-comment cmt"># File lib/record_filter/dsl/conjunction_dsl.rb, line 155</span>&#x000A;      <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">not_all_of</span>(<span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)&#x000A;        <span class="ruby-ivar">@conjunction</span>.<span class="ruby-identifier">add_conjunction</span>(<span class="ruby-identifier">:not_all_of</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)&#x000A;        <span class="ruby-keyword kw">nil</span>&#x000A;      <span class="ruby-keyword kw">end</span></pre>
                 </div>
               </div>
-              <div class='public-instance method' id='method-M000029'>
-                <a name='M000029'>      </a>
+              <div class='public-instance method' id='method-M000030'>
+                <a name='M000030'>      </a>
                 <div class='synopsis'>
                   <span class='name'>with</span>
                   <span class='arguments'>(column, value=Restriction::DEFAULT_VALUE)</span>
@@ -456,10 +476,10 @@
                   </p>
                 </div>
                 <div class='source'>
-                  <a class='source-toggle' href='#' onclick="toggleCode('M000029-source'); return false">
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000030-source'); return false">
                     [show source]
                   </a>
-                  <pre id='M000029-source'><span class="ruby-comment cmt"># File lib/record_filter/dsl/conjunction_dsl.rb, line 48</span>&#x000A;      <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">with</span>(<span class="ruby-identifier">column</span>, <span class="ruby-identifier">value</span>=<span class="ruby-constant">Restriction</span><span class="ruby-operator">::</span><span class="ruby-constant">DEFAULT_VALUE</span>)&#x000A;        <span class="ruby-keyword kw">return</span> <span class="ruby-ivar">@conjunction</span>.<span class="ruby-identifier">add_restriction</span>(<span class="ruby-identifier">column</span>, <span class="ruby-identifier">value</span>)&#x000A;      <span class="ruby-keyword kw">end</span></pre>
+                  <pre id='M000030-source'><span class="ruby-comment cmt"># File lib/record_filter/dsl/conjunction_dsl.rb, line 48</span>&#x000A;      <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">with</span>(<span class="ruby-identifier">column</span>, <span class="ruby-identifier">value</span>=<span class="ruby-constant">Restriction</span><span class="ruby-operator">::</span><span class="ruby-constant">DEFAULT_VALUE</span>)&#x000A;        <span class="ruby-keyword kw">return</span> <span class="ruby-ivar">@conjunction</span>.<span class="ruby-identifier">add_restriction</span>(<span class="ruby-identifier">column</span>, <span class="ruby-identifier">value</span>)&#x000A;      <span class="ruby-keyword kw">end</span></pre>
                 </div>
               </div>
             </div>

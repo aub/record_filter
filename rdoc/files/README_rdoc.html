@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html lang='en'>
   <head>
-    <title>File: README.rdoc [record_filter 0.9.6]</title>
+    <title>File: README.rdoc [record_filter 0.9.8]</title>
     <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
     <link href='../rdoc-style.css' media='screen' rel='stylesheet' type='text/css'>
     <script type='text/javascript'>
@@ -32,7 +32,7 @@
         </div>
         <div class='last-update'>
           Last Update:
-          <span class='datetime'>Thu May 21 13:17:13 -0400 2009</span>
+          <span class='datetime'>Thu Jun 04 12:52:23 -0400 2009</span>
         </div>
       </div>
       <div id='content'>
@@ -149,7 +149,7 @@
             <p>
             The following example shows the use of each of these techniques:
             </p>
-            <pre>Post.filter do&#x000A;  any_of do&#x000A;    with(:permalink).is_null&#x000A;    having(:comments) do&#x000A;      with(:offensive, true)&#x000A;    end&#x000A;  end&#x000A;  limit(10, 100)&#x000A;  order(:created_at, :desc)&#x000A;  group_by(:comments =&gt; :offensive)&#x000A;end</pre>
+            <pre>Post.filter do&#x000A;  any_of do&#x000A;    with(:permalink).is_null&#x000A;    having(:comments) do&#x000A;      with(:offensive, true)&#x000A;    end&#x000A;  end&#x000A;  limit(100, 10)&#x000A;  order(:created_at, :desc)&#x000A;  group_by(:comments =&gt; :offensive)&#x000A;end</pre>
             <h3>Conditions</h3>
             <p>
             Conditions are specified using the &#8216;with&#8217; function, which takes
@@ -226,14 +226,14 @@
             In a filter for a Post model that has_many comments, the following two
             examples are equivalent:
             </p>
-            <pre>having(:comments)&#x000A;&#x000A;join(Comment, :inner) do&#x000A;  on(:id =&gt; :post_id)&#x000A;end</pre>
+            <pre>having(:comments)&#x000A;&#x000A;join(Comment, :join_type =&gt; :inner) do&#x000A;  on(:id =&gt; :post_id)&#x000A;end</pre>
             <p>
             With an explicit join, any number of columns can be matched in this way,
             and both join types accept a block in which any number of conditions,
             boolean operations, or other joins can be added. Explicit joins also allow
             conditions to be set on columns of the table being joined:
             </p>
-            <pre>having(:comments).with(:offensive, true)&#x000A;&#x000A;having(:comments) do&#x000A;  with(:created_at).greater_than(2.days.ago)&#x000A;end&#x000A;&#x000A;join(Comment, :inner) do&#x000A;  on(:id =&gt; :commentable_id)&#x000A;  on(:commentable_type).equal_to('Post')&#x000A;  with(:created_at).less_than(1.year.ago)&#x000A;end</pre>
+            <pre>having(:comments).with(:offensive, true)&#x000A;&#x000A;having(:comments) do&#x000A;  with(:created_at).greater_than(2.days.ago)&#x000A;end&#x000A;&#x000A;join(Comment, :join_type =&gt; :inner) do&#x000A;  on(:id =&gt; :commentable_id)&#x000A;  on(:commentable_type).equal_to('Post')&#x000A;  with(:created_at).less_than(1.year.ago)&#x000A;end</pre>
             <p>
             With implicit joins, it is also possible to use a hash as the association
             name, in which case multiple joins can be created with one statement. If
@@ -241,13 +241,21 @@
             add a condition on the author.
             </p>
             <pre>having(:comments =&gt; :author).with(:name, 'Bob')</pre>
+            <p>
+            For both join types, an options hash can be provided as the second argument
+            for passing the join type and/or an alias to use for the joined table. The
+            join type defaults to :inner, and the alias defaults to a unique name for
+            identifying the table. Using aliases allows you to join to a given table
+            twice with two different names. How about a contrived example? Awesome.
+            </p>
+            <pre>Blog.filter do&#x000A;  having(:posts, :join_type =&gt; :left, :alias =&gt; 'posts_1').with(:title, 'a')&#x000A;  having(:posts, :alias =&gt; 'posts_2').with(:title, 'b')&#x000A;end&#x000A;&#x000A;# SELECT DISTINCT &quot;blogs&quot;.* FROM &quot;blogs&quot;&#x000A;#   LEFT OUTER JOIN &quot;posts&quot; AS posts_1 ON &quot;blogs&quot;.id = posts_1.blog_id&#x000A;#   INNER JOIN &quot;posts&quot; AS posts_2 ON &quot;blogs&quot;.id = posts_2.blog_id&#x000A;#   WHERE ((posts_1.title = 'a') AND (posts_2.title = 'b'))</pre>
             <h3>Limits and Offsets</h3>
             <p>
             These are specified using the &#8216;limit&#8217; method, which takes two
-            arguments, the offset and the limit. If only one argument is given, it is
-            assumed to be the limit.
+            arguments, the limit and the offset. The offset is optional. For specifying
+            only offsets, the &#8216;offset&#8217; method is also available.
             </p>
-            <pre>limit(10, 100)   # :offset =&gt; 10, :limit =&gt; 100&#x000A;limit(100)       # :offset =&gt; 0, :limit =&gt; 100</pre>
+            <pre>limit(100, 10)   # :limit =&gt; 100, :offset =&gt; 100&#x000A;limit(100)       # :limit =&gt; 100&#x000A;offset(10)       # :offset =&gt; 10</pre>
             <h3>Ordering</h3>
             <p>
             Ordering is done through the &#8216;order&#8217; method, which accepts
@@ -268,6 +276,14 @@
             result, maintaining the order in which they were given.
             </p>
             <pre>Post.filter do&#x000A;  having(:comments).with(:created_at).greater_than(1.hour.ago)&#x000A;  group_by(:permalink)&#x000A;  group_by(:comments =&gt; :offensive)&#x000A;end&#x000A;&#x000A;# :group =&gt; &quot;'posts'.permalink, posts__comments.offensive'</pre>
+            <h3>Distinct</h3>
+            <p>
+            Filters that include outer joins are automatically made distinct by
+            record_filter. For filters that use inner joins, use the
+            &#8216;distinct&#8217; method in the DSL to force the select to be
+            distinct.
+            </p>
+            <pre>Blog.filter do&#x000A;  with(:created_at).greater_than(1.day.ago)&#x000A;  having(:posts).with(:permalink, nil)&#x000A;  distinct&#x000A;end&#x000A;&#x000A;# :select =&gt; &quot;DISTINCT 'blogs'.*&quot;</pre>
             <h2>LICENSE:</h2>
             <p>
             (The MIT License)

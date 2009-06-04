@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html lang='en'>
   <head>
-    <title>: RecordFilter::DSL::DSL [record_filter 0.9.6]</title>
+    <title>: RecordFilter::DSL::DSL [record_filter 0.9.8]</title>
     <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
     <link href='../../../rdoc-style.css' media='screen' rel='stylesheet' type='text/css'>
     <script type='text/javascript'>
@@ -46,6 +46,7 @@
             <h2>Methods</h2>
             <h3>public instance</h3>
             <ol>
+              <li><a href="#M000029">distinct</a></li>
               <li><a href="#M000028">group_by</a></li>
               <li><a href="#M000025">limit</a></li>
               <li><a href="#M000026">offset</a></li>
@@ -55,6 +56,37 @@
           <div id='section'>
             <div id='methods'>
               <h2>Public instance methods</h2>
+              <div class='public-instance method' id='method-M000029'>
+                <a name='M000029'>      </a>
+                <div class='synopsis'>
+                  <span class='name'>distinct</span>
+                  <span class='arguments'>()</span>
+                </div>
+                <div class='description'>
+                  <p>
+                  Specify that the resulting query should select distinct results. This
+                  method can only be called in the outermost scope of a filter (i.e. not
+                  inside of a having block, etc.).
+                  </p>
+                  <h4>Parameters</h4>
+                  <p>
+                  none
+                  </p>
+                  <h4>Returns</h4>
+                  <p>
+                  nil
+                  </p>
+                  <p>
+                  @public
+                  </p>
+                </div>
+                <div class='source'>
+                  <a class='source-toggle' href='#' onclick="toggleCode('M000029-source'); return false">
+                    [show source]
+                  </a>
+                  <pre id='M000029-source'><span class="ruby-comment cmt"># File lib/record_filter/dsl/dsl.rb, line 137</span>&#x000A;      <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">distinct</span>&#x000A;        <span class="ruby-ivar">@conjunction</span>.<span class="ruby-identifier">set_distinct</span>&#x000A;        <span class="ruby-keyword kw">nil</span>&#x000A;      <span class="ruby-keyword kw">end</span></pre>
+                </div>
+              </div>
               <div class='public-instance method' id='method-M000028'>
                 <a name='M000028'>      </a>
                 <div class='synopsis'>
@@ -99,14 +131,14 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('M000028-source'); return false">
                     [show source]
                   </a>
-                  <pre id='M000028-source'><span class="ruby-comment cmt"># File lib/record_filter/dsl/dsl.rb, line 128</span>&#x000A;      <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">group_by</span>(<span class="ruby-identifier">column</span>)&#x000A;        <span class="ruby-ivar">@conjunction</span>.<span class="ruby-identifier">add_group_by</span>(<span class="ruby-identifier">column</span>)&#x000A;        <span class="ruby-keyword kw">nil</span>&#x000A;      <span class="ruby-keyword kw">end</span></pre>
+                  <pre id='M000028-source'><span class="ruby-comment cmt"># File lib/record_filter/dsl/dsl.rb, line 121</span>&#x000A;      <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">group_by</span>(<span class="ruby-identifier">column</span>)&#x000A;        <span class="ruby-ivar">@conjunction</span>.<span class="ruby-identifier">add_group_by</span>(<span class="ruby-identifier">column</span>)&#x000A;        <span class="ruby-keyword kw">nil</span>&#x000A;      <span class="ruby-keyword kw">end</span></pre>
                 </div>
               </div>
               <div class='public-instance method' id='method-M000025'>
                 <a name='M000025'>      </a>
                 <div class='synopsis'>
                   <span class='name'>limit</span>
-                  <span class='arguments'>(offset, limit=nil)</span>
+                  <span class='arguments'>(limit, offset=nil)</span>
                 </div>
                 <div class='description'>
                   <p>
@@ -117,21 +149,17 @@
                   </p>
                   <h4>Parameters</h4>
                   <table>
-                  <tr><td valign="top">offset<Integer>:</td><td>Used for the offset of the query.
+                  <tr><td valign="top">limit<Integer>:</td><td>Used for the limit of the query.
                   
                   </td></tr>
-                  <tr><td valign="top">limit<Integer:</td><td>Used as the limit for the query.
+                  <tr><td valign="top">offset<Integer>:</td><td>Used as the offset for the query. This argument is optional, with the
+                  default being no offset.
                   
                   </td></tr>
                   </table>
                   <h4>Returns</h4>
                   <p>
                   nil
-                  </p>
-                  <h4>Alternatives</h4>
-                  <p>
-                  If called with a single argument, it is assumed to represent the limit, and
-                  no offset will be specified.
                   </p>
                   <p>
                   @public
@@ -141,7 +169,7 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('M000025-source'); return false">
                     [show source]
                   </a>
-                  <pre id='M000025-source'><span class="ruby-comment cmt"># File lib/record_filter/dsl/dsl.rb, line 24</span>&#x000A;      <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">limit</span>(<span class="ruby-identifier">offset</span>, <span class="ruby-identifier">limit</span>=<span class="ruby-keyword kw">nil</span>)&#x000A;        <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">limit</span>&#x000A;          <span class="ruby-ivar">@conjunction</span>.<span class="ruby-identifier">add_limit</span>(<span class="ruby-identifier">limit</span>, <span class="ruby-identifier">offset</span>)&#x000A;        <span class="ruby-keyword kw">else</span>&#x000A;          <span class="ruby-ivar">@conjunction</span>.<span class="ruby-identifier">add_limit</span>(<span class="ruby-identifier">offset</span>, <span class="ruby-keyword kw">nil</span>)&#x000A;        <span class="ruby-keyword kw">end</span>&#x000A;        <span class="ruby-keyword kw">nil</span>&#x000A;      <span class="ruby-keyword kw">end</span></pre>
+                  <pre id='M000025-source'><span class="ruby-comment cmt"># File lib/record_filter/dsl/dsl.rb, line 21</span>&#x000A;      <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">limit</span>(<span class="ruby-identifier">limit</span>, <span class="ruby-identifier">offset</span>=<span class="ruby-keyword kw">nil</span>)&#x000A;        <span class="ruby-ivar">@conjunction</span>.<span class="ruby-identifier">add_limit</span>(<span class="ruby-identifier">limit</span>, <span class="ruby-identifier">offset</span>)&#x000A;        <span class="ruby-keyword kw">nil</span>&#x000A;      <span class="ruby-keyword kw">end</span></pre>
                 </div>
               </div>
               <div class='public-instance method' id='method-M000026'>
@@ -175,7 +203,7 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('M000026-source'); return false">
                     [show source]
                   </a>
-                  <pre id='M000026-source'><span class="ruby-comment cmt"># File lib/record_filter/dsl/dsl.rb, line 46</span>&#x000A;      <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">offset</span>(<span class="ruby-identifier">offset</span>)&#x000A;        <span class="ruby-ivar">@conjunction</span>.<span class="ruby-identifier">add_limit</span>(<span class="ruby-keyword kw">nil</span>, <span class="ruby-identifier">offset</span>)&#x000A;        <span class="ruby-keyword kw">nil</span>&#x000A;      <span class="ruby-keyword kw">end</span></pre>
+                  <pre id='M000026-source'><span class="ruby-comment cmt"># File lib/record_filter/dsl/dsl.rb, line 39</span>&#x000A;      <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">offset</span>(<span class="ruby-identifier">offset</span>)&#x000A;        <span class="ruby-ivar">@conjunction</span>.<span class="ruby-identifier">add_limit</span>(<span class="ruby-keyword kw">nil</span>, <span class="ruby-identifier">offset</span>)&#x000A;        <span class="ruby-keyword kw">nil</span>&#x000A;      <span class="ruby-keyword kw">end</span></pre>
                 </div>
               </div>
               <div class='public-instance method' id='method-M000027'>
@@ -233,7 +261,7 @@
                   <a class='source-toggle' href='#' onclick="toggleCode('M000027-source'); return false">
                     [show source]
                   </a>
-                  <pre id='M000027-source'><span class="ruby-comment cmt"># File lib/record_filter/dsl/dsl.rb, line 90</span>&#x000A;      <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">order</span>(<span class="ruby-identifier">column</span>, <span class="ruby-identifier">direction</span>=<span class="ruby-identifier">:asc</span>)&#x000A;        <span class="ruby-keyword kw">unless</span> [<span class="ruby-identifier">:asc</span>, <span class="ruby-identifier">:desc</span>].<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">direction</span>)&#x000A;          <span class="ruby-identifier">raise</span> <span class="ruby-constant">InvalidFilterException</span>.<span class="ruby-identifier">new</span>(<span class="ruby-node">&quot;The direction for orders must be either :asc or :desc but was #{direction}&quot;</span>)&#x000A;        <span class="ruby-keyword kw">end</span>&#x000A;        <span class="ruby-ivar">@conjunction</span>.<span class="ruby-identifier">add_order</span>(<span class="ruby-identifier">column</span>, <span class="ruby-identifier">direction</span>)&#x000A;        <span class="ruby-keyword kw">nil</span>&#x000A;      <span class="ruby-keyword kw">end</span></pre>
+                  <pre id='M000027-source'><span class="ruby-comment cmt"># File lib/record_filter/dsl/dsl.rb, line 83</span>&#x000A;      <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">order</span>(<span class="ruby-identifier">column</span>, <span class="ruby-identifier">direction</span>=<span class="ruby-identifier">:asc</span>)&#x000A;        <span class="ruby-keyword kw">unless</span> [<span class="ruby-identifier">:asc</span>, <span class="ruby-identifier">:desc</span>].<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">direction</span>)&#x000A;          <span class="ruby-identifier">raise</span> <span class="ruby-constant">InvalidFilterException</span>.<span class="ruby-identifier">new</span>(<span class="ruby-node">&quot;The direction for orders must be either :asc or :desc but was #{direction}&quot;</span>)&#x000A;        <span class="ruby-keyword kw">end</span>&#x000A;        <span class="ruby-ivar">@conjunction</span>.<span class="ruby-identifier">add_order</span>(<span class="ruby-identifier">column</span>, <span class="ruby-identifier">direction</span>)&#x000A;        <span class="ruby-keyword kw">nil</span>&#x000A;      <span class="ruby-keyword kw">end</span></pre>
                 </div>
               </div>
             </div>
