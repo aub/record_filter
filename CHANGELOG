@@ -1,3 +1,13 @@
+= 0.9.8
+
+* BREAKING CHANGE: changed the arguments to the 'having' method so that it
+takes an association name and an options hash. The options hash takes
+:join_type and :alias. This will break existing code where the join_type was
+passed as the first argument to the method. The alias is a new option that
+allows you to alias joins, which lets you join in the same association twice.
+
+* Added a distinct method to force queries to be distinct.
+
 = 0.9.7
 
 * Fix a bug where explicit joins would not honor different aliases if joining

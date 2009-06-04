@@ -169,20 +169,28 @@ module RecordFilter
       #       with(:created_at).greater_than(3.days.ago)
       #     end
       #   end
-      # If one argument is given, it is assumed to represent the name of the association
-      # that will be used for the join and a join type of :inner will be used by default. If two arguments
-      # are provided, the first one is assumed to be the join type, which can be one of :inner, :left or 
-      # :right and the second one is the association name. An alias will automatically be created
+      # Options can be passed to provide a custom join type or table alias through the options
+      # hash. The :join_type option can be either :inner, :left or :right and will default to
+      # :inner if not provided. The :alias option allows you to provide an alias for use in joining
+      # the table. If the same association is joined twice with different aliases, it will be treated
+      # as two separate joins. By default an alias will automatically be created
       # for the joined table named "#{left_table}__#{association_name}", so in the above example, the
       # alias would be posts__comments. It is also possible to provide a hash as the association
       # name, in which case a trail of associations can be joined in one statment.
       #
       # ==== Parameters
-      # join_type<Symbol>::
-      #   Specifies the type of join to perform, and can be one of :inner, :left or :right. :left
-      #   and :right will create left and right outer joins, respectively.
       # association<Symbol>::
       #   The name of the association to use as a base for the join.
+      # options<Hash>::
+      #   An options hash (see below)
+      #
+      # ==== Options (options)
+      # :join_type<Symbol>::
+      #   The type of join to use. Available options are :inner, :left and :right. Defaults to :inner.
+      # :alias<String>::
+      #   An alias to use for the table name in the join. If provided, will create a unique name for
+      #   the join and allow the same association to be joined multiple times. By default, the alias
+      #   will be "#{left_table}__#{association_name}".
       #
       # ==== Returns
       # ConjunctionDSL::
@@ -193,11 +201,8 @@ module RecordFilter
       # be used as the association name.
       #
       # @public
-      def having(join_type, association=nil, &block)
-        if association.nil?
-          association, join_type = join_type, nil
-        end
-        @conjunction.add_join(association, join_type, &block)
+      def having(association, options={}, &block)
+        @conjunction.add_join(association, options[:join_type], options[:alias], &block)
       end
 
       # Create an explicit join on the table of the given class. This method allows more complex

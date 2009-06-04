@@ -129,6 +129,22 @@ module RecordFilter
         @conjunction.add_group_by(column)
         nil
       end
+
+      # Specify that the resulting query should select distinct results.  This method 
+      # can only be called in the outermost scope of a filter (i.e. not inside of a having 
+      # block, etc.).
+      #
+      # ==== Parameters
+      # none
+      #
+      # ==== Returns
+      # nil
+      #
+      # @public
+      def distinct
+        @conjunction.set_distinct
+        nil
+      end
     end
   end
 end

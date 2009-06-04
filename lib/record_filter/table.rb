@@ -16,35 +16,38 @@ module RecordFilter
       @table_name ||= @model_class.quoted_table_name
     end
 
-    def join_association(association_name, join_type=nil, options={})
+    def join_association(association_name, options={})
       association_name = association_name.to_sym
-      @joins_cache[association_name] ||=
-        begin
-          association = @model_class.reflect_on_association(association_name)
-          if association.nil?
-            raise AssociationNotFoundException.new("The association #{association_name} was not found on #{@model_class.name}.")
-          end
-          if (association.options[:through])
-            through_association = @model_class.reflect_on_association(association.options[:through])
+      join_type = options[:join_type] || :inner
+      cache_key = options[:alias] || association_name
+      @joins_cache[cache_key] ||= begin
+        association = @model_class.reflect_on_association(association_name)
+        if association.nil?
+          raise AssociationNotFoundException.new("The association #{association_name} was not found on #{@model_class.name}.")
+        end
+        if (association.options[:through])
+          through_association = @model_class.reflect_on_association(association.options[:through])
 
-            through_join = join_association(
-              association.options[:through], 
-              join_type, 
-              :type_restriction => association.options[:source_type], 
-              :source => association.options[:source])
+          through_join = join_association(
+            association.options[:through], 
+            :join_type => join_type, 
+            :type_restriction => association.options[:source_type], 
+            :source => association.options[:source])
 
-            through_join.right_table.join_association(
-              association.options[:source] || association_name, join_type, :join_class => association.options[:source_type])
-          else
-            case association.macro
-            when :belongs_to, :has_many, :has_one
-              simple_join(association, join_type, options)
-            when :has_and_belongs_to_many
-              compound_join(association, join_type)
-            else raise InvalidJoinException.new("I don't know how to join on an association of type #{association.macro}.")
-            end
+          through_join.right_table.join_association(
+            association.options[:source] || association_name, 
+            :join_type => join_type,
+            :join_class => association.options[:source_type])
+        else
+          case association.macro
+          when :belongs_to, :has_many, :has_one
+            simple_join(association, join_type, options)
+          when :has_and_belongs_to_many
+            compound_join(association, join_type, options)
+          else raise InvalidJoinException.new("I don't know how to join on an association of type #{association.macro}.")
           end
         end
+      end
     end
 
     def join_class(clazz, join_type, table_alias, conditions)
@@ -109,7 +112,7 @@ module RecordFilter
 
       clazz = options[:join_class].nil? ? association.klass : options[:join_class].constantize
 
-      join_table = Table.new(clazz, alias_for_association(association))
+      join_table = Table.new(clazz, options[:alias] || alias_for_association(association))
       @joins << join = Join.new(self, join_table, join_predicate, join_type)
       join
     end
@@ -125,13 +128,13 @@ module RecordFilter
         end
     end
 
-    def compound_join(association, join_type)
+    def compound_join(association, join_type, options)
       pivot_join_predicate = [{ @model_class.primary_key => association.primary_key_name.to_sym }]
       table_name = @model_class.connection.quote_table_name(association.options[:join_table])
-      pivot_table = PivotTable.new(table_name, association, "__#{alias_for_association(association)}")
+      pivot_table = PivotTable.new(table_name, association, "__#{options[:alias] || alias_for_association(association)}")
       pivot_join = Join.new(self, pivot_table, pivot_join_predicate, join_type)
       join_predicate = [{ association.association_foreign_key.to_sym => @model_class.primary_key }]
-      join_table = Table.new(association.klass, alias_for_association(association))
+      join_table = Table.new(association.klass, options[:alias] || alias_for_association(association))
       pivot_table.joins << join = Join.new(pivot_table, join_table, join_predicate, join_type)
       @joins << pivot_join
       join

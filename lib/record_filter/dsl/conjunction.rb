@@ -2,10 +2,10 @@ module RecordFilter
   module DSL
     class Conjunction # :nodoc: all
 
-      attr_reader :type, :steps
+      attr_reader :type, :steps, :distinct
 
       def initialize(model_class, type=:all_of)
-        @model_class, @type, @steps = model_class, type, []
+        @model_class, @type, @steps, @distinct = model_class, type, [], false
       end
 
       def add_restriction(column, value)
@@ -19,10 +19,10 @@ module RecordFilter
         @steps << dsl.conjunction
       end
 
-      def add_join(association, join_type, &block)
+      def add_join(association, join_type, aliaz, &block)
         dsl = ConjunctionDSL.new(@model_class, Conjunction.new(@model_class, :all_of))
         dsl.instance_eval(&block) if block
-        @steps << Join.new(association, join_type, dsl.conjunction)
+        @steps << Join.new(association, join_type, dsl.conjunction, aliaz)
         dsl
       end
 
@@ -43,6 +43,10 @@ module RecordFilter
 
       def add_group_by(column)
         @steps << GroupBy.new(column)
+      end
+
+      def set_distinct
+        @distinct = true
       end
 
       def add_named_filter(method, *args)

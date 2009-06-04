@@ -1,7 +1,7 @@
 module RecordFilter
   module Conjunctions # :nodoc: all
     class Base
-      attr_reader :table_name, :limit, :offset
+      attr_reader :table_name, :limit, :offset, :distinct
 
       def self.create_from(dsl_conjunction, table)
         result = case dsl_conjunction.type
@@ -19,7 +19,7 @@ module RecordFilter
           when DSL::Conjunction 
             result.add_conjunction(create_from(step, table)) 
           when DSL::Join
-            join = result.add_join_on_association(step.association, step.join_type)
+            join = result.add_join_on_association(step.association, step.join_type, step.aliaz)
             result.add_conjunction(create_from(step.conjunction, join.right_table))
           when DSL::ClassJoin
             join = result.add_join_on_class(
@@ -36,6 +36,7 @@ module RecordFilter
           else raise InvalidFilterException.new('And invalid filter step was provided.')
           end
         end
+        result.set_distinct(dsl_conjunction.distinct)
         result
       end
 
@@ -44,6 +45,7 @@ module RecordFilter
         @table_name = table.table_alias
         @restrictions = restrictions || []
         @joins = joins || []
+        @distinct = false
       end
 
       def add_restriction(column_name, operator, value, options={})
@@ -57,13 +59,13 @@ module RecordFilter
         conjunction
       end
 
-      def add_join_on_association(association_name, join_type)
+      def add_join_on_association(association_name, join_type, aliaz)
         table = @table
         while association_name.is_a?(Hash)
-          table = table.join_association(association_name.keys[0], join_type).right_table
+          table = table.join_association(association_name.keys[0], { :join_type => join_type }).right_table
           association_name = association_name.values[0]
         end
-        table.join_association(association_name, join_type)
+        table.join_association(association_name, :join_type => join_type, :alias => aliaz)
       end
       
       def add_join_on_class(join_class, join_type, table_alias, conditions)
@@ -80,6 +82,10 @@ module RecordFilter
 
       def add_limit_and_offset(limit, offset)
         @limit, @offset = limit, offset
+      end
+
+      def set_distinct(value)
+        @distinct = value
       end
 
       def add_named_filter(name, args)

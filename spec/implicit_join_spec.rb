@@ -224,7 +224,7 @@ describe 'implicit joins' do
   describe 'passing the join type to having' do
     before do
       Blog.filter do
-        having(:left, :posts) do
+        having(:posts, :join_type => :left) do
           with(:permalink, 'ack')
         end
       end.inspect
@@ -242,7 +242,7 @@ describe 'implicit joins' do
   describe 'passing the join type to having with multiple joins' do
     before do
       Blog.filter do
-        having(:left, :posts => :comments) do
+        having({ :posts => :comments }, :join_type => :left) do
           with(:offensive, true)
         end
       end.inspect
@@ -327,6 +327,41 @@ describe 'implicit joins' do
 
     it 'should create the correct join' do
       Post.last_find[:joins].should == [%q(INNER JOIN "comments" AS posts__comments ON "posts".id = posts__comments.post_id)]
+    end
+  end
+
+  describe 'using a table alias' do
+    before do
+      Post.filter do
+        having(:comments, :alias => 'arghs') do
+          with(:offensive, true)
+        end
+      end.inspect
+    end
+
+    it 'should create the correct condition' do
+      Post.last_find[:conditions].should == [%q(arghs.offensive = ?), true]
+    end
+
+    it 'should create the correct join' do
+      Post.last_find[:joins].should == [%q(INNER JOIN "comments" AS arghs ON "posts".id = arghs.post_id)]
+    end
+  end
+
+  describe 'using a table alias to do multiple joins on the same association' do
+    before do
+      Post.filter do
+        having(:comments, :alias => 'ooohs').with(:offensive, true)
+        having(:comments, :alias => 'aaahs').with(:offensive, false)
+      end.inspect
+    end
+
+    it 'should create the correct condition' do
+      Post.last_find[:conditions].should == [%q((ooohs.offensive = ?) AND (aaahs.offensive = ?)), true, false]
+    end
+
+    it 'should create the correct join' do
+      Post.last_find[:joins].should == [%q(INNER JOIN "comments" AS ooohs ON "posts".id = ooohs.post_id), %q(INNER JOIN "comments" AS aaahs ON "posts".id = aaahs.post_id)]
     end
   end
 end
