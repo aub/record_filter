@@ -70,7 +70,16 @@ module RecordFilter
     end
 
     def do_with_scope(count_query=false, &block) # :nodoc:
-      @clazz.send(:with_scope, { :find => proxy_options(count_query), :create => proxy_options(count_query) }, :reverse_merge) do
+      options = proxy_options(count_query)
+      @clazz.send(:with_scope, { :find => options, :create => options }, :reverse_merge) do
+        scoped_methods = @current_scoped_methods
+        # This is annoying, but we want the select statement from the proxy options to win if
+        # it is more specific than one in the current options from DISTINCT.
+        if scoped_methods && scoped_methods[:find] && scoped_methods[:find][:select] && options[:select] && 
+            options[:select] == "DISTINCT #{scoped_methods[:find][:select]}"
+          scoped_methods[:find] = scoped_methods[:find].dup
+          scoped_methods[:find].delete(:select)
+        end
         if @current_scoped_methods
           @clazz.send(:with_scope, @current_scoped_methods) do
             block.call

@@ -64,4 +64,15 @@ describe 'with custom selects for cases where DISTINCT is required' do
       Blog.last_find[:select].should == %q(DISTINCT "blogs".*)
     end
   end
+
+  describe 'using the distinct method when chaining named scopes with joins that do not need it' do
+    it 'should add distinct' do
+      Comment.named_filter(:dirty) do
+        with(:offensive, true)
+        distinct
+      end
+      Blog.first.comments.dirty.inspect
+      Comment.last_find[:select].should == %q(DISTINCT "comments".*)
+    end
+  end
 end

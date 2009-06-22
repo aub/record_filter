@@ -1,3 +1,8 @@
+= 0.9.9
+
+* Fixed a bug where distinct wasn't being applied when chaining with has_many
+:through associations.
+
 = 0.9.8
 
 * BREAKING CHANGE: changed the 'limit' method so that the limit is always the
