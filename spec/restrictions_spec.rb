@@ -240,4 +240,11 @@ describe 'RecordFilter restrictions' do
     end.inspect
     Post.last_find.should == { :readonly => false, :conditions => [%q(("posts".id > ?) AND (("posts".id < ?) OR (("posts".id > ?) OR ("posts".id < ?)))), 56, 200, 500, 15] } 
   end
+
+  it 'should properly filter when filter is applied to an association' do
+    Post.first.comments.filter do
+      with(:offensive, true)
+    end.inspect
+    Comment.last_find.should == { :readonly => false, :conditions => [%q("comments".offensive = ?), true] }
+  end
 end

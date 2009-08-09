@@ -95,8 +95,14 @@ module RecordFilter
         @local_named_filters ||= []
       end
     end
+
+    module AssociationInstanceMethods
+      def filter(&block)
+        Filter.new(@reflection.klass, nil, &block)
+      end
+    end
   end
 end
 
 ActiveRecord::Base.send(:extend, RecordFilter::ActiveRecordExtension::ClassMethods)
-
+ActiveRecord::Associations::AssociationCollection.send(:include, RecordFilter::ActiveRecordExtension::AssociationInstanceMethods)
