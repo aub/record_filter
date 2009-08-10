@@ -242,6 +242,7 @@ describe 'RecordFilter restrictions' do
   end
 
   it 'should properly filter when filter is applied to an association' do
+    Post.create
     Post.first.comments.filter do
       with(:offensive, true)
     end.inspect
