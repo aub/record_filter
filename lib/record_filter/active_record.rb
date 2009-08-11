@@ -98,7 +98,7 @@ module RecordFilter
 
     module AssociationInstanceMethods
       def filter(&block)
-        Filter.new(@reflection.klass, nil, &block)
+        Filter.new(self, @finder_sql, &block)
       end
     end
   end

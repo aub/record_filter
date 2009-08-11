@@ -10,11 +10,17 @@ module RecordFilter
       end
     end
 
-    def initialize(clazz, named_filter, *args, &block) # :nodoc:
-      @current_scoped_methods = clazz.send(:current_scoped_methods)
-      @clazz = clazz
+    def initialize(clazz, filter, *args, &block) # :nodoc:
+      if clazz.is_a?(Class)
+        @current_scoped_methods = clazz.send(:current_scoped_methods)
+        @clazz = clazz
+      elsif clazz.is_a?(Array) && clazz.respond_to?(:proxy_reflection)
+        @current_scoped_methods = { :create => {}, :find => { :conditions => filter } }
+        @clazz = clazz.proxy_reflection.klass
+        filter = nil
+      end
 
-      @query = Query.new(@clazz, named_filter, *args, &block)
+      @query = Query.new(@clazz, filter, *args, &block)
     end
 
     def first(*args) # :nodoc:

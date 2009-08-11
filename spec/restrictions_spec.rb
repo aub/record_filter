@@ -246,6 +246,6 @@ describe 'RecordFilter restrictions' do
     Post.first.comments.filter do
       with(:offensive, true)
     end.inspect
-    Comment.last_find.should == { :readonly => false, :conditions => [%q("comments".offensive = ?), true] }
+    Comment.last_find.should == { :readonly => false, :conditions => "(\"comments\".offensive = 't') AND (\"comments\".post_id = #{Post.first.id})" }
   end
 end
