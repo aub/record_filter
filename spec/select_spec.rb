@@ -71,6 +71,7 @@ describe 'with custom selects for cases where DISTINCT is required' do
         with(:offensive, true)
         distinct
       end
+      Blog.create
       Blog.first.comments.dirty.inspect
       Comment.last_find[:select].should == %q(DISTINCT "comments".*)
     end

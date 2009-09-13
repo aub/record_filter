@@ -102,8 +102,8 @@ describe 'named filters' do
     end
 
     it 'should provide access to the named filters' do
-      @comment.named_filters.should == [:with_contents]
-      @nice_comment.named_filters.sort_by { |i| i.to_s }.should == [:offensive, :with_contents]
+      @nice_comment.named_filters.sort_by { |i| i.to_s }.should == 
+        (@comment.named_filters << :offensive).sort_by { |i| i.to_s }
     end
   end
 
