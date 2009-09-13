@@ -8,7 +8,7 @@ end
 
 require 'spec'
 require 'sqlite3'
-require 'record_filter'
+require File.join(File.dirname(__FILE__), '..', 'lib', 'record_filter')
 
 module TestModel
   mattr_reader :extended_models
