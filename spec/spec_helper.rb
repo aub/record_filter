@@ -1,6 +1,4 @@
 require 'rubygems'
-gem 'rspec', '~> 1.1'
-gem 'sqlite3-ruby'
 
 begin
   require 'ruby-debug'
@@ -9,8 +7,8 @@ rescue LoadError
 end
 
 require 'spec'
-
-require File.join(File.dirname(__FILE__), '..', 'lib', 'record_filter')
+require 'sqlite3'
+require 'record_filter'
 
 module TestModel
   mattr_reader :extended_models
