@@ -400,4 +400,16 @@ describe 'implicit joins' do
       Post.last_find[:joins].should == [%q(INNER JOIN "comments" AS arghs ON "posts".id = arghs.post_id)]
     end
   end
+
+  describe 'with nonstandard primary and foreign keys' do
+    it 'should join with the correct key on belongs_to' do
+      Subscription.filter { having(:user).with(:first_name, 'Bob') }.inspect
+      Subscription.last_find[:joins].should == [%q(INNER JOIN "users" AS subscriptions__user ON "subscriptions".email = subscriptions__user.email_address)]
+    end
+
+    it 'should join to the correct key on has_many' do
+      User.filter { having(:subscriptions).with(:created_at).gt(3.weeks.ago.utc) }.inspect
+      User.last_find[:joins].should == [%q(INNER JOIN "subscriptions" AS users__subscriptions ON "users".email_address = users__subscriptions.email)]
+    end
+  end
 end

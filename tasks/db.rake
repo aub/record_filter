@@ -92,6 +92,11 @@ namespace :db do
           t.integer :stars_count
         end
 
+        create_table :subscriptions do |t|
+          t.string :email
+          t.timestamps
+        end
+
         create_table :tags do |t|
           t.string :name
         end
@@ -99,6 +104,7 @@ namespace :db do
         create_table :users do |t|
           t.string :first_name
           t.string :last_name
+          t.string :email_address
         end
       end
     end

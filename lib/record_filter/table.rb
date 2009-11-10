@@ -122,7 +122,10 @@ module RecordFilter
       join_predicate =
         case association.macro
         when :belongs_to
-          [{ association.options[:foreign_key] || association.primary_key_name.to_sym => @model_class.primary_key }]
+          [{ 
+            (association.options[:foreign_key] || association.primary_key_name.to_sym) => 
+            (association.options[:primary_key] || @model_class.primary_key)
+          }]
         when :has_many, :has_one
           [{ association.options[:primary_key] || @model_class.primary_key => association.primary_key_name.to_sym }]
         else raise InvalidJoinException.new("I don't know how to do a simple join on an association of type #{association.macro}.")

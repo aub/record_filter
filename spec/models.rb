@@ -96,6 +96,12 @@ class NewsStory < ActiveRecord::Base
 end
 
 
+class Subscription < ActiveRecord::Base
+  extend TestModel
+  belongs_to :user, :primary_key => :email_address, :foreign_key => :email
+end
+
+
 class Tag < ActiveRecord::Base
   has_and_belongs_to_many :posts
 end
@@ -105,5 +111,6 @@ class User < ActiveRecord::Base
   extend TestModel
   has_one :author
   has_many :comments
+  has_many :subscriptions, :primary_key => :email_address, :foreign_key => :email
 end
 
