@@ -50,6 +50,7 @@ module RecordFilter
         dsl_restriction.operator,
         "#{@right_table.table_alias}.#{dsl_restriction.column}",
         dsl_restriction.value,
+        @right_table,
         :negated => dsl_restriction.negated)
       @right_table.model_class.merge_conditions(restriction.to_conditions)
     end

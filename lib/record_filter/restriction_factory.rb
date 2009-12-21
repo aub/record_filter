@@ -13,8 +13,8 @@ module RecordFilter
       :like => Restrictions::Like
     }
 
-    def self.build(operator, column_name, value, options)
-      OPERATOR_HASH[operator].new(column_name, value, options)
+    def self.build(operator, column_name, value, table, options)
+      OPERATOR_HASH[operator].new(column_name, value, table, options)
     end
   end
 end

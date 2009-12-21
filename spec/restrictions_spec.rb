@@ -248,4 +248,20 @@ describe 'RecordFilter restrictions' do
     end.inspect
     Comment.last_find.should == { :readonly => false, :conditions => "(\"comments\".offensive = 't') AND (\"comments\".post_id = #{Post.first.id})" }
   end
+
+  it 'should allow a hash as the value for the restriction and use that as the name of a table' do
+    Blog.filter do
+      having(:comments)
+      with(:created_at).gt(:comments => :created_at)
+    end.inspect
+    Blog.last_find[:conditions].should == [%q(("blogs".created_at > blogs__posts__comments.created_at))]
+  end
+
+  it 'should allow a hash as the value for the restriction and use that as the name of a table alias' do
+    Blog.filter do
+      having(:comments, :alias => 'cmts')
+      with(:created_at).gt('cmts' => :created_at)
+    end.inspect
+    Blog.last_find[:conditions].should == [%q(("blogs".created_at > cmts.created_at))]
+  end
 end

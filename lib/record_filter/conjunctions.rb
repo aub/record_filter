@@ -50,7 +50,7 @@ module RecordFilter
 
       def add_restriction(column_name, operator, value, options={})
         check_column_exists!(column_name)
-        restriction = RestrictionFactory.build(operator, "#{@table_name}.#{column_name}", value, options)
+        restriction = RestrictionFactory.build(operator, "#{@table_name}.#{column_name}", value, @table, options)
         self << restriction
       end
 
