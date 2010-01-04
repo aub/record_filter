@@ -19,7 +19,8 @@ module RecordFilter
       #
       # @public
       def limit(limit, offset=nil)
-        @conjunction.add_limit(limit, offset)
+        @conjunction.add_limit(limit)
+        @conjunction.add_offset(offset) if offset
         nil
       end
 
@@ -37,7 +38,7 @@ module RecordFilter
       #
       # @public
       def offset(offset)
-        @conjunction.add_limit(nil, offset)
+        @conjunction.add_offset(offset)
         nil
       end
 

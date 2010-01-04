@@ -26,7 +26,9 @@ module RecordFilter
               step.join_class, step.join_type, step.table_alias, step.conditions)
             result.add_conjunction(create_from(step.conjunction, join.right_table))
           when DSL::Limit
-            result.add_limit_and_offset(step.limit, step.offset)
+            result.add_limit(step.limit)
+          when DSL::Offset
+            result.add_offset(step.offset)
           when DSL::Order
             result.add_order(step.column, step.direction)
           when DSL::GroupBy
@@ -80,8 +82,12 @@ module RecordFilter
         @table.group_by_column(column_name)
       end
 
-      def add_limit_and_offset(limit, offset)
-        @limit, @offset = limit, offset
+      def add_limit(limit)
+        @limit = limit
+      end
+
+      def add_offset(offset)
+        @offset = offset
       end
 
       def set_distinct(value)

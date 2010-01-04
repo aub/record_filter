@@ -91,6 +91,20 @@ describe 'filter qualifiers' do
       end
     end
 
+    describe 'with both a limit and an offset' do
+      before do
+        Post.filter do
+          limit(10)
+          offset(8)
+        end.inspect
+      end
+
+      it 'should add the limit and offset to the parameters' do
+        Post.last_find[:offset].should == 8
+        Post.last_find[:limit].should == 10
+      end
+    end
+
     describe 'offsetting named scopes' do
       before do
         @post = Class.new(Post)

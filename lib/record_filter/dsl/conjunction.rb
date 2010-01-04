@@ -33,8 +33,12 @@ module RecordFilter
         dsl
       end
 
-      def add_limit(limit, offset)
-        @steps << Limit.new(limit, offset)
+      def add_limit(limit)
+        @steps << Limit.new(limit)
+      end
+
+      def add_offset(offset)
+        @steps << Offset.new(offset)
       end
 
       def add_order(column, direction)

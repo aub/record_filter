@@ -2,10 +2,10 @@ module RecordFilter
   module DSL
     class Limit # :nodoc: all
 
-      attr_reader :limit, :offset
+      attr_reader :limit
 
-      def initialize(limit, offset)
-        @limit, @offset = limit, offset
+      def initialize(limit)
+        @limit = limit
       end
     end
   end
