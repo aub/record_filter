@@ -80,6 +80,13 @@ describe 'RecordFilter restrictions' do
     Post.last_find.should == { :readonly => false, :conditions => [%q("posts".blog_id IN (?)), []] }
   end
 
+  it 'should ignore the condition for NOT IN filters with empty arrays' do
+    Post.filter do
+      with(:blog_id).not_in([])
+    end.inspect
+    Post.last_find.should == { :readonly => false }
+  end
+
   it 'should do the right thing for IN filters with single values' do
     Post.filter do
       with(:blog_id).in(1)

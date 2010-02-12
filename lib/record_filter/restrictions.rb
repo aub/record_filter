@@ -90,8 +90,15 @@ module RecordFilter
       end
 
       def to_conditions
-        # Need to put in the value even if it's null in this case.
-        [to_sql, @value]
+        # For NOT IN conditions, passing an empty array as the value will
+        # produce a condition like "WHERE id NOT IN (NULL)", and that will
+        # return an empty set, which is presumably not what the user meant
+        # to get. Doing some babysitting here.
+        if @negated && @value.respond_to?(:empty?) && @value.empty?
+          []
+        else
+          [to_sql, @value]
+        end
       end
     end
 
