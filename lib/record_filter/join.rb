@@ -57,9 +57,9 @@ module RecordFilter
 
     def join_type_string
       @join_type_string ||= case(@join_type)
-        when :inner then 'INNER'
-        when :left then 'LEFT OUTER'
-        when :right then 'RIGHT OUTER'
+        when :inner, 'inner' then 'INNER'
+        when :left, 'left' then 'LEFT OUTER'
+        when :right, 'right' then 'RIGHT OUTER'
         else nil
       end
     end

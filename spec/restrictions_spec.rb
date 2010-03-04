@@ -84,7 +84,7 @@ describe 'RecordFilter restrictions' do
     Post.filter do
       with(:blog_id).not_in([])
     end.inspect
-    Post.last_find.should == { :readonly => false }
+    Post.last_find.should == { :conditions => [], :readonly => false }
   end
 
   it 'should do the right thing for IN filters with single values' do
@@ -270,5 +270,10 @@ describe 'RecordFilter restrictions' do
       with(:created_at).gt('cmts' => :created_at)
     end.inspect
     Blog.last_find[:conditions].should == [%q(("blogs".created_at > cmts.created_at))]
+  end
+
+  it 'should return the filter class from a filter' do
+    filter = Blog.filter { having(:comments) }
+    filter.filter_class.should == Blog
   end
 end

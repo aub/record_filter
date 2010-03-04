@@ -257,6 +257,14 @@ describe 'implicit joins' do
     end
   end
 
+  it 'should allow strings to be passed as the join type' do
+    Blog.filter do
+      having({ :posts => :comments }, :join_type => 'left') do
+        with(:offensive, true)
+      end
+    end.inspect
+  end
+
   describe 'on polymorphic associations' do
     before do
       PublicPost.filter do
@@ -290,6 +298,15 @@ describe 'implicit joins' do
 
     it 'should create the correct join' do
       Blog.last_find[:joins].should == [%q(INNER JOIN "posts" AS blogs__posts ON "blogs".id = blogs__posts.blog_id), %q(INNER JOIN "comments" AS blogs__posts__comments ON blogs__posts.id = blogs__posts__comments.post_id)]
+    end
+  end
+
+  describe 'adding joins automatically on ordering' do
+    it 'should infer the join' do
+      Post.filter do
+        order(:comments => :created_at)
+      end.inspect
+      Post.last_find.should == {:order => 'posts__comments.created_at ASC', :joins => [%q(INNER JOIN "comments" AS posts__comments ON "posts".id = posts__comments.post_id)], :readonly => false}
     end
   end
 

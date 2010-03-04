@@ -55,7 +55,7 @@ describe 'raising exceptions' do
         Post.filter do
           order({ :this_is_not_there => :eh }, :asc)
         end.inspect
-      }.should raise_error(RecordFilter::InvalidJoinException)
+      }.should raise_error(RecordFilter::AssociationNotFoundException)
     end
 
     it 'should raise ColumnNotFoundException for explicit joins on bad column names for the right table' do

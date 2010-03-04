@@ -20,8 +20,6 @@ module RecordFilter
         params = {}
         conditions = @conjunction.to_conditions
         params = { :conditions => conditions } if conditions
-        joins = @table.all_joins
-        params[:joins] = joins.map { |join| join.to_sql } unless joins.empty?
         set_select(params, count_query)
         orders = @table.orders
         params[:order] = orders.map { |order| order.to_sql } * ', ' unless orders.empty?
@@ -30,6 +28,10 @@ module RecordFilter
         params[:limit] = @conjunction.limit if @conjunction.limit
         params[:offset] = @conjunction.offset if @conjunction.offset
         params[:readonly] = false
+        # this is a bit of a hack, but the joins need to go at the end because the other
+        # operations may have implicitly created joins as they were sql-ized.
+        joins = @table.all_joins
+        params[:joins] = joins.map { |join| join.to_sql } unless joins.empty?
         params
       end
     end

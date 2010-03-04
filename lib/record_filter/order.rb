@@ -10,8 +10,8 @@ module RecordFilter
 
     def to_sql
       dir = case @direction
-        when :asc then 'ASC'
-        when :desc then 'DESC'
+        when :asc, 'asc' then 'ASC'
+        when :desc, 'desc' then 'DESC'
         else raise InvalidFilterException.new("An invalid order of #{@direction} was specified.") 
       end
 

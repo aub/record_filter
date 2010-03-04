@@ -23,6 +23,10 @@ module RecordFilter
       @query = Query.new(@clazz, filter, *args, &block)
     end
 
+    def filter_class
+      @clazz
+    end
+
     def first(*args) # :nodoc:
       do_with_scope do
         @clazz.find(:first, *args)
