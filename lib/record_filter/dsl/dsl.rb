@@ -129,7 +129,10 @@ module RecordFilter
       # block, etc.).
       #
       # ==== Parameters
-      # none
+      # 
+      # columns...<Symbol>:
+      #   Zero or more column names to select. Equivalent to
+      #   select(:col1, :col2) ; distinct. If empty, select all columns.
       #
       # ==== Returns
       # nil

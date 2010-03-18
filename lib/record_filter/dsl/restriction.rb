@@ -305,7 +305,7 @@ module RecordFilter
       def take_value(value) # :nodoc:
         if value.nil?
           is_null
-        elsif value != DEFAULT_VALUE
+        elsif value.respond_to?(:to_subquery) || value != DEFAULT_VALUE
           equal_to(value)
         end
       end

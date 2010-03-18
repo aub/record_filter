@@ -36,13 +36,17 @@ module RecordFilter
       end
     end
 
+    def select_columns
+      @conjunction.select_columns
+    end
+
     protected
 
     def set_select(params, count_query)
       select_column_statement =
         if count_query
           "#{@table.table_name}.#{@table.model_class.primary_key}"
-        elsif select_columns = @conjunction.select_columns
+        elsif select_columns
           select_columns.map { |column| "#{@table.table_name}.#{column}" }.join(', ')
         else
           "#{@table.table_name}.*"

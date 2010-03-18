@@ -65,6 +65,20 @@ module RecordFilter
       @query.to_find_params(count_query)
     end
 
+    def to_subquery(single_result = true)
+      proxy_options = proxy_options()
+      if @query.select_columns && @query.select_columns.length > 1
+        raise(InvalidFilterException, "Only one select column allowed in a subquery")
+      end
+      @clazz.module_eval do
+        options = proxy_options.reverse_merge(
+          :select => "#{quoted_table_name}.#{primary_key}"
+        )
+        options.merge!(:limit => 1) if single_result
+        construct_finder_sql(options)
+      end
+    end
+
     protected
 
     def method_missing(method, *args, &block) # :nodoc:
