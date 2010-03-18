@@ -135,9 +135,17 @@ module RecordFilter
       # nil
       #
       # @public
-      def distinct
+      def distinct(*columns)
+        select(*columns) unless columns.empty?
         @conjunction.set_distinct
         nil
+      end
+
+      #
+      # Specify one or more columns to select from the database.
+      #
+      def select(*columns)
+        @conjunction.set_select_columns(columns)
       end
     end
   end

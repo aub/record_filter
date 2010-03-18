@@ -39,12 +39,18 @@ module RecordFilter
     protected
 
     def set_select(params, count_query)
-      if @conjunction.distinct || (@table.all_joins.any? { |j| j.requires_distinct_select? })
+      select_column_statement =
         if count_query
-          params[:select] = "DISTINCT #{@table.table_name}.#{@table.model_class.primary_key}"
+          "#{@table.table_name}.#{@table.model_class.primary_key}"
+        elsif select_columns = @conjunction.select_columns
+          select_columns.map { |column| "#{@table.table_name}.#{column}" }.join(', ')
         else
-          params[:select] = "DISTINCT #{@table.table_name}.*"
+          "#{@table.table_name}.*"
         end
+      if @conjunction.distinct || (@table.all_joins.any? { |j| j.requires_distinct_select? })
+        params[:select] = "DISTINCT #{select_column_statement}"
+      elsif @conjunction.select_columns
+        params[:select] = select_column_statement
       end
     end
 

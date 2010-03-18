@@ -1,7 +1,7 @@
 module RecordFilter
   module Conjunctions # :nodoc: all
     class Base
-      attr_reader :table_name, :limit, :offset, :distinct
+      attr_reader :table_name, :limit, :offset, :distinct, :select_columns
 
       def self.create_from(dsl_conjunction, table)
         result = case dsl_conjunction.type
@@ -39,6 +39,7 @@ module RecordFilter
           end
         end
         result.set_distinct(dsl_conjunction.distinct)
+        result.set_select_columns(dsl_conjunction.select_columns)
         result
       end
 
@@ -92,6 +93,10 @@ module RecordFilter
 
       def set_distinct(value)
         @distinct = value
+      end
+
+      def set_select_columns(select_columns)
+        @select_columns = select_columns
       end
 
       def add_named_filter(name, args)
