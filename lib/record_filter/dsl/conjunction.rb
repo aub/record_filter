@@ -2,7 +2,7 @@ module RecordFilter
   module DSL
     class Conjunction # :nodoc: all
 
-      attr_reader :type, :steps, :distinct
+      attr_reader :type, :steps, :distinct, :select_columns
 
       def initialize(model_class, type=:all_of)
         @model_class, @type, @steps, @distinct = model_class, type, [], false
@@ -51,6 +51,10 @@ module RecordFilter
 
       def set_distinct
         @distinct = true
+      end
+
+      def set_select_columns(columns)
+        @select_columns = columns
       end
 
       def add_named_filter(method, *args)

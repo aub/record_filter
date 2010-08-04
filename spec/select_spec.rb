@@ -6,21 +6,39 @@ describe 'with custom selects for cases where DISTINCT is required' do
   end 
 
   describe 'on a standard filter' do
-    it 'should put nothing in the select' do
+    it 'should put nothing in the select by default' do
       Post.filter do
         having(:comments).with(:offensive, true)
       end.inspect
       Post.last_find[:select].should be_nil
     end
+
+    it 'should use the columns specified in the select' do
+      Post.filter do
+        select(:id, :title)
+        having(:comments).with(:offensive, true)
+      end.inspect
+      Post.last_find[:select].should == '"posts".id, "posts".title'
+    end
+
+    #XXX check bogus column names
   end
 
-  describe 'with join types that require distinct' do
-    it 'should put the distinct clause in the select' do
-      [:left, :right].each do |join_type|
+  [:left, :right].each do |join_type|
+    describe "with #{join_type} join" do
+      it 'should put the distinct clause in the select' do
         Post.filter do
           having(:comments, :join_type => join_type).with(:offensive, true)
         end.inspect rescue nil # required because sqlite doesn't support right joins
         Post.last_find[:select].should == %q(DISTINCT "posts".*)
+      end
+
+      it 'should put the distinct clause with the columns specified in the select' do
+        Post.filter do
+          select(:id, :title)
+          having(:comments, :join_type => join_type).with(:offensive, true)
+        end.inspect rescue nil # required because sqlite doesn't support right joins
+        Post.last_find[:select].should == %q(DISTINCT "posts".id, "posts".title)
       end
     end
   end
@@ -62,6 +80,25 @@ describe 'with custom selects for cases where DISTINCT is required' do
         distinct
       end.inspect
       Blog.last_find[:select].should == %q(DISTINCT "blogs".*)
+    end
+
+    it 'should create a distinct query on selected columns' do
+      Blog.filter do
+        with(:created_at).gt(1.day.ago)
+        having(:posts).with(:permalink, nil)
+        distinct
+        select(:id, :name)
+      end.inspect
+      Blog.last_find[:select].should == %q(DISTINCT "blogs".id, "blogs".name)
+    end
+
+    it 'should create a distinct query on selected columns passed into distinct()' do
+      Blog.filter do
+        with(:created_at).gt(1.day.ago)
+        having(:posts).with(:permalink, nil)
+        distinct(:id, :name)
+      end.inspect
+      Blog.last_find[:select].should == %q(DISTINCT "blogs".id, "blogs".name)
     end
   end
 
