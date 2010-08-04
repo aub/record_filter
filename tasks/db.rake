@@ -2,11 +2,15 @@ namespace :db do
   namespace :spec do
     desc 'drop database and recreate from test schema'
     task :prepare do
-      require File.join(File.dirname(__FILE__), '..', 'spec', 'spec_helper')
+      require File.join(File.dirname(__FILE__), '..', 'lib', 'record_filter')
 
       db_file = File.join(File.dirname(__FILE__), '..', 'spec', 'test.db')
-
       FileUtils.rm(db_file) if File.exists?(db_file)
+
+      ActiveRecord::Base.establish_connection(
+        :adapter => 'sqlite3',
+        :database => db_file
+      )
 
       ActiveRecord::Schema.define do
 
