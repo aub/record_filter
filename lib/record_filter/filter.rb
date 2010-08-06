@@ -16,6 +16,9 @@ module RecordFilter
         @clazz = clazz
       elsif clazz.is_a?(Array) && clazz.respond_to?(:proxy_reflection)
         @current_scoped_methods = { :create => {}, :find => { :conditions => filter } }
+        if clazz.proxy_reflection.options[:order]
+          @current_scoped_methods[:find][:order] = clazz.proxy_reflection.options[:order]
+        end
         @clazz = clazz.proxy_reflection.klass
         filter = nil
       end

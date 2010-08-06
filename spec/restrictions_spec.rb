@@ -256,6 +256,14 @@ describe 'RecordFilter restrictions' do
     Comment.last_find.should == { :readonly => false, :conditions => "(\"comments\".offensive = 't') AND (\"comments\".post_id = #{Post.first.id})" }
   end
 
+  it 'should properly filter when applied to an association with order' do
+    Blog.create
+    Blog.first.ordered_posts.filter do
+      with(:permalink, 'dfds')
+    end.inspect
+    Post.last_find[:order].should == 'created_at DESC'
+  end
+
   it 'should allow a hash as the value for the restriction and use that as the name of a table' do
     Blog.filter do
       having(:comments)
